@@ -5,13 +5,14 @@ import java.util.Date;
 
 /**
  * Created by xnx on 2018/5/4.
- * 结点
+ * 国家
  */
-public class Node implements Serializable {
+public class Nation implements Serializable {
 
     private static final long serialVersionUID = 6921257177384426481L;
 
     private String id;
+    private String pid; //国家可延续
     private String title;
     private String content;
     private String cover;
@@ -55,5 +56,13 @@ public class Node implements Serializable {
 
     public void setCdate(Date cdate) {
         this.cdate = cdate;
+    }
+
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid;
     }
 }
