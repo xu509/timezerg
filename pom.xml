@@ -6,7 +6,7 @@
 	<groupId>com.alan</groupId>
 	<artifactId>timezerg</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
 
 	<name>timezerg</name>
 	<description>Demo project for Spring Boot</description>
@@ -27,7 +27,6 @@
 	<modules>
 		<module>app</module>
 	</modules>
-
 
 
 	<dependencies>
