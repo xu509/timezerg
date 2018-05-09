@@ -23,3 +23,5 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+/web-manager/.vscode/
+/web-manager/node_modules/
