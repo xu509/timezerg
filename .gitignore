@@ -25,3 +25,5 @@
 /.nb-gradle/
 /web-manager/.vscode/
 /web-manager/node_modules/
+.gitignore.bak
+.gitignore

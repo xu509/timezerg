@@ -1,15 +1,23 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+import index from '@/components/index'
+import node from '@/components/node'
+import nodeAdd from '@/components/nodeAdd'
 
 Vue.use(Router)
 
 export default new Router({
-  routes: [
-    {
-      path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
-    }
-  ]
+  routes: [{
+    path: '/',
+    name: 'index',
+    component: index
+  }, {
+    path: '/node',
+    name: 'node',
+    component: node
+  }, {
+    path: '/node/add',
+    name: 'nodeAdd',
+    component: nodeAdd
+  }]
 })
