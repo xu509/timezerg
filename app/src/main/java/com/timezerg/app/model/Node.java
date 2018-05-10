@@ -16,6 +16,8 @@ public class Node implements Serializable {
     private String content;
     private String cover;
     private Date cdate;
+    private String ddate; //显示的日期
+    private boolean AD = true; // 是否在公元
 
     public String getId() {
         return id;
@@ -55,5 +57,21 @@ public class Node implements Serializable {
 
     public void setCdate(Date cdate) {
         this.cdate = cdate;
+    }
+
+    public String getDdate() {
+        return ddate;
+    }
+
+    public void setDdate(String ddate) {
+        this.ddate = ddate;
+    }
+
+    public boolean isAD() {
+        return AD;
+    }
+
+    public void setAD(boolean AD) {
+        this.AD = AD;
     }
 }
