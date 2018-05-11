@@ -17,6 +17,14 @@
                   <i class="el-icon-menu"></i>
                   <span slot="title">节点</span>
                 </el-menu-item>
+                <el-menu-item index="3" route = "/civilization">
+                  <i class="el-icon-menu"></i>
+                  <span slot="title">文明</span>
+                </el-menu-item>
+                <el-menu-item index="4" route = "/dynasty">
+                  <i class="el-icon-menu"></i>
+                  <span slot="title">朝代</span>
+                </el-menu-item>
               </el-menu>
             </el-col>
         </el-row>
