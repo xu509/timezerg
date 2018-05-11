@@ -1,4 +1,4 @@
-package com.timezerg.app.model;
+package com.timezerg.api.model;
 
 import java.io.Serializable;
 import java.util.Date;

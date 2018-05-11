@@ -27,3 +27,10 @@
 /web-manager/node_modules/
 .gitignore.bak
 .gitignore
+app/src/main/resources/application.properties
+api/src/test/java/com/timezerg/api/ApiApplicationTests.java
+api/.mvn/wrapper/maven-wrapper.properties
+api/.mvn/wrapper/maven-wrapper.jar
+api/mvnw.cmd
+api/mvnw
+

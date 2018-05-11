@@ -1,4 +1,4 @@
-package com.timezerg.app.util;
+package com.timezerg.api.util;
 
 /**
  * ID生成规则

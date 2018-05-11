@@ -1,4 +1,4 @@
-package com.timezerg.app.util;
+package com.timezerg.api.util;
 
 /**
  * Created by xnx on 2018/5/4.

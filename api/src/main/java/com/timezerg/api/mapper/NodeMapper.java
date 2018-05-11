@@ -1,6 +1,6 @@
-package com.timezerg.app.mapper;
+package com.timezerg.api.mapper;
 
-import com.timezerg.app.model.Node;
+import com.timezerg.api.model.Node;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -15,7 +15,7 @@ import java.util.List;
 public interface NodeMapper {
 
     @Insert("insert into t_timezerg_node values (#{id},#{title},#{content},#{cover},#{cdate})")
-    int add (Node node);
+    int add(Node node);
 
     @Select("select * from t_timezerg_node where id = #{id}")
     Node selectById(String id);
