@@ -42,12 +42,12 @@
                 </el-form-item>
                 <el-form-item label="是否是公元后">
                   <el-radio-group v-model="form.AD">
-                    <el-radio label="BC"></el-radio>
-                    <el-radio label="AD"></el-radio>
+                    <el-radio label="0">BC</el-radio>
+                    <el-radio label="1">AD</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="save">创建</el-button>
+                  <el-button type="primary" @click="save" :loading="saving">创建</el-button>
                 </el-form-item>
           </el-form>
       </el-col>
@@ -56,15 +56,16 @@
 </template>
 
 <script>
-var url_table = "localhost";
+import axios from "axios";
+
+var url_save = "http://192.168.1.112:8081/node/save";
 
 export default {
-  name: "HelloWorld",
+  name: "NodeAdd",
   data() {
     return {
       form: {
         title: "",
-        cdate: "",
         ddate: "",
         year: null,
         month: null,
@@ -72,13 +73,48 @@ export default {
         hour: null,
         minute: null,
         second: null,
-        AD: 1
-      }
+        AD: "1"
+      },
+      saving: false
     };
   },
   methods: {
     save() {
-      console.log("save");
+      var _this = this;
+
+      _this.saving = true;
+      axios
+        .post(url_save, {
+          title: _this.form.title,
+          ddate: _this.form.ddate,
+          year: _this.form.year,
+          month: _this.form.month,
+          day: _this.form.day,
+          minute: _this.form.minute,
+          second: _this.form.second,
+          AD: _this.form.AD
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            _this.$message({
+              message: _this.form.title + " 添加成功！",
+              type: "success"
+            });
+
+            _this.form.title = null;
+            _this.form.ddate = null;
+            _this.form.year = null;
+            _this.form.month = null;
+            _this.form.day = null;
+            _this.form.minute = null;
+            _this.form.second = null;
+            _this.form.AD = "1";
+          }
+          _this.saving = false;
+        })
+        .catch(function(error) {
+          _this.saving = false;
+        });
     }
   }
 };

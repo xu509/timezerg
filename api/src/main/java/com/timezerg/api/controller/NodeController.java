@@ -3,8 +3,7 @@ package com.timezerg.api.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.timezerg.api.service.NodeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by xnx on 2018/5/10.
@@ -16,11 +15,18 @@ public class NodeController {
     @Autowired
     NodeService nodeService;
 
+    @CrossOrigin
+    @PostMapping("/node/save")
+    public Object save(@RequestBody JSONObject params){
+        return nodeService.add(params);
+    }
 
-//    @PostMapping
-//    public Object tableList(){
-//
-//    }
+    @CrossOrigin
+    @PostMapping("/node/list")
+    public Object list(@RequestBody JSONObject params){
+        return nodeService.getList(params);
+    }
+
 
     @GetMapping("/test")
     public Object test(){

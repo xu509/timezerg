@@ -54,7 +54,7 @@ export default {
 .el-main {
   background-color: #ffffff;
   color: #333;
-  line-height: 160px;
+  line-height: 60px;
 }
 
 body > .el-container {

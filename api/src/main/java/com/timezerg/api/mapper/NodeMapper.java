@@ -14,7 +14,7 @@ import java.util.List;
 @Mapper
 public interface NodeMapper {
 
-    @Insert("insert into t_timezerg_node values (#{id},#{title},#{content},#{cover},#{cdate})")
+    @Insert("insert into t_timezerg_node values (#{id},#{title},#{content},#{cover},#{cdate},#{ddate},#{AD})")
     int add(Node node);
 
     @Select("select * from t_timezerg_node where id = #{id}")
@@ -23,6 +23,8 @@ public interface NodeMapper {
     @Select("select n.* from t_timezerg_node n where 1 = 1 order by n.cdate desc limit #{array[0]},#{array[1]}")
     List<HashMap> getList(Object[] params);
 
+    @Select("select count(*) from t_timezerg_node")
+    Long getListTotal(Object[] params);
 
 
 }
