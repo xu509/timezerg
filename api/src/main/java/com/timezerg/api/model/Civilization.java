@@ -7,7 +7,7 @@ import java.util.Date;
  * Created by xnx on 2018/5/4.
  * 文明
  */
-public class Culture implements Serializable {
+public class Civilization implements Serializable {
 
     private static final long serialVersionUID = 6921257177384426481L;
 
