@@ -21,10 +21,22 @@
                   <i class="el-icon-menu"></i>
                   <span slot="title">文明</span>
                 </el-menu-item>
-                <el-menu-item index="4" route = "/dynasty">
+                <el-menu-item index="4" route = "/nation">
+                  <i class="el-icon-menu"></i>
+                  <span slot="title">国家</span>
+                </el-menu-item>
+                <!-- <el-menu-item index="5" route = "/dynasty">
                   <i class="el-icon-menu"></i>
                   <span slot="title">朝代</span>
-                </el-menu-item>
+                </el-menu-item> -->
+
+                <el-submenu index="5">
+                  <template slot="title">
+                    <i class="el-icon-location"></i>
+                    <span>设置</span>
+                  </template>
+                  <el-menu-item index="5-1" route = "/continent/add">大洲</el-menu-item>
+                </el-submenu>
               </el-menu>
             </el-col>
         </el-row>

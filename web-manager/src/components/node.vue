@@ -18,6 +18,11 @@
         <el-table :data = "datas">
             <el-table-column fixed prop = "ddate" label = "日期" width="120"></el-table-column>
             <el-table-column prop = "title" label = "标题"></el-table-column>
+            <el-table-column fixed="right" width="200" label="操作">
+                <template slot-scope="scope">
+                    <el-button type="text" size="small" @click = "go('nodeEdit', scope.row.id )">编辑</el-button>
+                </template>
+            </el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -77,6 +82,14 @@ export default {
     },
     add() {
       this.$router.push("node/add");
+    },
+    go(name, params) {
+      const id = params;
+      this.$router.push({
+        path: "/node/edit/" + id
+      });
+
+      // console.log(params);
     },
     handleSizeChange(size) {
       this.page_size = size;

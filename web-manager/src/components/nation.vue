@@ -4,7 +4,7 @@
       <el-col :span="24">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item>文明</el-breadcrumb-item>
+          <el-breadcrumb-item>国家</el-breadcrumb-item>
         </el-breadcrumb>
       </el-col>
     </el-row>
@@ -16,6 +16,7 @@
     <el-row>
       <el-col :span="24">
         <el-table :data = "datas">
+            <el-table-column fixed prop = "ddate" label = "日期" width="120"></el-table-column>
             <el-table-column prop = "title" label = "标题"></el-table-column>
         </el-table>
       </el-col>
@@ -40,7 +41,7 @@
 <script>
 import axios from "axios";
 
-var url_table = "http://192.168.1.112:8081/civilization/list";
+var url_table = "http://192.168.1.112:8081/nation/list";
 
 export default {
   name: "Node",
@@ -71,12 +72,10 @@ export default {
             _this.total = response.data.data.total;
           }
         })
-        .catch(function(error) {
-          console.log(error);
-        });
+        .catch(function(error) {});
     },
     add() {
-      this.$router.push("civilization/add");
+      this.$router.push("nation/add");
     },
     handleSizeChange(size) {
       this.page_size = size;
