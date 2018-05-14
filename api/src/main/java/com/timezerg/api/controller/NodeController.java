@@ -27,6 +27,17 @@ public class NodeController {
         return nodeService.getList(params);
     }
 
+    @CrossOrigin
+    @PostMapping("/node/edit/init")
+    public Object editInit(@RequestBody JSONObject params){
+        return nodeService.init(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/node/edit/submit")
+    public Object editSubmit(@RequestBody JSONObject params){
+        return nodeService.edit(params);
+    }
 
     @GetMapping("/test")
     public Object test(){

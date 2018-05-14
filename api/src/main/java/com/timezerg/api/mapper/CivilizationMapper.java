@@ -15,16 +15,16 @@ import java.util.List;
 @Mapper
 public interface CivilizationMapper {
 
-    @Insert("insert into t_timezerg_civilization values (#{id},#{pid},#{title},#{content},#{cover},#{cdate})")
+    @Insert("insert into t_timezerg_civilization values (#{id},#{pid},#{title},#{content},#{cover},#{cdate},#{level})")
     int add(Civilization civilization);
 
     @Select("select * from t_timezerg_node where id = #{id}")
     Node selectById(String id);
 
-    @Select("select n.* from t_timezerg_node n where 1 = 1 order by n.cdate desc limit #{array[0]},#{array[1]}")
+    @Select("select n.* from t_timezerg_civilization n where 1 = 1 order by n.cdate desc limit #{array[0]},#{array[1]}")
     List<HashMap> getList(Object[] params);
 
-    @Select("select count(*) from t_timezerg_node")
+    @Select("select count(*) from t_timezerg_civilization")
     Long getListTotal(Object[] params);
 
 

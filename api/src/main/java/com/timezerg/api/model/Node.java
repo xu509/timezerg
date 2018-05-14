@@ -18,6 +18,12 @@ public class Node implements Serializable {
     private Date cdate;
     private String ddate; //显示的日期
     private boolean AD = true; // 是否在公元
+    private Integer level = 0; //重要程度
+
+    public static final Integer Level_Very_Important = 1;
+    public static final Integer Level_Important = 2;
+    public static final Integer Level_Normal = 3;
+    public static final Integer Level_Detail = 4;
 
     public String getId() {
         return id;
@@ -73,5 +79,13 @@ public class Node implements Serializable {
 
     public void setAD(boolean AD) {
         this.AD = AD;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 }

@@ -16,5 +16,11 @@ public class Utils {
         return String.valueOf(worker.nextId());
     }
 
+    public static String transferToJsonStr(boolean b){
+        if (b)
+            return "1";
+        else
+            return "0";
+    }
 
 }

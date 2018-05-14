@@ -6,7 +6,9 @@ package com.timezerg.api.util;
  */
 public enum ResultMessage {
 
-	OK("0", "成功");
+	OK("0", "成功"),
+	PARAM_ERROR("11","参数错误");
+
 
 	private String result;
 	private String msg;
