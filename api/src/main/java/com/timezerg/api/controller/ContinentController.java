@@ -25,6 +25,10 @@ public class ContinentController {
         return continentService.add(params);
     }
 
+    @PostMapping("/continent/search")
+    public Object search(@RequestBody JSONObject params){
+        return continentService.selectByTitle(params);
+    }
 
 
 }

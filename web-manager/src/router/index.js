@@ -6,6 +6,7 @@ import nodeAdd from '@/components/nodeAdd'
 import nodeEdit from '@/components/nodeEdit'
 import civilization from '@/components/civilization'
 import civilizationAdd from '@/components/civilizationAdd'
+import civilizationEdit from '@/components/civilizationedit'
 import dynasty from '@/components/dynasty'
 import dynastyAdd from '@/components/dynastyAdd'
 import continentAdd from '@/components/continent'
@@ -39,6 +40,10 @@ export default new Router({
     path: '/civilization/add',
     name: 'civilizationAdd',
     component: civilizationAdd
+  }, {
+    path: '/civilization/edit/:id',
+    name: 'civilizationEdit',
+    component: civilizationEdit
   }, {
     path: '/dynasty',
     name: 'dynasty',

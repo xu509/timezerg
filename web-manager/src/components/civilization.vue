@@ -16,7 +16,19 @@
     <el-row>
       <el-col :span="24">
         <el-table :data = "datas">
-            <el-table-column prop = "title" label = "标题"></el-table-column>
+            <el-table-column prop = "title" label = "标题" width = "200"></el-table-column>
+            <el-table-column label = "大洲">
+                <template slot-scope="scrope">
+                    <template v-for="item in scrope.row.continents">
+                        {{item.title}} &nbsp;
+                    </template>
+                </template>
+            </el-table-column>
+            <el-table-column fixed="right" width="200" label="操作">
+                <template slot-scope="scope">
+                    <el-button type="text" size="small" @click = "go('civilizationEdit', scope.row.id )">编辑</el-button>
+                </template>
+            </el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -68,6 +80,7 @@ export default {
         .then(function(response) {
           if (response.data.result == 0) {
             _this.datas = response.data.data.data;
+
             _this.total = response.data.data.total;
           }
         })
@@ -77,6 +90,12 @@ export default {
     },
     add() {
       this.$router.push("civilization/add");
+    },
+    go(name, params) {
+      const id = params;
+      this.$router.push({
+        path: "/civilization/edit/" + id
+      });
     },
     handleSizeChange(size) {
       this.page_size = size;
@@ -101,5 +120,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>

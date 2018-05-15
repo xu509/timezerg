@@ -29,4 +29,7 @@ public interface NationMapper {
     @Select("select * from t_timezerg_nation where title like CONCAT('%',#{title},'%') limit 0,10")
     List<Nation> selectLikeByTitle(String title);
 
+    @Select("select * from t_timezerg_nation where id = #{id}")
+    Nation selectById(String id);
+
 }

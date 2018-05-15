@@ -3,9 +3,13 @@ package com.timezerg.api.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.timezerg.api.mapper.CivilizationMapper;
+import com.timezerg.api.mapper.NodeCivilizationMapper;
 import com.timezerg.api.mapper.NodeMapper;
 import com.timezerg.api.mapper.NodeNationMapper;
 import com.timezerg.api.model.Node;
+import com.timezerg.api.model.NodeCivilization;
+import com.timezerg.api.model.NodeNation;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
@@ -31,6 +35,9 @@ public class NodeService {
 
     @Autowired
     NodeNationMapper nodeNationMapper;
+
+    @Autowired
+    NodeCivilizationMapper nodeCivilizationMapper;
 
 
     public Object add(JSONObject params){
@@ -86,6 +93,15 @@ public class NodeService {
         }
         result.put("AD",Utils.transferToJsonStr(node.isAD()));
 
+        //绑定的相关国家
+        List<HashMap> nationMaps = nodeNationMapper.selectByNodeId(id);
+        result.put("nations",JSON.toJSON(nationMaps));
+
+        //绑定的文明
+        List<HashMap> civilizationMaps = nodeCivilizationMapper.selectByNodeId(id);
+        result.put("civilizations",JSON.toJSON(civilizationMaps));
+
+
         return new Result(ResultMessage.OK,result);
     }
 
@@ -99,7 +115,14 @@ public class NodeService {
         Object[] p = {params.getInteger("start"),params.getInteger("size")};
         List<HashMap> list = nodeMapper.getList(p);
         JSONObject r = new JSONObject();
-        r.put("data",list);
+        for (HashMap row : list){
+            String id = (String) row.get("id");
+
+            //相关时代
+            row.put("nations",nodeNationMapper.selectByNodeId(id));
+        }
+
+        r.put("data",JSON.toJSON(list));
         r.put("total",nodeMapper.getListTotal(p));
         return new Result(ResultMessage.OK,r);
     }
@@ -140,13 +163,26 @@ public class NodeService {
         nodeNationMapper.deleteByNodeId(id);
         for (int i = 0 ; i < nations.size() ; i++){
             JSONObject nation = nations.getJSONObject(i);
-            //TODO 完成国家绑定
+            String nationId = nation.getString("nationid");
+            NodeNation nodeNation = new NodeNation();
+            nodeNation.setId(Utils.generateId());
+            nodeNation.setNationid(nationId);
+            nodeNation.setNodeid(id);
+            nodeNationMapper.add(nodeNation);
         }
 
-
-
-
-
+        // 修改 nation 的相关文明
+        JSONArray civilizations = params.getJSONArray("civilizations");
+        nodeCivilizationMapper.deleteByNodeId(id);
+        for (int i = 0 ; i < civilizations.size();i++){
+            JSONObject civilization = civilizations.getJSONObject(i);
+            String cid = civilization.getString("cid");
+            NodeCivilization nodeCivilization = new NodeCivilization();
+            nodeCivilization.setId(Utils.generateId());
+            nodeCivilization.setCid(cid);
+            nodeCivilization.setNid(id);
+            nodeCivilizationMapper.add(nodeCivilization);
+        }
 
         return new Result(ResultMessage.OK,node);
     }

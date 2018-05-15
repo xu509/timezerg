@@ -18,6 +18,13 @@
         <el-table :data = "datas">
             <el-table-column fixed prop = "ddate" label = "日期" width="120"></el-table-column>
             <el-table-column prop = "title" label = "标题"></el-table-column>
+            <el-table-column label = "时代">
+                <template slot-scope="scrope">
+                    <template v-for="item in scrope.row.nations">
+                        {{item.title}} &nbsp;
+                    </template>
+                </template>
+            </el-table-column>
             <el-table-column fixed="right" width="200" label="操作">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" @click = "go('nodeEdit', scope.row.id )">编辑</el-button>
@@ -88,8 +95,6 @@ export default {
       this.$router.push({
         path: "/node/edit/" + id
       });
-
-      // console.log(params);
     },
     handleSizeChange(size) {
       this.page_size = size;
@@ -114,5 +119,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>

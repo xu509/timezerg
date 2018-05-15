@@ -53,9 +53,9 @@
                 </el-form-item>
                 <el-form-item label="相关国家">
                    <el-autocomplete popper-class="my-autocomplete"
-                              :fetch-suggestions="querySearchAsync"
+                              :fetch-suggestions="queryNation"
                                 placeholder="搜索国家，比如意大利"
-                                @select="handleSelect">
+                                @select="selectNation">
                                 <template slot-scope="props">
                                           <div class="name">
                                                 {{ props.item.title }}
@@ -69,6 +69,27 @@
                       :disable-transitions="false"
                       @close="closeNationTag(nation)">
                       {{nation.title}}
+                    </el-tag>
+                </el-form-item>
+
+                <el-form-item label="相关文明">
+                   <el-autocomplete popper-class="my-autocomplete"
+                              :fetch-suggestions="queryCivilization"
+                                placeholder="搜索文明"
+                                @select="selectCivilization">
+                                <template slot-scope="props">
+                                          <div class="name">
+                                                {{ props.item.title }}
+                                            </div>
+                                </template>
+                    </el-autocomplete>
+                    <el-tag type="warning"
+                      :key="civilization.id"
+                      v-for="civilization in form.civilizations"
+                      closable
+                      :disable-transitions="false"
+                      @close="closeNationTag(civilization)">
+                      {{civilization.title}}
                     </el-tag>
                 </el-form-item>
              
@@ -86,6 +107,7 @@ import axios from "axios";
 
 var url_save = "http://192.168.1.112:8081/node/edit/submit",
   url_search_nation = "http://192.168.1.112:8081/nation/search",
+  url_search_civilization = "http://192.168.1.112:8081/civilization/search",
   url_init = "http://192.168.1.112:8081/node/edit/init";
 
 export default {
@@ -104,7 +126,8 @@ export default {
         second: null,
         AD: "1",
         level: 0,
-        nations: []
+        nations: [],
+        civilizations: []
       },
       options: [
         {
@@ -154,6 +177,8 @@ export default {
             _this.form.second = data.second;
             _this.form.AD = data.AD;
             _this.form.level = data.level;
+            _this.form.nations = data.nations;
+            _this.form.civilizations = data.civilizations;
 
             _this.loading = false;
           }
@@ -175,7 +200,8 @@ export default {
           second: _this.form.second,
           AD: _this.form.AD,
           level: _this.form.level,
-          nations: _this.form.nations
+          nations: _this.form.nations,
+          civilizations: _this.form.civilizations
         })
         .then(function(response) {
           if (response.data.result == 0) {
@@ -185,15 +211,6 @@ export default {
             });
 
             _this.init();
-
-            // _this.form.title = null;
-            // _this.form.ddate = null;
-            // _this.form.year = null;
-            // _this.form.month = null;
-            // _this.form.day = null;
-            // _this.form.minute = null;
-            // _this.form.second = null;
-            // _this.form.AD = "1";
           } else {
             _this.$message({
               message: _this.form.title + " 更新失败！ " + response.data.data,
@@ -206,7 +223,7 @@ export default {
           _this.saving = false;
         });
     },
-    querySearchAsync(queryString, cb) {
+    queryNation(queryString, cb) {
       var sr = [];
       if (queryString != undefined && queryString.length > 0) {
         axios
@@ -230,9 +247,9 @@ export default {
         cb(sr);
       }
     },
-    handleSelect(item) {
+    selectNation(item) {
       var nation = {
-        id: item.id,
+        nationid: item.id,
         title: item.title
       };
       this.form.nations.push(nation);
@@ -240,6 +257,41 @@ export default {
     closeNationTag(nation) {
       var index = this.form.nations.indexOf(nation);
       this.form.nations.splice(index, 1);
+    },
+    queryCivilization(queryString, cb) {
+      var sr = [];
+      if (queryString != undefined && queryString.length > 0) {
+        axios
+          .post(url_search_civilization, {
+            sw: queryString
+          })
+          .then(function(response) {
+            var r = response.data;
+            if (r.result == 0) {
+              var data = r.data.data;
+              if (r.data.exist) {
+                cb(data);
+              } else {
+                cb(data);
+              }
+            } else {
+              cb(sr);
+            }
+          });
+      } else {
+        cb(sr);
+      }
+    },
+    selectCivilization(item) {
+      var civilization = {
+        cid: item.id,
+        title: item.title
+      };
+      this.form.civilizations.push(civilization);
+    },
+    closeNationTag(civilization) {
+      var index = this.form.civilizations.indexOf(civilization);
+      this.form.civilizations.splice(index, 1);
     }
   },
   mounted: function() {
@@ -251,5 +303,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>

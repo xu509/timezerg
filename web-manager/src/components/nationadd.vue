@@ -15,7 +15,7 @@
                 <el-form-item label="标题">
                   <el-input v-model="form.title"></el-input>
                 </el-form-item>
-            <el-form-item label="时间">
+                <el-form-item label="启">
                   <el-row :gutter="20">
                     <el-col :span = "4">
                       <el-input v-model="form.year" placeholder="年"/>
@@ -26,14 +26,18 @@
                     <el-col :span = "3">
                       <el-input v-model="form.day" placeholder="日"/>
                     </el-col>
+                  </el-row>
+                </el-form-item>
+                <el-form-item label="终">
+                  <el-row :gutter="20">
                     <el-col :span = "4">
-                      <el-input v-model="form.hour" placeholder="时"/>
+                      <el-input v-model="form.eyear" placeholder="年"/>
                     </el-col>
-                    <el-col :span = "4">
-                      <el-input v-model="form.minute" placeholder="分"/>
+                    <el-col :span = "3">
+                      <el-input v-model="form.emonth" placeholder="月"/>
                     </el-col>
-                    <el-col :span = "4">
-                      <el-input v-model="form.second" placeholder="秒"/>
+                    <el-col :span = "3">
+                      <el-input v-model="form.eday" placeholder="日"/>
                     </el-col>
                   </el-row>
                 </el-form-item>
@@ -45,6 +49,26 @@
                     <el-radio label="0">BC</el-radio>
                     <el-radio label="1">AD</el-radio>
                   </el-radio-group>
+                </el-form-item>
+                <el-form-item label="承接">
+                   <el-autocomplete popper-class="my-autocomplete"
+                              :fetch-suggestions="queryNation"
+                                placeholder="搜索"
+                                @select="selectNation">
+                                <template slot-scope="props">
+                                          <div class="name">
+                                                {{ props.item.title }}
+                                            </div>
+                                </template>
+                    </el-autocomplete>
+                    <el-tag type="warning"
+                      :key="nation.id"
+                      v-for="nation in form.nations"
+                      closable
+                      :disable-transitions="false"
+                      @close="closeNationTag(nation)">
+                      {{nation.title}}
+                    </el-tag>
                 </el-form-item>
                 <el-form-item>
                   <el-button type="primary" @click="save" :loading="saving">创建</el-button>
@@ -67,13 +91,15 @@ export default {
       form: {
         title: "",
         ddate: "",
+        pid: "",
         year: null,
         month: null,
         day: null,
-        hour: null,
-        minute: null,
-        second: null,
-        AD: "1"
+        eyear: null,
+        emonth: null,
+        eday: null,
+        AD: "1",
+        pnation: null
       },
       saving: false
     };
@@ -90,8 +116,6 @@ export default {
           year: _this.form.year,
           month: _this.form.month,
           day: _this.form.day,
-          minute: _this.form.minute,
-          second: _this.form.second,
           AD: _this.form.AD
         })
         .then(function(response) {
@@ -106,8 +130,6 @@ export default {
             _this.form.year = null;
             _this.form.month = null;
             _this.form.day = null;
-            _this.form.minute = null;
-            _this.form.second = null;
             _this.form.AD = "1";
           }
           _this.saving = false;
@@ -115,6 +137,38 @@ export default {
         .catch(function(error) {
           _this.saving = false;
         });
+    },
+    queryNation(queryString, cb) {
+      var sr = [];
+      if (queryString != undefined && queryString.length > 0) {
+        axios
+          .post(url_search_nation, {
+            sw: queryString
+          })
+          .then(function(response) {
+            var r = response.data;
+            if (r.result == 0) {
+              var data = r.data.data;
+              if (r.data.exist) {
+                cb(data);
+              } else {
+                cb(data);
+              }
+            } else {
+              cb(sr);
+            }
+          });
+      } else {
+        cb(sr);
+      }
+    },
+    selectNation(item) {
+      this.pid = item.id;
+      this.pnation = item.title;
+    },
+    closeNationTag(nation) {
+      this.pid = null;
+      this.pnation = null;
     }
   }
 };
@@ -122,5 +176,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>

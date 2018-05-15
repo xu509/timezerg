@@ -19,4 +19,6 @@ public interface ContinentMapper {
     @Insert("insert into t_timezerg_continent values (#{id},#{title})")
     int add(Continent continent);
 
+    @Select("select * from t_timezerg_continent where title like CONCAT('%',#{title},'%') limit 0,10")
+    List<Continent> selectLikeByTitle(String title);
 }

@@ -26,6 +26,18 @@ public class CivilizationController {
         return civilizationService.getList(params);
     }
 
+    @PostMapping("/civilization/search")
+    public Object search(@RequestBody JSONObject params){
+        return civilizationService.selectByTitle(params);
+    }
 
+    @PostMapping("/civilization/edit/init")
+    public Object editInit(@RequestBody JSONObject params){
+        return civilizationService.editInit(params);
+    }
 
+    @PostMapping("/civilization/edit/save")
+    public Object editSave(@RequestBody JSONObject params){
+        return civilizationService.edit(params);
+    }
 }

@@ -10,6 +10,7 @@ import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -28,6 +29,7 @@ public class NationService {
     NationMapper nationMapper;
 
 
+    @Transactional
     public Object add(JSONObject params){
         Nation nation = new Nation();
         nation.setId(Utils.generateId());
@@ -40,23 +42,31 @@ public class NationService {
         Integer year = params.getInteger("year");
         Integer month = params.getInteger("month");
         Integer day = params.getInteger("day");
-        Integer hour = params.getInteger("hour");
-        Integer minute = params.getInteger("minute");
-        Integer second = params.getInteger("second");
+        Integer eyear = params.getInteger("eyear");
+        Integer emonth = params.getInteger("emonth");
+        Integer eday = params.getInteger("eday");
 
         Calendar calendar = Calendar.getInstance();
         calendar.clear();
         calendar.set(Calendar.YEAR,year);
         calendar.set(Calendar.MONTH,month == null? 0:month);
         calendar.set(Calendar.DAY_OF_MONTH,day == null? 1:day);
-        calendar.set(Calendar.HOUR_OF_DAY,hour == null? 1:hour);
-        calendar.set(Calendar.MINUTE,minute == null? 1:minute);
-        calendar.set(Calendar.SECOND,second == null? 1:second);
-        Date date = calendar.getTime();
+        nation.setCdate(calendar.getTime());
 
-        nation.setCdate(date);
+        calendar.clear();
+        calendar.set(Calendar.YEAR,eyear);
+        calendar.set(Calendar.MONTH,emonth == null? 0:emonth);
+        calendar.set(Calendar.DAY_OF_MONTH,eday == null? 1:eday);
+        nation.setEdate(calendar.getTime());
+
+        //pid
+        String pid = params.getString("pid");
+        Nation pnation = nationMapper.selectById(pid);
+        if (pnation == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        nation.setPid(pid);
         nationMapper.add(nation);
-
 
         return new Result(ResultMessage.OK,nation);
     }
@@ -81,6 +91,17 @@ public class NationService {
         r.put("data",nations);
 
         return new Result(ResultMessage.OK,r);
+    }
+
+    public Object editInit(JSONObject params){
+        String id = params.getString("id");
+        Nation nation = nationMapper.selectById(id);
+
+//        Nation pnation = nation.getPid();
+
+
+
+        return new Result(ResultMessage.OK);
     }
 
 

@@ -34,6 +34,10 @@ public class NationController {
         return nationService.selectByTitle(params);
     }
 
-
+    @CrossOrigin
+    @PostMapping("/nation/edit/init")
+    public Object editInit(@RequestBody JSONObject params){
+        return nationService.editInit(params);
+    }
 
 }

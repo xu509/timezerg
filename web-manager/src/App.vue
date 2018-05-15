@@ -23,7 +23,7 @@
                 </el-menu-item>
                 <el-menu-item index="4" route = "/nation">
                   <i class="el-icon-menu"></i>
-                  <span slot="title">国家</span>
+                  <span slot="title">国家 / 时期</span>
                 </el-menu-item>
                 <!-- <el-menu-item index="5" route = "/dynasty">
                   <i class="el-icon-menu"></i>

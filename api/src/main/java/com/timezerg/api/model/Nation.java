@@ -5,7 +5,7 @@ import java.util.Date;
 
 /**
  * Created by xnx on 2018/5/4.
- * 国家
+ * 国家 - 时代
  */
 public class Nation implements Serializable {
 
@@ -16,7 +16,8 @@ public class Nation implements Serializable {
     private String title;
     private String content;
     private String cover;
-    private Date cdate;
+    private Date cdate; //开启的时间
+    private Date edate; //结束的时间
     private String ddate; //显示的日期
     private boolean AD = true; // 是否在公元
 
@@ -82,5 +83,13 @@ public class Nation implements Serializable {
 
     public void setAD(boolean AD) {
         this.AD = AD;
+    }
+
+    public Date getEdate() {
+        return edate;
+    }
+
+    public void setEdate(Date edate) {
+        this.edate = edate;
     }
 }

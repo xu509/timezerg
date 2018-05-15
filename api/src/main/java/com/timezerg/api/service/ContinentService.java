@@ -36,5 +36,14 @@ public class ContinentService {
         return new Result(ResultMessage.OK,continent);
     }
 
+    public Object selectByTitle(JSONObject params){
+        JSONObject r = new JSONObject();
 
+        String title = params.getString("sw");
+        List<Continent> continents = continentMapper.selectLikeByTitle(title);
+        r.put("exist",continents.size() > 0);
+        r.put("data",continents);
+
+        return new Result(ResultMessage.OK,r);
+    }
 }
