@@ -15,7 +15,7 @@ import java.util.List;
 @Mapper
 public interface NodeMapper {
 
-    @Insert("insert into t_timezerg_node values (#{id},#{title},#{content},#{cover},#{cdate},#{ddate},#{AD})")
+    @Insert("insert into t_timezerg_node values (#{id},#{title},#{content},#{cover},#{cdate},#{ddate},#{AD},#{level})")
     int add(Node node);
 
     @Select("select * from t_timezerg_node where id = #{id}")

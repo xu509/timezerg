@@ -5,13 +5,13 @@
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item :to = "{path : '/nation'}">国家</el-breadcrumb-item>
-          <el-breadcrumb-item>增加</el-breadcrumb-item>
+          <el-breadcrumb-item>修改</el-breadcrumb-item>
         </el-breadcrumb>
       </el-col>
     </el-row>
     <el-row>
       <el-col :span="12">
-          <el-form ref="form" :model="form" label-width="120px">
+          <el-form ref="form" :model="form" label-width="120px" v-loading = "loading">
                 <el-form-item label="标题">
                   <el-input v-model="form.title"></el-input>
                 </el-form-item>
@@ -26,7 +26,7 @@
                     <el-col :span = "3">
                       <el-input v-model="form.day" placeholder="日"/>
                     </el-col>
-                     <el-col :span= "3">
+                    <el-col :span= "3">
                       <el-switch
                           v-model="form.AD"
                           active-text="AD"
@@ -82,7 +82,7 @@
                     </el-tag>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" @click="save" :loading="saving">创建</el-button>
+                  <el-button type="primary" @click="save" :loading="saving">更新</el-button>
                 </el-form-item>
           </el-form>
       </el-col>
@@ -93,32 +93,34 @@
 <script>
 import axios from "axios";
 
-var url_save = "http://192.168.1.112:8081/nation/save",
-  url_search_nation = "http://192.168.1.112:8081/nation/search";
-
+var url_save = "http://192.168.1.112:8081/nation/edit/save",
+  url_search_nation = "http://192.168.1.112:8081/nation/search",
+  url_init = "http://192.168.1.112:8081/nation/edit/init";
 export default {
-  name: "NationAdd",
+  name: "NationEdit",
   data() {
     return {
+      id: "",
       form: {
         title: "",
         ddate: "",
-        pid: "",
         year: null,
         month: null,
         day: null,
         eyear: null,
         emonth: null,
         eday: null,
+        pid: null,
+        pnation: "",
         AD: 1,
-        eAD: 1,
-        pnation: null
+        eAD: 1
       },
       switchc: {
         activev: 1,
         inactivev: 0
       },
-      saving: false
+      saving: false,
+      loading: true
     };
   },
   methods: {
@@ -126,8 +128,13 @@ export default {
       var _this = this;
 
       _this.saving = true;
+      _this.loading = true;
+      console.log("save");
+      console.log(_this.form.title);
+
       axios
         .post(url_save, {
+          id: _this.id,
           title: _this.form.title,
           ddate: _this.form.ddate,
           year: _this.form.year,
@@ -141,32 +148,62 @@ export default {
           pid: _this.form.pid
         })
         .then(function(response) {
+          console.log(response);
           if (response.data.result == 0) {
             _this.$message({
-              message: _this.form.title + " 添加成功！",
+              message: _this.form.title + " 更新成功！",
               type: "success"
             });
-
-            _this.form.title = null;
-            _this.form.ddate = null;
-            _this.form.year = null;
-            _this.form.month = null;
-            _this.form.day = null;
-            _this.form.eyear = null;
-            _this.form.emonth = null;
-            _this.form.eday = null;
-            _this.form.AD = 1;
-            _this.form.eAD = 1;
-            _this.form.pid = null;
-            _this.form.pnation = null;
+            _this.init();
           } else {
             _this.$message.error(response.data.msg);
+            _this.init();
           }
-          _this.saving = false;
         })
         .catch(function(error) {
-          _this.saving = false;
+          _this.$message.error(response.data.msg);
+          _this.init();
         });
+    },
+    init() {
+      var _this = this;
+      _this.saving = false;
+
+      axios
+        .post(url_init, {
+          id: _this.id
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            var nation = response.data.data;
+
+            _this.form.title = nation.title;
+            _this.form.ddate = nation.ddate;
+            _this.form.year = nation.year;
+            _this.form.month = nation.month;
+            _this.form.day = nation.day;
+            _this.form.eyear = nation.eyear;
+            _this.form.emonth = nation.emonth;
+            _this.form.eday = nation.eday;
+
+            _this.form.pid = nation.pid;
+            _this.form.pnation = nation.pnation;
+
+            _this.form.AD = nation.aD;
+            _this.form.eAD = nation.eAD;
+
+            console.log("init");
+            console.log(_this.form.eAD);
+            console.log(typeof _this.form.eAD);
+            console.log(typeof _this.form.AD);
+            console.log(_this.form.AD);
+
+            _this.loading = false;
+          } else {
+            this.$message.error(response.data.data);
+          }
+        })
+        .catch(function(error) {});
     },
     queryNation(queryString, cb) {
       var sr = [];
@@ -196,10 +233,17 @@ export default {
       this.form.pid = item.id;
       this.form.pnation = item.title;
     },
-    closeNationTag(nation) {
-      this.form.pid = null;
-      this.form.pnation = null;
+    closeNationTag() {
+      this.pid = null;
+      this.pnation = null;
+    },
+    changeSwitch(value) {
+      console.log(typeof value + " " + value);
     }
+  },
+  mounted: function() {
+    this.id = this.$route.params.id;
+    this.init();
   }
 };
 </script>

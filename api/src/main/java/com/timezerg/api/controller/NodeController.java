@@ -2,6 +2,8 @@ package com.timezerg.api.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.timezerg.api.service.NodeService;
+import com.timezerg.api.util.Result;
+import com.timezerg.api.util.ResultMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +19,7 @@ public class NodeController {
 
     @CrossOrigin
     @PostMapping("/node/save")
-    public Object save(@RequestBody JSONObject params){
+    public Object save(@RequestBody JSONObject params) {
         return nodeService.add(params);
     }
 

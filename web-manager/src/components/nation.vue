@@ -16,8 +16,13 @@
     <el-row>
       <el-col :span="24">
         <el-table :data = "datas">
-            <el-table-column fixed prop = "ddate" label = "日期" width="120"></el-table-column>
+            <el-table-column fixed prop = "ddate" label = "日期" width="200"></el-table-column>
             <el-table-column prop = "title" label = "标题"></el-table-column>
+             <el-table-column fixed="right" width="200" label="操作">
+                <template slot-scope="scope">
+                    <el-button type="text" size="small" @click = "go('nationEdit', scope.row.id )">编辑</el-button>
+                </template>
+            </el-table-column>
         </el-table>
       </el-col>
     </el-row>
@@ -77,6 +82,12 @@ export default {
     add() {
       this.$router.push("nation/add");
     },
+    go(name, params) {
+      const id = params;
+      this.$router.push({
+        path: "/nation/edit/" + id
+      });
+    },
     handleSizeChange(size) {
       this.page_size = size;
     },
@@ -100,5 +111,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>

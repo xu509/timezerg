@@ -46,6 +46,52 @@
                     <el-radio label="1">AD</el-radio>
                   </el-radio-group>
                 </el-form-item>
+                 <el-form-item label="重要度">
+                    <el-select v-model="form.level" placeholder="重要度">
+                        <el-option v-for="item in options" :key = "item.value" :label = "item.label" :value = "item.value"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="相关国家">
+                   <el-autocomplete popper-class="my-autocomplete"
+                              :fetch-suggestions="queryNation"
+                                placeholder="搜索国家，比如意大利"
+                                @select="selectNation">
+                                <template slot-scope="props">
+                                          <div class="name">
+                                                {{ props.item.title }}
+                                            </div>
+                                </template>
+                    </el-autocomplete>
+                    <el-tag
+                      :key="nation.id"
+                      v-for="nation in form.nations"
+                      closable
+                      :disable-transitions="false"
+                      @close="closeNationTag(nation)">
+                      {{nation.title}}
+                    </el-tag>
+                </el-form-item>
+
+                <el-form-item label="相关文明">
+                   <el-autocomplete popper-class="my-autocomplete"
+                              :fetch-suggestions="queryCivilization"
+                                placeholder="搜索文明"
+                                @select="selectCivilization">
+                                <template slot-scope="props">
+                                          <div class="name">
+                                                {{ props.item.title }}
+                                            </div>
+                                </template>
+                    </el-autocomplete>
+                    <el-tag type="warning"
+                      :key="civilization.id"
+                      v-for="civilization in form.civilizations"
+                      closable
+                      :disable-transitions="false"
+                      @close="closeNationTag(civilization)">
+                      {{civilization.title}}
+                    </el-tag>
+                </el-form-item>
                 <el-form-item>
                   <el-button type="primary" @click="save" :loading="saving">创建</el-button>
                 </el-form-item>
@@ -58,7 +104,9 @@
 <script>
 import axios from "axios";
 
-var url_save = "http://192.168.1.112:8081/node/save";
+var url_save = "http://192.168.1.112:8081/node/save",
+  url_search_nation = "http://192.168.1.112:8081/nation/search",
+  url_search_civilization = "http://192.168.1.112:8081/civilization/search";
 
 export default {
   name: "NodeAdd",
@@ -73,8 +121,33 @@ export default {
         hour: null,
         minute: null,
         second: null,
-        AD: "1"
+        AD: "1",
+        level: 0,
+        nations: [],
+        civilizations: []
       },
+      options: [
+        {
+          value: 0,
+          label: "待定"
+        },
+        {
+          value: 1,
+          label: "非常重要"
+        },
+        {
+          value: 2,
+          label: "重要"
+        },
+        {
+          value: 3,
+          label: "普通"
+        },
+        {
+          value: 4,
+          label: "细节"
+        }
+      ],
       saving: false
     };
   },
@@ -92,7 +165,10 @@ export default {
           day: _this.form.day,
           minute: _this.form.minute,
           second: _this.form.second,
-          AD: _this.form.AD
+          AD: _this.form.AD,
+          level: _this.form.level,
+          nations: _this.form.nations,
+          civilizations: _this.form.civilizations
         })
         .then(function(response) {
           if (response.data.result == 0) {
@@ -109,12 +185,84 @@ export default {
             _this.form.minute = null;
             _this.form.second = null;
             _this.form.AD = "1";
+          } else {
+            _this.$message.error(response.data.msg);
           }
           _this.saving = false;
         })
         .catch(function(error) {
           _this.saving = false;
         });
+    },
+    queryNation(queryString, cb) {
+      var sr = [];
+      if (queryString != undefined && queryString.length > 0) {
+        axios
+          .post(url_search_nation, {
+            sw: queryString
+          })
+          .then(function(response) {
+            var r = response.data;
+            if (r.result == 0) {
+              var data = r.data.data;
+              if (r.data.exist) {
+                cb(data);
+              } else {
+                cb(data);
+              }
+            } else {
+              cb(sr);
+            }
+          });
+      } else {
+        cb(sr);
+      }
+    },
+    selectNation(item) {
+      var nation = {
+        nationid: item.id,
+        title: item.title
+      };
+      this.form.nations.push(nation);
+    },
+    closeNationTag(nation) {
+      var index = this.form.nations.indexOf(nation);
+      this.form.nations.splice(index, 1);
+    },
+    queryCivilization(queryString, cb) {
+      var sr = [];
+      if (queryString != undefined && queryString.length > 0) {
+        axios
+          .post(url_search_civilization, {
+            sw: queryString
+          })
+          .then(function(response) {
+            var r = response.data;
+            if (r.result == 0) {
+              var data = r.data.data;
+              if (r.data.exist) {
+                cb(data);
+              } else {
+                cb(data);
+              }
+            } else {
+              cb(sr);
+            }
+          });
+      } else {
+        cb(sr);
+      }
+    },
+    selectCivilization(item) {
+      var civilization = {
+        cid: item.id,
+        title: item.title
+      };
+      this.form.civilizations.push(civilization);
+    },
+    closeNationTag(civilization) {
+      var index = this.form.civilizations.indexOf(civilization);
+      this.form.civilizations.splice(index, 1);
     }
   }
 };
@@ -122,5 +270,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>

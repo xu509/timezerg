@@ -45,8 +45,9 @@ public class NodeService {
         node.setId(Utils.generateId());
         node.setTitle(params.getString("title"));
         node.setContent(params.getString("content"));
-        node.setAD(params.getBoolean("AD"));
+        node.setAD(params.getInteger("AD"));
         node.setDdate(params.getString("ddate"));
+        node.setLevel(params.getInteger("level"));
 //        node.setCover();
         Integer year = params.getInteger("year");
         Integer month = params.getInteger("month");
@@ -66,8 +67,33 @@ public class NodeService {
         Date date = calendar.getTime();
 
         node.setCdate(date);
+
+        //相关国家
         nodeMapper.add(node);
 
+        // 修改 nation 的相关国家
+        JSONArray nations = params.getJSONArray("nations");
+        for (int i = 0 ; i < nations.size() ; i++){
+            JSONObject nation = nations.getJSONObject(i);
+            String nationId = nation.getString("nationid");
+            NodeNation nodeNation = new NodeNation();
+            nodeNation.setId(Utils.generateId());
+            nodeNation.setNationid(nationId);
+            nodeNation.setNodeid(node.getId());
+            nodeNationMapper.add(nodeNation);
+        }
+
+        // 修改 nation 的相关文明
+        JSONArray civilizations = params.getJSONArray("civilizations");
+        for (int i = 0 ; i < civilizations.size();i++){
+            JSONObject civilization = civilizations.getJSONObject(i);
+            String cid = civilization.getString("cid");
+            NodeCivilization nodeCivilization = new NodeCivilization();
+            nodeCivilization.setId(Utils.generateId());
+            nodeCivilization.setCid(cid);
+            nodeCivilization.setNid(node.getId());
+            nodeCivilizationMapper.add(nodeCivilization);
+        }
 
         return new Result(ResultMessage.OK,node);
     }
@@ -91,7 +117,7 @@ public class NodeService {
             result.put("minute",calendar.get(Calendar.MINUTE));
             result.put("second",calendar.get(Calendar.SECOND));
         }
-        result.put("AD",Utils.transferToJsonStr(node.isAD()));
+        result.put("AD",node.getAD());
 
         //绑定的相关国家
         List<HashMap> nationMaps = nodeNationMapper.selectByNodeId(id);
@@ -105,11 +131,9 @@ public class NodeService {
         return new Result(ResultMessage.OK,result);
     }
 
-
     public Node selectById(String id){
         return nodeMapper.selectById(id);
     }
-
 
     public Object getList(JSONObject params){
         Object[] p = {params.getInteger("start"),params.getInteger("size")};
@@ -146,7 +170,7 @@ public class NodeService {
         node.setTitle(title);
         node.setDdate(ddate);
         node.setLevel(level);
-        node.setAD((AD == null || AD == 0 ) ? false:true);
+        node.setAD(AD);
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.YEAR,year);

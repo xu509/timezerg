@@ -11,7 +11,8 @@ import dynasty from '@/components/dynasty'
 import dynastyAdd from '@/components/dynastyAdd'
 import continentAdd from '@/components/continent'
 import nation from '@/components/nation'
-import nationAdd from '@/components/nationAdd'
+import nationAdd from '@/components/nationadd'
+import nationEdit from '@/components/nationedit'
 
 Vue.use(Router)
 
@@ -64,5 +65,9 @@ export default new Router({
     path: '/nation/add',
     name: 'nationAdd',
     component: nationAdd
+  }, {
+    path: '/nation/edit/:id',
+    name: 'nationEdit',
+    component: nationEdit
   }]
 })

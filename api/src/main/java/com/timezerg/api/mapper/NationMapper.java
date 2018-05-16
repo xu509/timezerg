@@ -4,6 +4,7 @@ import com.timezerg.api.model.Nation;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 @Mapper
 public interface NationMapper {
 
-    @Insert("insert into t_timezerg_nation values (#{id},#{pid},#{title},#{content},#{cover},#{cdate},#{ddate},#{AD})")
+    @Insert("insert into t_timezerg_nation values (#{id},#{pid},#{title},#{content},#{cover},#{cdate},#{edate},#{ddate},#{AD},#{eAD})")
     int add(Nation nation);
 
     @Select("(SELECT n.* FROM t_timezerg_nation n WHERE 1 = 1 AND n.AD = 0 ORDER BY n.cdate DESC LIMIT 99999999)" +
@@ -31,5 +32,11 @@ public interface NationMapper {
 
     @Select("select * from t_timezerg_nation where id = #{id}")
     Nation selectById(String id);
+
+
+    @Update("update t_timezerg_nation set pid = #{pid} ,title = #{title},content = #{content},cover = #{cover},cdate = #{cdate},edate = #{edate},ddate = #{ddate},AD = #{AD},eAD = #{eAD}" +
+            " where id = #{id}")
+    int update(Nation nation);
+
 
 }

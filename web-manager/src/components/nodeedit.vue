@@ -42,8 +42,8 @@
                 </el-form-item>
                 <el-form-item label="是否是公元后">
                   <el-radio-group v-model="form.AD">
-                    <el-radio label="0">BC</el-radio>
-                    <el-radio label="1">AD</el-radio>
+                    <el-radio :label="adoption.bc">BC</el-radio>
+                    <el-radio :label="adoption.ad">AD</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-form-item label="重要度">
@@ -124,7 +124,7 @@ export default {
         hour: null,
         minute: null,
         second: null,
-        AD: "1",
+        AD: 1,
         level: 0,
         nations: [],
         civilizations: []
@@ -151,6 +151,10 @@ export default {
           label: "细节"
         }
       ],
+      adoption: {
+        bc: 0,
+        ad: 1
+      },
       saving: false,
       loading: false
     };
@@ -176,6 +180,10 @@ export default {
             _this.form.minute = data.minute;
             _this.form.second = data.second;
             _this.form.AD = data.AD;
+
+            console.log(_this.form.AD);
+            console.log(typeof _this.form.AD);
+
             _this.form.level = data.level;
             _this.form.nations = data.nations;
             _this.form.civilizations = data.civilizations;

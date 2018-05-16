@@ -59,15 +59,16 @@ export default {
   name: "Node",
   data() {
     return {
-      msg: "Welcome to Your Vue.js App",
       datas: [],
       page_size: 10, //page大小
-      current_page: 1, // 当前游码
+      current_page: 2, // 当前游码
       total: 0 // 总数
     };
   },
   methods: {
     init() {
+      this.page_size = this.GLOBAL.table_size_node;
+      this.current_page = this.GLOBAL.table_page_node;
       this.initTable();
     },
     initTable() {
@@ -105,18 +106,21 @@ export default {
   },
   watch: {
     page_size: function(ps) {
+      this.GLOBAL.table_size_node = ps;
+      this.GLOBAL.table_page_node = 1;
       this.initTable();
     },
     current_page: function(cp) {
+      this.GLOBAL.table_page_node = cp;
       this.initTable();
     }
   },
   mounted: function() {
+    console.log("before init : " + this.current_page);
     this.init();
   }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 </style>

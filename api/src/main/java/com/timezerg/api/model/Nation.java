@@ -19,7 +19,8 @@ public class Nation implements Serializable {
     private Date cdate; //开启的时间
     private Date edate; //结束的时间
     private String ddate; //显示的日期
-    private boolean AD = true; // 是否在公元
+    private int AD = 1; // 开启是否在公元
+    private int eAD = 1; // 结束是否在公元
 
     public String getId() {
         return id;
@@ -77,19 +78,27 @@ public class Nation implements Serializable {
         this.ddate = ddate;
     }
 
-    public boolean isAD() {
-        return AD;
-    }
-
-    public void setAD(boolean AD) {
-        this.AD = AD;
-    }
-
     public Date getEdate() {
         return edate;
     }
 
     public void setEdate(Date edate) {
         this.edate = edate;
+    }
+
+    public int getAD() {
+        return AD;
+    }
+
+    public void setAD(int AD) {
+        this.AD = AD;
+    }
+
+    public int geteAD() {
+        return eAD;
+    }
+
+    public void seteAD(int eAD) {
+        this.eAD = eAD;
     }
 }

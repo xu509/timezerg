@@ -17,7 +17,7 @@ public class Node implements Serializable {
     private String cover;
     private Date cdate;
     private String ddate; //显示的日期
-    private boolean AD = true; // 是否在公元
+    private int AD = 1; // 是否在公元
     private Integer level = 0; //重要程度
 
     public static final Integer Level_Very_Important = 1;
@@ -73,19 +73,19 @@ public class Node implements Serializable {
         this.ddate = ddate;
     }
 
-    public boolean isAD() {
-        return AD;
-    }
-
-    public void setAD(boolean AD) {
-        this.AD = AD;
-    }
-
     public Integer getLevel() {
         return level;
     }
 
     public void setLevel(Integer level) {
         this.level = level;
+    }
+
+    public int getAD() {
+        return AD;
+    }
+
+    public void setAD(int AD) {
+        this.AD = AD;
     }
 }
