@@ -27,8 +27,6 @@
 <script>
 import axios from "axios";
 
-var url_save = "http://192.168.1.112:8081/continent/save";
-
 export default {
   name: "ContinentAdd",
   data() {
@@ -45,7 +43,7 @@ export default {
 
       _this.saving = true;
       axios
-        .post(url_save, {
+        .post(_this.GLOBAL.url_continent_add, {
           title: _this.form.title
         })
         .then(function(response) {
@@ -69,5 +67,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>

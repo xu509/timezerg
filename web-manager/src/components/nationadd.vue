@@ -93,9 +93,6 @@
 <script>
 import axios from "axios";
 
-var url_save = "http://192.168.1.112:8081/nation/save",
-  url_search_nation = "http://192.168.1.112:8081/nation/search";
-
 export default {
   name: "NationAdd",
   data() {
@@ -127,7 +124,7 @@ export default {
 
       _this.saving = true;
       axios
-        .post(url_save, {
+        .post(_this.GLOBAL.url_nation_add, {
           title: _this.form.title,
           ddate: _this.form.ddate,
           year: _this.form.year,
@@ -169,10 +166,11 @@ export default {
         });
     },
     queryNation(queryString, cb) {
+      var _this = this;
       var sr = [];
       if (queryString != undefined && queryString.length > 0) {
         axios
-          .post(url_search_nation, {
+          .post(_this.GLOBAL.url_search_nation, {
             sw: queryString
           })
           .then(function(response) {

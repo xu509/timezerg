@@ -49,10 +49,6 @@
 <script>
 import axios from "axios";
 
-var url_save = "http://192.168.1.112:8081/civilization/edit/save",
-  url_init = "http://192.168.1.112:8081/civilization/edit/init",
-  url_continent_search = "http://192.168.1.112:8081/continent/search";
-
 export default {
   name: "CivilizationEdit",
   data() {
@@ -68,11 +64,10 @@ export default {
   },
   methods: {
     init() {
-      console.log(this.form.id);
       var _this = this;
       _this.saving = false;
       axios
-        .post(url_init, {
+        .post(_this.GLOBAL.url_civilization_edit_init, {
           id: _this.form.id
         })
         .then(function(response) {
@@ -90,7 +85,7 @@ export default {
 
       _this.saving = true;
       axios
-        .post(url_save, {
+        .post(_this.GLOBAL.url_civilization_edit_save, {
           id: _this.form.id,
           title: _this.form.title,
           continents: _this.form.continents
@@ -111,10 +106,11 @@ export default {
         });
     },
     queryContinent(queryString, cb) {
+      var _this = this;
       var sr = [];
       if (queryString != undefined && queryString.length > 0) {
         axios
-          .post(url_continent_search, {
+          .post(_this.GLOBAL.url_search_continent, {
             sw: queryString
           })
           .then(function(response) {

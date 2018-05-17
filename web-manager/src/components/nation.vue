@@ -46,8 +46,6 @@
 <script>
 import axios from "axios";
 
-var url_table = "http://192.168.1.112:8081/nation/list";
-
 export default {
   name: "Node",
   data() {
@@ -67,7 +65,7 @@ export default {
       var start = (_this.current_page - 1) * _this.page_size;
 
       axios
-        .post(url_table, {
+        .post(_this.GLOBAL.url_nation_list, {
           start: start,
           size: _this.page_size
         })

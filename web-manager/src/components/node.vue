@@ -53,8 +53,6 @@
 <script>
 import axios from "axios";
 
-var url_table = "http://192.168.1.112:8081/node/list";
-
 export default {
   name: "Node",
   data() {
@@ -76,7 +74,7 @@ export default {
       var start = (_this.current_page - 1) * _this.page_size;
 
       axios
-        .post(url_table, {
+        .post(_this.GLOBAL.url_node_list, {
           start: start,
           size: _this.page_size
         })
@@ -116,7 +114,6 @@ export default {
     }
   },
   mounted: function() {
-    console.log("before init : " + this.current_page);
     this.init();
   }
 };

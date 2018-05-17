@@ -66,9 +66,9 @@ public class NationService {
         String pid = params.getString("pid");
         Nation pnation = nationMapper.selectById(pid);
         if (pnation == null)
-            return new Result(ResultMessage.PARAM_ERROR);
-
-        nation.setPid(pid);
+            nation.setPid(null);
+        else
+            nation.setPid(pid);
         nationMapper.add(nation);
 
         return new Result(ResultMessage.OK, nation);

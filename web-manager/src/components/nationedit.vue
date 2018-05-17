@@ -129,11 +129,9 @@ export default {
 
       _this.saving = true;
       _this.loading = true;
-      console.log("save");
-      console.log(_this.form.title);
 
       axios
-        .post(url_save, {
+        .post(_this.GLOBAL.url_nation_edit_save, {
           id: _this.id,
           title: _this.form.title,
           ddate: _this.form.ddate,
@@ -192,12 +190,6 @@ export default {
             _this.form.AD = nation.aD;
             _this.form.eAD = nation.eAD;
 
-            console.log("init");
-            console.log(_this.form.eAD);
-            console.log(typeof _this.form.eAD);
-            console.log(typeof _this.form.AD);
-            console.log(_this.form.AD);
-
             _this.loading = false;
           } else {
             this.$message.error(response.data.data);
@@ -209,7 +201,7 @@ export default {
       var sr = [];
       if (queryString != undefined && queryString.length > 0) {
         axios
-          .post(url_search_nation, {
+          .post(_this.GLOBAL.url_search_nation, {
             sw: queryString
           })
           .then(function(response) {
@@ -236,9 +228,6 @@ export default {
     closeNationTag() {
       this.pid = null;
       this.pnation = null;
-    },
-    changeSwitch(value) {
-      console.log(typeof value + " " + value);
     }
   },
   mounted: function() {

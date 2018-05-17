@@ -53,7 +53,7 @@
                 </el-form-item>
                 <el-form-item label="相关国家">
                    <el-autocomplete popper-class="my-autocomplete"
-                              :fetch-suggestions="queryNation"
+                              :fetch-suggestions="queryNation" v-model="nation"
                                 placeholder="搜索国家，比如意大利"
                                 @select="selectNation">
                                 <template slot-scope="props">
@@ -75,7 +75,7 @@
                 <el-form-item label="相关文明">
                    <el-autocomplete popper-class="my-autocomplete"
                               :fetch-suggestions="queryCivilization"
-                                placeholder="搜索文明"
+                                placeholder="搜索文明" v-model="civilization"
                                 @select="selectCivilization">
                                 <template slot-scope="props">
                                           <div class="name">
@@ -84,7 +84,7 @@
                                 </template>
                     </el-autocomplete>
                     <el-tag type="warning"
-                      :key="civilization.id"
+                      :key="civilization.id" 
                       v-for="civilization in form.civilizations"
                       closable
                       :disable-transitions="false"
@@ -104,10 +104,6 @@
 <script>
 import axios from "axios";
 
-var url_save = "http://192.168.1.112:8081/node/save",
-  url_search_nation = "http://192.168.1.112:8081/nation/search",
-  url_search_civilization = "http://192.168.1.112:8081/civilization/search";
-
 export default {
   name: "NodeAdd",
   data() {
@@ -123,7 +119,9 @@ export default {
         second: null,
         AD: "1",
         level: 0,
+        nation: null,
         nations: [],
+        civilization: null,
         civilizations: []
       },
       options: [
@@ -152,12 +150,30 @@ export default {
     };
   },
   methods: {
+    init() {
+      var _this = this;
+      _this.form.title = null;
+      _this.form.ddate = null;
+      _this.form.year = null;
+      _this.form.month = null;
+      _this.form.day = null;
+      _this.form.hour = null;
+      _this.form.minute = null;
+      _this.form.second = null;
+      _this.form.AD = "1";
+      _this.form.level = 0;
+      _this.form.nations = [];
+      _this.form.nation = null;
+      _this.form.civilizations = [];
+      _this.form.civilization = null;
+      _this.saving = false;
+    },
     save() {
       var _this = this;
 
       _this.saving = true;
       axios
-        .post(url_save, {
+        .post(_this.GLOBAL.url_node_add, {
           title: _this.form.title,
           ddate: _this.form.ddate,
           year: _this.form.year,
@@ -177,14 +193,7 @@ export default {
               type: "success"
             });
 
-            _this.form.title = null;
-            _this.form.ddate = null;
-            _this.form.year = null;
-            _this.form.month = null;
-            _this.form.day = null;
-            _this.form.minute = null;
-            _this.form.second = null;
-            _this.form.AD = "1";
+            _this.init();
           } else {
             _this.$message.error(response.data.msg);
           }
@@ -195,10 +204,11 @@ export default {
         });
     },
     queryNation(queryString, cb) {
+      var _this = this;
       var sr = [];
       if (queryString != undefined && queryString.length > 0) {
         axios
-          .post(url_search_nation, {
+          .post(_this.GLOBAL.url_search_nation, {
             sw: queryString
           })
           .then(function(response) {
@@ -230,10 +240,11 @@ export default {
       this.form.nations.splice(index, 1);
     },
     queryCivilization(queryString, cb) {
+      var _this = this;
       var sr = [];
       if (queryString != undefined && queryString.length > 0) {
         axios
-          .post(url_search_civilization, {
+          .post(_this.GLOBAL.url_search_civilization, {
             sw: queryString
           })
           .then(function(response) {

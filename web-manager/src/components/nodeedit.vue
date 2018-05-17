@@ -105,11 +105,6 @@
 <script>
 import axios from "axios";
 
-var url_save = "http://192.168.1.112:8081/node/edit/submit",
-  url_search_nation = "http://192.168.1.112:8081/nation/search",
-  url_search_civilization = "http://192.168.1.112:8081/civilization/search",
-  url_init = "http://192.168.1.112:8081/node/edit/init";
-
 export default {
   name: "NodeEdit",
   data() {
@@ -165,7 +160,7 @@ export default {
       _this.loading = true;
 
       axios
-        .post(url_init, {
+        .post(_this.GLOBAL.url_node_edit_init, {
           id: _this.id
         })
         .then(function(response) {
@@ -197,7 +192,7 @@ export default {
 
       _this.saving = true;
       axios
-        .post(url_save, {
+        .post(_this.GLOBAL.url_node_edit_save, {
           id: _this.id,
           title: _this.form.title,
           ddate: _this.form.ddate,
@@ -232,10 +227,11 @@ export default {
         });
     },
     queryNation(queryString, cb) {
+      var _this = this;
       var sr = [];
       if (queryString != undefined && queryString.length > 0) {
         axios
-          .post(url_search_nation, {
+          .post(_this.GLOBAL.url_search_nation, {
             sw: queryString
           })
           .then(function(response) {
@@ -267,10 +263,11 @@ export default {
       this.form.nations.splice(index, 1);
     },
     queryCivilization(queryString, cb) {
+      var _this = this;
       var sr = [];
       if (queryString != undefined && queryString.length > 0) {
         axios
-          .post(url_search_civilization, {
+          .post(_this.GLOBAL.url_search_civilization, {
             sw: queryString
           })
           .then(function(response) {
