@@ -6,7 +6,7 @@
         <!-- 菜单 -->
         <el-row class="tac">
             <el-col :span="24">
-              <el-menu default-active="1" class="el-menu-vertical-demo" v-bind:router = "true">
+              <el-menu class="el-menu-vertical-demo" :router = "true" >
                 <el-menu-item index="1"  route = "/">
                   <template slot="title">
                     <i class="el-icon-location"></i>
