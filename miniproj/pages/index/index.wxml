@@ -1,0 +1,6 @@
+<!--index.wxml-->
+<view class="container">
+  <view wx:for = "{{civilizations}}" wx:key = "id">
+    <text bindtap='go' data-id='{{item.id}}'>{{item.title}}</text>
+  </view>
+</view>

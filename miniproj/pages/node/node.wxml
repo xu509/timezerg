@@ -1,0 +1,4 @@
+<!--pages/node/node.wxml-->
+<text>{{node.ddate}}</text>
+<text>{{node.title}}</text>
+
