@@ -49,4 +49,10 @@ public class NodeController {
         return jsonObject;
     }
 
+    @CrossOrigin
+    @PostMapping("/api/node/detail")
+    public Object nodeDetailApi(@RequestBody JSONObject params){
+        return nodeService.detail(params);
+    }
+
 }

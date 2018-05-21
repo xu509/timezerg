@@ -40,4 +40,13 @@ public class CivilizationController {
     public Object editSave(@RequestBody JSONObject params){
         return civilizationService.edit(params);
     }
+
+
+    @PostMapping("/civilization/timeline")
+    public Object timeLine(@RequestBody JSONObject params){
+//        System.out.println("params:" + params.toJSONString());
+        return civilizationService.timeLine(params);
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.timezerg.api.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.timezerg.api.mapper.CivilizationContinentMapper;
@@ -123,6 +124,17 @@ public class CivilizationService {
 
         return new Result(ResultMessage.OK,civilization);
     }
+
+    @Transactional
+    public Object timeLine(JSONObject params){
+        Object[] p = new Object[]{params.getString("id")};
+
+        List<HashMap> datas = civilizationMapper.selectTimeLine(p);
+//        System.out.println(JSON.toJSON(datas));
+
+        return new Result(ResultMessage.OK,datas);
+    }
+
 
 
 }

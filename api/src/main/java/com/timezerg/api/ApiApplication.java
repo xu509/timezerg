@@ -51,7 +51,9 @@ public class ApiApplication {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);
-		config.addAllowedOrigin("http://localhost:8080");
+//		config.addAllowedOrigin("http://localhost:8080");
+		config.addAllowedOrigin("*");
+//		config.addAllowedOrigin("https://127.0.0.1");
 		config.addAllowedHeader(CorsConfiguration.ALL);
 		config.addAllowedMethod(CorsConfiguration.ALL);
 		source.registerCorsConfiguration("/**", config);

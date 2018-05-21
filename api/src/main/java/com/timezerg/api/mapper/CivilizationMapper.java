@@ -1,8 +1,6 @@
 package com.timezerg.api.mapper;
 
 import com.timezerg.api.model.Civilization;
-import com.timezerg.api.model.Nation;
-import com.timezerg.api.model.Node;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -34,4 +32,16 @@ public interface CivilizationMapper {
 
     @Update("update t_timezerg_civilization set title = #{title},pid = #{pid},content = #{content},cover = #{cover},cdate = #{cdate} where id = #{id}")
     int update(Civilization civilization);
+
+    @Select("(SELECT n.* FROM t_timezerg_node n " +
+            "LEFT JOIN t_timezerg_node_civilization nc ON n.id = nc.nid " +
+            "WHERE nc.cid = ${array[0]} AND n.ad = 0 " +
+            "ORDER BY n.cdate DESC LIMIT 0,9999) " +
+            "UNION ALL " +
+            "(SELECT n.* FROM t_timezerg_node n " +
+            "LEFT JOIN t_timezerg_node_civilization nc ON n.id = nc.nid " +
+            "WHERE nc.cid = ${array[0]} AND n.ad = 1 " +
+            "ORDER BY n.cdate ASC LIMIT 0,9999)")
+    List<HashMap> selectTimeLine(Object[] params);
+
 }

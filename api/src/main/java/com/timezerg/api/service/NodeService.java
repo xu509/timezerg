@@ -211,5 +211,11 @@ public class NodeService {
         return new Result(ResultMessage.OK,node);
     }
 
+    @Transactional
+    public Object detail(JSONObject params){
+        String id = params.getString("id");
+        return new Result(ResultMessage.OK,nodeMapper.selectById(id));
+    }
+
 
 }
