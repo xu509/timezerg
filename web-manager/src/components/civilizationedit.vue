@@ -35,7 +35,20 @@
                       {{continent.title}}
                     </el-tag>
                 </el-form-item>
+                <el-form-item label = "封面(360 × 100)">
+                  <el-upload
+                    class="upload-demo" :limit= "fileLimit"
+                    :action="uploadUrl" :on-preview="handlePreview"
+                    :on-remove="handleRemove"
+                    :file-list="form.covers" :on-success="uploadSuccess"
+                    list-type="picture">
+                    <img v-if="form.cover" :src="imageDomain + form.cover" class="cover">
+                    <el-button size="small" type="primary" v-if="form.cover == null">点击上传</el-button>
+                  </el-upload>
 
+                  <el-button size="small" type="danger" @click="deleteCover" v-if="form.cover != null">删除</el-button>
+
+                </el-form-item>
 
                 <el-form-item>
                   <el-button type="primary" @click="save" :loading="saving">更新</el-button>
@@ -56,8 +69,13 @@ export default {
       form: {
         id: "",
         title: "",
-        continents: []
+        continents: [],
+        cover: null,
+        covers: []
       },
+      fileLimit: 1,
+      uploadUrl: this.GLOBAL.url_civilization_upload,
+      imageDomain: this.GLOBAL.doamin_image,
       loading: true,
       saving: false
     };
@@ -76,6 +94,7 @@ export default {
 
             _this.form.title = civilization.title;
             _this.form.continents = civilization.continents;
+            _this.form.cover = civilization.cover;
             _this.loading = false;
           }
         });
@@ -88,12 +107,13 @@ export default {
         .post(_this.GLOBAL.url_civilization_edit_save, {
           id: _this.form.id,
           title: _this.form.title,
-          continents: _this.form.continents
+          continents: _this.form.continents,
+          cover: _this.form.cover
         })
         .then(function(response) {
           if (response.data.result == 0) {
             _this.$message({
-              message: _this.form.title + " 修改成功成功！",
+              message: _this.form.title + " 修改成功！",
               type: "success"
             });
 
@@ -140,6 +160,27 @@ export default {
     closeContinentTag(continent) {
       var index = this.form.continents.indexOf(continent);
       this.form.continents.splice(index, 1);
+    },
+    handleRemove(file, fileList) {
+      var _this = this;
+      _this.form.cover = null;
+      _this.form.covers = null;
+      console.log("remove file");
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log("preview file");
+      console.log(file);
+    },
+    uploadSuccess(response, file, fileList) {
+      var _this = this;
+      var data = response.data.path;
+      _this.form.cover = data;
+    },
+    deleteCover() {
+      var _this = this;
+      _this.form.cover = null;
+      _this.form.covers = null;
     }
   },
   mounted: function() {
@@ -151,4 +192,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.cover {
+  width: 600px;
+  height: 200px;
+}
 </style>

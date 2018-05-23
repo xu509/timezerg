@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by xnx on 2018/5/10.
  */
 
+
 @RestController
 public class NodeController {
 
@@ -41,18 +42,18 @@ public class NodeController {
         return nodeService.edit(params);
     }
 
-    @GetMapping("/test")
-    public Object test(){
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("success",true);
-        jsonObject.put("msg","new message");
-        return jsonObject;
-    }
-
     @CrossOrigin
     @PostMapping("/api/node/detail")
     public Object nodeDetailApi(@RequestBody JSONObject params){
         return nodeService.detail(params);
+    }
+
+    @CrossOrigin
+    @GetMapping("/node/test")
+    public Object test(@RequestBody JSONObject params) {
+        System.out.println("!11");
+        return new Result(ResultMessage.OK);
+//        return nodeService.add(params);
     }
 
 }

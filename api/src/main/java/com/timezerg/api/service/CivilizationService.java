@@ -102,12 +102,15 @@ public class CivilizationService {
     public Object edit(JSONObject params){
         String id = params.getString("id");
         String title = params.getString("title");
+        String cover = params.getString("cover");
 
         Civilization civilization = civilizationMapper.selectById(id);
         if (civilization == null)
             return new Result(ResultMessage.PARAM_ERROR);
 
         civilization.setTitle(title);
+        civilization.setCover(cover);
+        System.out.println("JSON:" + JSON.toJSON(civilization));
         civilizationMapper.update(civilization);
 
         //修改绑定的大洲

@@ -16,6 +16,11 @@
     <el-row>
       <el-col :span="24">
         <el-table :data = "datas">
+            <el-table-column label = "#" width = "300">
+              <template slot-scope="scope">
+                  <img :src="imageDomain + scope.row.cover" class="cover" v-if="scope.row.cover != null"/>
+              </template>
+            </el-table-column>
             <el-table-column prop = "title" label = "标题" width = "200"></el-table-column>
             <el-table-column label = "大洲">
                 <template slot-scope="scrope">
@@ -59,7 +64,8 @@ export default {
       datas: [],
       page_size: 10, //page大小
       current_page: 1, // 当前游码
-      total: 0 // 总数
+      total: 0, // 总数
+      imageDomain: this.GLOBAL.doamin_image
     };
   },
   methods: {
@@ -115,7 +121,11 @@ export default {
   }
 };
 </script>
-
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.cover {
+  width: 200px;
+  height: 40px;
+  margin: 0 auto 0 auto;
+}
 </style>

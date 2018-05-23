@@ -2,6 +2,7 @@
 const table_page_node = 1;
 const table_size_node = 10;
 const doamin = "http://127.0.0.1:8081";
+const doamin_image = "http://xu-1253743633.file.myqcloud.com";
 
 const url_node_list = doamin + "/node/list";
 const url_node_add = doamin + "/node/save";
@@ -11,6 +12,7 @@ const url_civilization_list = doamin + "/civilization/list";
 const url_civilization_add = doamin + "/civilization/save";
 const url_civilization_edit_init = doamin + "/civilization/edit/init";
 const url_civilization_edit_save = doamin + "/civilization/edit/save";
+const url_civilization_upload = doamin + "/civilization/upload";
 const url_nation_list = doamin + "/nation/list";
 const url_nation_add = doamin + "/nation/save";
 const url_nation_edit_init = doamin + "/nation/edit/init";
@@ -25,6 +27,7 @@ export default {
   table_page_node, //
   table_size_node, //
   doamin,
+  doamin_image,
   url_node_list,
   url_node_add,
   url_node_edit_init,
@@ -32,6 +35,7 @@ export default {
   url_civilization_list,
   url_civilization_add,
   url_civilization_edit_init,
+  url_civilization_upload,
   url_civilization_edit_save,
   url_nation_list,
   url_nation_add,

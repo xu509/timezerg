@@ -84,7 +84,10 @@ export default {
             _this.total = response.data.data.total;
           }
         })
-        .catch(function(error) {});
+        .catch(function(error) {
+          console.log(111);
+          console.log(error);
+        });
     },
     add() {
       this.$router.push("node/add");
