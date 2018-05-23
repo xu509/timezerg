@@ -110,7 +110,6 @@ public class CivilizationService {
 
         civilization.setTitle(title);
         civilization.setCover(cover);
-        System.out.println("JSON:" + JSON.toJSON(civilization));
         civilizationMapper.update(civilization);
 
         //修改绑定的大洲
