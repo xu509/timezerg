@@ -1,4 +1,9 @@
 /**index.wxss**/
+.searchBox {
+  height: 0;
+}
+
+
 .items {
   display: flex;
   width: 99%;
@@ -8,20 +13,38 @@
 
 .item{
   position: relative;
+  height: 212rpx;
+  width: 100%;
+  margin: 3rpx 0rpx 3rpx 0rpx;
   /* width: 100%; */
 }
 
 .item .cover{
-  /* width: 100%; */
-  height: 150rpx;
+  width: 100%; 
+  height: 212rpx;
 }
 
+/* 罗马: */
 .item .title{
   position: absolute;
-  left: 30rpx;
-  top: 90rpx;
-  font-size: 30rpx;
-  color: white;
-  text-shadow: black 0.1em 0.1em 0.2em;
-  font-weight: bold;
+  left: 50rpx;
+  top: 140rpx;
+  font-family: PingFangSC-Light;
+  font-size: 40rpx;
+  color: #FFFFFF;
+  letter-spacing: 6.5rpx;
+  text-align: center;
+}
+
+.end{
+  margin-top: 50rpx;
+}
+
+.end text{
+  /* - end -: */
+  font-family: AmericanTypewriter;
+  font-size: 28rpx;
+  color: #929090;
+  letter-spacing: 6.5rpx;
+  text-align: center;
 }

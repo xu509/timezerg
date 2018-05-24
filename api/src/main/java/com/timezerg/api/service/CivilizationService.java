@@ -138,13 +138,56 @@ public class CivilizationService {
 
     @Transactional
     public Object timeLine(JSONObject params){
+        JSONObject resultObj = new JSONObject();
+
         Object[] p = new Object[]{params.getString("id")};
 
         List<HashMap> datas = civilizationMapper.selectTimeLine(p);
+        Civilization civilization = civilizationMapper.selectById(params.getString("id"));
+
+        resultObj.put("civilization",civilization);
+        resultObj.put("timeline",datas);
+
 //        System.out.println(JSON.toJSON(datas));
 
-        return new Result(ResultMessage.OK,datas);
+        return new Result(ResultMessage.OK,resultObj);
     }
+
+
+    @Transactional
+    public Object setFirstSort(JSONObject params){
+        String id = params.getString("id");
+        Civilization civilization = civilizationMapper.selectById(id);
+
+        if (civilization == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        Integer min = civilizationMapper.selectMinSort();
+        civilizationMapper.updateSortById(new Object[]{min - 1 , id});
+        return new Result(ResultMessage.OK);
+    }
+
+
+    @Transactional
+    public Object setDownSort(JSONObject params){
+        String id = params.getString("id");
+        String tid = params.getString("tid");
+        Civilization civilization = civilizationMapper.selectById(id);
+        Civilization tCivilization = civilizationMapper.selectById(tid);
+
+        if (civilization == null || tCivilization == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+
+        Integer sort = civilization.getSort();
+        Integer tsort = tCivilization.getSort();
+
+        civilizationMapper.updateSortById(new Object[]{sort , tCivilization.getId()});
+        civilizationMapper.updateSortById(new Object[]{tsort , civilization.getId()});
+        return new Result(ResultMessage.OK);
+    }
+
+
 
 
 

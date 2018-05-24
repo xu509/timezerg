@@ -26,7 +26,7 @@ public class FileUtil {
 
         String fileType = getExtension(file.getOriginalFilename());
 
-        File convFile = new File("temp/temp");
+        File convFile = new File("temp" + File.pathSeparator +"temp");
         convFile.createNewFile();
 
 

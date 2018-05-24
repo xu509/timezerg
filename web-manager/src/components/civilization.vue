@@ -32,6 +32,8 @@
             <el-table-column fixed="right" width="200" label="操作">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" @click = "go('civilizationEdit', scope.row.id )">编辑</el-button>
+                    <el-button type="text" size="small" @click = "first(scope.row.id,scope.$index)" v-if="scope.$index != 0">↑</el-button>
+                    <el-button type="text" size="small" @click = "down(scope.row.id,scope.$index)">↓</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -86,6 +88,47 @@ export default {
             _this.datas = response.data.data.data;
 
             _this.total = response.data.data.total;
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    first(id,index) {
+      var _this = this;
+      axios
+        .post(_this.GLOBAL.url_civilization_first, {
+          id: id
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            //调换位置
+            _this.$message({
+              message: "调序成功",
+              type: "success"
+            });
+            _this.initTable();
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    down(id,index) {
+      var _this = this;
+      axios
+        .post(_this.GLOBAL.url_civilization_down, {
+          id: id,
+          tid: _this.datas[index+1].id
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            //调换位置
+            _this.$message({
+              message: "调序成功",
+              type: "success"
+            });
+            _this.initTable();
           }
         })
         .catch(function(error) {

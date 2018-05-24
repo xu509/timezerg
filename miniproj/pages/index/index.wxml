@@ -4,8 +4,11 @@
   </view>
   <view class = "items">
     <view wx:for = "{{civilizations}}" wx:key = "id" class = "item" bindtap='go' data-id='{{item.id}}'>
-      <image src='{{item.cover}}' class='cover' mode='aspectFill'></image>
+      <image src='{{item.cover}}' class='cover' mode='scaleToFill'></image>
       <text class='title'>{{item.title}}</text>
     </view>
+  </view>
+  <view class='end'>
+    <text>- end -</text>
   </view>
 </view>

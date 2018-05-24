@@ -1,16 +1,18 @@
 <!--index.wxml-->
 <view class="container">
 
-    <view class='title'>
+  <view class='header'>
+    <text class='headerfirst'></text> 
+    <text class='title'>{{civilization.title}}</text>
+    <text class='category'>详细</text>
+  </view>
 
+
+  <view class='items'>
+    <view class='item' wx:for="{{nodes}}" wx:key="id">
+      <text class='date'>{{item.ddate}}</text>
+      <text class='title' bindtap='go' data-id='{{item.id}}'>{{item.title}}</text>
     </view>
-
-
-    <view class='items'>
-        <view class='item' wx:for="{{nodes}}" wx:key = "id">
-          <text class= 'date'>{{item.ddate}}</text>
-          <text class = 'title' bindtap='go' data-id='{{item.id}}'>{{item.title}}</text>
-        </view>
-    </view>
+  </view>
 
 </view>

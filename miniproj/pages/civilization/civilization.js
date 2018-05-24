@@ -5,6 +5,7 @@ const app = getApp()
 Page({
   data: {
     motto: 'Hello World',
+    civilization:null,
     nodes:[],
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo')
@@ -34,9 +35,12 @@ Page({
       },
       success: function (res) {
         if (res.data.result == "0") {
+          var rdata = res.data.data;
+          
 
           _this.setData({
-            nodes: res.data.data
+            nodes: rdata.timeline,
+            civilization:rdata.civilization
           })
 
         }

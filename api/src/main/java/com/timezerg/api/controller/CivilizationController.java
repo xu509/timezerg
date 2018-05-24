@@ -49,7 +49,6 @@ public class CivilizationController {
 
     @PostMapping("/civilization/timeline")
     public Object timeLine(@RequestBody JSONObject params){
-//        System.out.println("params:" + params.toJSONString());
         return civilizationService.timeLine(params);
     }
 
@@ -67,6 +66,16 @@ public class CivilizationController {
 
 
         return new Result(ResultMessage.OK,obj);
+    }
+
+    @PostMapping("/civilization/first")
+    public Object first(@RequestBody JSONObject params){
+        return civilizationService.setFirstSort(params);
+    }
+
+    @PostMapping("/civilization/down")
+    public Object lastest(@RequestBody JSONObject params){
+        return civilizationService.setDownSort(params);
     }
 
 }

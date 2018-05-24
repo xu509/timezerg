@@ -21,9 +21,9 @@ public interface NodeMapper {
     @Select("select * from t_timezerg_node where id = #{id}")
     Node selectById(String id);
 
-    @Select("(select n.* from t_timezerg_node n where 1 = 1 and n.Ad = 0 order by n.cdate desc) " +
+    @Select("(select n.* from t_timezerg_node n where 1 = 1 and n.Ad = 0 order by n.cdate desc LIMIT 99999999) " +
             "union all" +
-            "(select n.* from t_timezerg_node n where n.AD = 1 order by n.cdate asc) limit #{array[0]},#{array[1]}")
+            "(select n.* from t_timezerg_node n where n.AD = 1 order by n.cdate asc LIMIT 99999999) limit #{array[0]},#{array[1]}")
     List<HashMap> getList(Object[] params);
 
     @Select("select count(*) from t_timezerg_node")

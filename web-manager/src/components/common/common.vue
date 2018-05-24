@@ -13,6 +13,8 @@ const url_civilization_add = doamin + "/civilization/save";
 const url_civilization_edit_init = doamin + "/civilization/edit/init";
 const url_civilization_edit_save = doamin + "/civilization/edit/save";
 const url_civilization_upload = doamin + "/civilization/upload";
+const url_civilization_first = doamin + "/civilization/first";
+const url_civilization_down = doamin + "/civilization/down";
 const url_nation_list = doamin + "/nation/list";
 const url_nation_add = doamin + "/nation/save";
 const url_nation_edit_init = doamin + "/nation/edit/init";
@@ -37,6 +39,8 @@ export default {
   url_civilization_edit_init,
   url_civilization_upload,
   url_civilization_edit_save,
+  url_civilization_first,
+  url_civilization_down,
   url_nation_list,
   url_nation_add,
   url_nation_edit_init,

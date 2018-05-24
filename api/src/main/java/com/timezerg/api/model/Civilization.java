@@ -17,6 +17,7 @@ public class Civilization implements Serializable {
     private String content;
     private String cover;
     private Date cdate;
+    private Integer sort = 0; //排序，正序，越小越前面
 
     public String getId() {
         return id;
@@ -36,6 +37,14 @@ public class Civilization implements Serializable {
 
     public String getContent() {
         return content;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 
     public void setContent(String content) {
@@ -65,4 +74,6 @@ public class Civilization implements Serializable {
     public void setPid(String pid) {
         this.pid = pid;
     }
+
+
 }

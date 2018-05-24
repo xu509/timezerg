@@ -89,6 +89,9 @@ export default {
           id: _this.form.id
         })
         .then(function(response) {
+            console.log(response);
+
+
           if (response.data.result == 0) {
             var civilization = response.data.data;
 
@@ -97,7 +100,9 @@ export default {
             _this.form.cover = civilization.cover;
             _this.loading = false;
           }
-        });
+        }).catch(function(error) {
+          console.log(error);
+        });;
     },
     save() {
       var _this = this;
@@ -116,7 +121,6 @@ export default {
               message: _this.form.title + " 修改成功！",
               type: "success"
             });
-
             _this.init();
           }
           _this.saving = false;
