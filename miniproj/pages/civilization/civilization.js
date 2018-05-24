@@ -17,11 +17,14 @@ Page({
     })
   },
   onLoad: function (options) {
-    var cid = options.cid;
+    // var cid = options.cid;
+    var cid = "931704728708976640"
+    console.log(cid);
+
     var _this = this;
 
     wx.request({
-      url: 'https://127.0.0.1:8081/civilization/timeline', //仅为示例，并非真实的接口地址
+      url: 'http://127.0.0.1:8081/civilization/timeline', //仅为示例，并非真实的接口地址
       method: 'post',
       data: {
         id: cid

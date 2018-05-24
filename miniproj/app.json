@@ -1,8 +1,8 @@
 {
   "pages":[
+    "pages/civilization/civilization",
     "pages/index/index",
     "pages/logs/logs",
-    "pages/civilization/civilization",
     "pages/node/node"
   ],
   "window":{

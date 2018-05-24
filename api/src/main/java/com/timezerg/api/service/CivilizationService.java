@@ -3,6 +3,7 @@ package com.timezerg.api.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.timezerg.api.config.AppConfig;
 import com.timezerg.api.mapper.CivilizationContinentMapper;
 import com.timezerg.api.mapper.CivilizationMapper;
 import com.timezerg.api.mapper.NodeMapper;
@@ -13,6 +14,7 @@ import com.timezerg.api.util.DateUtil;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,11 +60,18 @@ public class CivilizationService {
 
             row.put("cdate", DateUtil.format((Date) row.get("cdate"),DateUtil.YEAR_MONTH_DAY_TIME));
 
+            String cover = (String) row.get("cover");
+            if (StringUtils.isBlank(cover)){
+                cover = AppConfig.DEFAULT.CIVILIZATION_COVER;
+            }else {
+                cover = AppConfig.Image_Domain + cover;
+            }
+            row.put("cover",cover);
+
+
             //相关大洲
             row.put("continents",civilizationContinentMapper.selectByCivilizationId(id));
-
         }
-
 
         JSONObject r = new JSONObject();
         r.put("data",list);

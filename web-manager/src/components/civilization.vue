@@ -18,7 +18,7 @@
         <el-table :data = "datas">
             <el-table-column label = "#" width = "300">
               <template slot-scope="scope">
-                  <img :src="imageDomain + scope.row.cover" class="cover" v-if="scope.row.cover != null"/>
+                  <img :src="scope.row.cover" class="cover" v-if="scope.row.cover != null"/>
               </template>
             </el-table-column>
             <el-table-column prop = "title" label = "标题" width = "200"></el-table-column>

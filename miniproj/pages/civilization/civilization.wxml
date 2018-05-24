@@ -1,9 +1,16 @@
 <!--index.wxml-->
 <view class="container">
 
-    <view class='section' wx:for="{{nodes}}" wx:key = "id">
-      <text>{{item.ddate}}</text>
-      <text bindtap='go' data-id='{{item.id}}'>{{item.title}}</text>
+    <view class='title'>
+
+    </view>
+
+
+    <view class='items'>
+        <view class='item' wx:for="{{nodes}}" wx:key = "id">
+          <text class= 'date'>{{item.ddate}}</text>
+          <text class = 'title' bindtap='go' data-id='{{item.id}}'>{{item.title}}</text>
+        </view>
     </view>
 
 </view>

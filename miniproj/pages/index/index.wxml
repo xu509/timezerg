@@ -1,6 +1,11 @@
 <!--index.wxml-->
 <view class="container">
-  <view wx:for = "{{civilizations}}" wx:key = "id">
-    <text bindtap='go' data-id='{{item.id}}'>{{item.title}}</text>
+  <view class = "searchBox">
+  </view>
+  <view class = "items">
+    <view wx:for = "{{civilizations}}" wx:key = "id" class = "item" bindtap='go' data-id='{{item.id}}'>
+      <image src='{{item.cover}}' class='cover' mode='aspectFill'></image>
+      <text class='title'>{{item.title}}</text>
+    </view>
   </view>
 </view>
