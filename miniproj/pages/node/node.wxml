@@ -1,4 +1,15 @@
-<!--pages/node/node.wxml-->
-<text>{{node.ddate}}</text>
-<text>{{node.title}}</text>
+<view class="container">
+  <view class = "detail">
+      <text class = "date">{{node.ad == 0 ? "BC":"AD"}} {{node.ddate}}</text>
+      <text class = 'title'>{{node.title}}</text>
+      <text class = 'content'>{{node.content}}</text>
+  </view>
+  <view class='relateCivilization'>
+      <text class='ctitle'>相关文明</text>
+      <text class='civilization' wx:for="{{civilization}}" wx:key="id">
+          {{item.title}}
+      </text>
+  </view>
+  <view class='otherNode'></view>
 
+</view>

@@ -23,6 +23,11 @@ public interface NodeCivilizationMapper {
     @Select("SELECT nc.*,c.title FROM t_timezerg_node_civilization nc LEFT JOIN t_timezerg_civilization c ON nc.cid = c.id WHERE nc.nid = #{nid}")
     List<HashMap> selectByNodeId(String nid);
 
+    @Select("SELECT nc.cid,c.title FROM t_timezerg_node_civilization nc " +
+            "LEFT JOIN t_timezerg_civilization c ON nc.cid = c.id " +
+            "WHERE nc.nid = #{nid}")
+    List<HashMap> selectCivilizationByNid(String nid);
+
     @Delete("DELETE FROM t_timezerg_node_civilization WHERE nid = #{nid}")
     int deleteByNodeId(String nid);
 

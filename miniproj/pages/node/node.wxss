@@ -1,1 +1,64 @@
 /* pages/node/node.wxss */
+
+.detail{
+  display: flex;
+  flex-direction:column;
+  background-color: #F9F9F9;
+  width: 98%;
+  padding-top: 60rpx;
+  margin-top: 10rpx;
+}
+
+.date{
+  text-align: center;
+  font-size: 32rpx;
+  color : #636363;
+}
+
+.title{
+  text-align: center;
+  font-size: 32rpx;
+  color : #636363;
+  padding-top: 30rpx;
+  padding-bottom: 30rpx;
+  height: 40rpx;
+}
+
+.content{
+  text-align: left;
+  font-size: 28rpx;
+  color : #7A7A7A;
+  padding-top: 32rpx;
+  padding-bottom: 64rpx;
+  padding-left: 34rpx;
+  padding-right: 34rpx;
+}
+
+.relateCivilization{
+  height: 172rpx;
+  display: flex;
+  flex-direction:row;
+  align-items: center;
+  align-content: center;
+  background-color: #F9F9F9;
+  width: 98%;
+  margin-top: 10rpx;
+}
+
+.ctitle{
+  text-align: center;
+  font-size: 32rpx;
+  color : #636363;
+  padding-top: 30rpx;
+  padding-bottom: 30rpx;
+  height: 40rpx;
+}
+
+.civilization{
+  text-align: center;
+  font-size: 32rpx;
+  color : #636363;
+  padding-top: 30rpx;
+  padding-bottom: 30rpx;
+  height: 40rpx;
+}

@@ -24,6 +24,8 @@ public class Node implements Serializable {
     public static final Integer Level_Important = 2;
     public static final Integer Level_Normal = 3;
     public static final Integer Level_Detail = 4;
+    public static final Integer Level_AD = 1;
+    public static final Integer Level_BC = 0;
 
     public String getId() {
         return id;

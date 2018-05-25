@@ -46,6 +46,14 @@
                     <el-radio :label="adoption.ad">AD</el-radio>
                   </el-radio-group>
                 </el-form-item>
+                <el-form-item label="详细">
+                  <el-input
+                    type="textarea"
+                    :rows="2"
+                    placeholder="请输入内容"
+                    v-model="form.content">
+                  </el-input>
+                </el-form-item>
                 <el-form-item label="重要度">
                     <el-select v-model="form.level" placeholder="重要度">
                         <el-option v-for="item in options" :key = "item.value" :label = "item.label" :value = "item.value"></el-option>
@@ -113,6 +121,7 @@ export default {
       form: {
         title: "",
         ddate: "",
+        content: "",
         year: null,
         month: null,
         day: null,
@@ -167,6 +176,7 @@ export default {
           if (response.data.result == 0) {
             var data = response.data.data;
             _this.form.title = data.title;
+            _this.form.content = data.content;
             _this.form.ddate = data.ddate;
             _this.form.year = data.year;
             _this.form.month = data.month;
@@ -195,6 +205,7 @@ export default {
         .post(_this.GLOBAL.url_node_edit_save, {
           id: _this.id,
           title: _this.form.title,
+          content: _this.form.content,
           ddate: _this.form.ddate,
           year: _this.form.year,
           month: _this.form.month,
@@ -203,6 +214,7 @@ export default {
           second: _this.form.second,
           AD: _this.form.AD,
           level: _this.form.level,
+          content: _this.form.content,
           nations: _this.form.nations,
           civilizations: _this.form.civilizations
         })

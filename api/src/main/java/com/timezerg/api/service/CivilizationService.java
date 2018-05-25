@@ -136,16 +136,41 @@ public class CivilizationService {
         return new Result(ResultMessage.OK,civilization);
     }
 
+    private static Integer Time_List_Size = 15;
+
     @Transactional
     public Object timeLine(JSONObject params){
         JSONObject resultObj = new JSONObject();
 
-        Object[] p = new Object[]{params.getString("id")};
+        String id = params.getString("id");
+        Integer level = params.getInteger("level");
+        Integer p = params.getInteger("p");
 
-        List<HashMap> datas = civilizationMapper.selectTimeLine(p);
-        Civilization civilization = civilizationMapper.selectById(params.getString("id"));
+        //P从0开始
+        Integer start = p * 15;
+
+        List<HashMap> datas = civilizationMapper.selectTimeLine(id,level,start,Time_List_Size);
+        Civilization civilization = civilizationMapper.selectById(id);
 
         resultObj.put("civilization",civilization);
+
+        for (HashMap data : datas){
+            Date date = (Date) data.get("cdate");
+            Integer ad = (Integer) data.get("ad");
+
+            StringBuffer showDate = new StringBuffer();
+            if (ad == Node.Level_BC){
+                showDate.append("前 ");
+            }
+
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+            Integer year = c.get(Calendar.YEAR);
+            showDate.append(year);
+
+            data.put("showDate",showDate.toString());
+        }
+
         resultObj.put("timeline",datas);
 
 //        System.out.println(JSON.toJSON(datas));

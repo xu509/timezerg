@@ -156,6 +156,7 @@ public class NodeService {
         String id = params.getString("id");
         String title = params.getString("title");
         String ddate = params.getString("ddate");
+        String content = params.getString("content");
         Integer level = params.getInteger("level");
         Integer AD = params.getInteger("AD");
         Integer year = params.getInteger("year");
@@ -168,6 +169,7 @@ public class NodeService {
         Node node = new Node();
         node.setId(id);
         node.setTitle(title);
+        node.setContent(content);
         node.setDdate(ddate);
         node.setLevel(level);
         node.setAD(AD);
@@ -214,7 +216,11 @@ public class NodeService {
     @Transactional
     public Object detail(JSONObject params){
         String id = params.getString("id");
-        return new Result(ResultMessage.OK,nodeMapper.selectById(id));
+        JSONObject result = new JSONObject();
+        result.put("node",nodeMapper.selectById(id));
+        result.put("civilization",nodeCivilizationMapper.selectCivilizationByNid(id));
+
+        return new Result(ResultMessage.OK,result);
     }
 
 

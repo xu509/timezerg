@@ -1,9 +1,9 @@
 {
   "pages":[
+    "pages/node/node",
     "pages/civilization/civilization",
     "pages/index/index",
-    "pages/logs/logs",
-    "pages/node/node"
+    "pages/logs/logs"
   ],
   "window":{
     "backgroundTextStyle":"light",

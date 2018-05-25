@@ -6,6 +6,7 @@ Page({
   data: {
     motto: 'Hello World',
     node: {},
+    civilization:[],
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo')
   },
@@ -16,7 +17,12 @@ Page({
     })
   },
   onLoad: function (options) {
-    var id = options.id;
+    // var id = options.id;
+
+    var id = "931670909217935360";
+    console.log(id);
+
+
     var _this = this;
 
     wx.request({
@@ -30,9 +36,13 @@ Page({
       },
       success: function (res) {
         if (res.data.result == "0") {
+          var rdata = res.data.data
+
+          console.log(rdata.civilization);
 
           _this.setData({
-            node: res.data.data
+            node: rdata.node,
+            civilization : rdata.civilization
           })
 
         }

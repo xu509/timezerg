@@ -4,15 +4,23 @@
   <view class='header'>
     <text class='headerfirst'></text> 
     <text class='title'>{{civilization.title}}</text>
-    <text class='category'>详细</text>
+    <picker bindchange='bindPickerChange' value='{{level}}' range='{{array}}' range-key='name'>
+      <text class='category'>{{array[level].name}}</text>
+    </picker>
+   
   </view>
 
 
   <view class='items'>
     <view class='item' wx:for="{{nodes}}" wx:key="id">
-      <text class='date'>{{item.ddate}}</text>
+      <text class='date'>{{item.showDate}}</text>
       <text class='title' bindtap='go' data-id='{{item.id}}'>{{item.title}}</text>
     </view>
   </view>
+
+  <view class='end' wx:if="{{listNoMore}}">
+    <text>- end -</text>
+  </view>
+
 
 </view>

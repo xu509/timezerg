@@ -1,10 +1,8 @@
 package com.timezerg.api.mapper;
 
+import com.timezerg.api.mapper.provider.CivilizationMapperProvider;
 import com.timezerg.api.model.Civilization;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,15 +40,18 @@ public interface CivilizationMapper {
     @Select("select min(sort) from t_timezerg_civilization")
     int selectMinSort();
 
-    @Select("(SELECT n.* FROM t_timezerg_node n " +
-            "LEFT JOIN t_timezerg_node_civilization nc ON n.id = nc.nid " +
-            "WHERE nc.cid = ${array[0]} AND n.ad = 0 " +
-            "ORDER BY n.cdate DESC LIMIT 0,9999) " +
-            "UNION ALL " +
-            "(SELECT n.* FROM t_timezerg_node n " +
-            "LEFT JOIN t_timezerg_node_civilization nc ON n.id = nc.nid " +
-            "WHERE nc.cid = ${array[0]} AND n.ad = 1 " +
-            "ORDER BY n.cdate ASC LIMIT 0,9999)")
-    List<HashMap> selectTimeLine(Object[] params);
+//    @Select("(SELECT n.* FROM t_timezerg_node n " +
+//            "LEFT JOIN t_timezerg_node_civilization nc ON n.id = nc.nid " +
+//            "WHERE nc.cid = ${array[0]} AND n.ad = 0 " +
+//            "<if test = \"array[1] != 0 \"> and n.level <= #{array[1]} </if>" +
+//            "ORDER BY n.cdate DESC LIMIT 0,9999) " +
+//            "UNION ALL " +
+//            "(SELECT n.* FROM t_timezerg_node n " +
+//            "LEFT JOIN t_timezerg_node_civilization nc ON n.id = nc.nid " +
+//            "WHERE nc.cid = ${array[0]} AND n.ad = 1 " +
+//            "<if test = \"array[1] != 0 \"> and n.level <= #{array[1]} </if> " +
+//            "ORDER BY n.cdate ASC LIMIT 0,9999)")
+    @SelectProvider(type= CivilizationMapperProvider.class,method = "selectTimeLine")
+    List<HashMap> selectTimeLine(@Param("cid") String cid,@Param("level") Integer level,@Param("start") Integer start,@Param("limit") Integer limit);
 
 }
