@@ -38,6 +38,8 @@
 
 .end{
   margin-top: 50rpx;
+  margin-bottom: 50rpx;
+
 }
 
 .end text{

@@ -7,6 +7,7 @@ Page({
     motto: 'Hello World',
     node: {},
     civilization:[],
+    closenodes:[],
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo')
   },
@@ -17,16 +18,19 @@ Page({
     })
   },
   onLoad: function (options) {
-    // var id = options.id;
 
-    var id = "931670909217935360";
-    console.log(id);
+    wx.setNavigationBarTitle({
+      title: '时间虫子',
+    })
+    
+    var id = options.id;
 
+    // var id = "931670909217935360";
 
     var _this = this;
 
     wx.request({
-      url: 'http://127.0.0.1:8081/api/node/detail', //仅为示例，并非真实的接口地址
+      url: app.globalData.apiDomain + '/api/node/detail', //仅为示例，并非真实的接口地址
       method: 'post',
       data: {
         id: id
@@ -38,11 +42,10 @@ Page({
         if (res.data.result == "0") {
           var rdata = res.data.data
 
-          console.log(rdata.civilization);
-
           _this.setData({
             node: rdata.node,
-            civilization : rdata.civilization
+            civilization : rdata.civilization,
+            closenodes : rdata.closenodes
           })
 
         }
@@ -61,6 +64,12 @@ Page({
     this.setData({
       userInfo: e.detail.userInfo,
       hasUserInfo: true
+    })
+  },
+  go: function (e) {
+    var id = e.currentTarget.dataset.id;
+    wx.navigateTo({
+      url: '../node/node?id=' + id
     })
   }
 })

@@ -34,6 +34,10 @@ App({
     })
   },
   globalData: {
-    userInfo: null
+    userInfo: null,
+    // apiDomain: "http://127.0.0.1:8081"
+    apiDomain: "http://192.168.31.33:8081"
+
+    
   }
 })

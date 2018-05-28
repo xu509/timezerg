@@ -1,14 +1,19 @@
 {
   "pages":[
+    "pages/index/index",
     "pages/node/node",
     "pages/civilization/civilization",
-    "pages/index/index",
     "pages/logs/logs"
   ],
   "window":{
     "backgroundTextStyle":"light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "WeChat",
-    "navigationBarTextStyle":"black"
+    "navigationBarTitleText": "时间虫子",
+    "navigationBarTextStyle":"black",
+    "backgroundColor":"F0F0F0"
+  },
+  "networkTimeout": {
+    "request": 10000,
+    "downloadFile": 10000
   }
 }

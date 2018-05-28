@@ -14,3 +14,86 @@ div {
      -moz-box-sizing: border-box;
           box-sizing: border-box;
 }
+
+.row{
+  margin-top: 8rpx;
+  display: flex;
+  flex-direction: row;
+  width: 98%
+}
+
+.column{
+  display: flex;
+  flex-direction: column;
+  width: 98%;
+}
+
+.card-color-1{
+  background-color: #F9F9F9;
+}
+
+.card-color-2{
+  background-color: #EDEDED;
+}
+
+.h2{
+  font-size: 32rpx;
+  color : #636363;
+}
+
+.col1{
+  width: 8%;
+}
+
+.col2{
+  width: 16%;
+}
+
+.col3{
+  width: 24%;
+}
+
+.col4{
+  width: 32%;
+}
+
+.col5{
+  width: 40%;
+}
+
+.col6{
+  width: 50%;
+}
+
+.col7{
+  width: 58%;
+}
+
+.col8{
+  width: 66%;
+}
+
+.col9{
+  width: 74%;
+}
+
+.col10{
+  width: 82%;
+}
+
+.col11{
+  width: 90%;
+}
+
+.col12{
+  width: 98%;
+}
+
+.p1{
+  font-size: 32rpx;
+  color : #7A7A7A;
+}
+
+.text-center{
+  text-align: center
+}

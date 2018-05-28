@@ -1,15 +1,37 @@
 <view class="container">
-  <view class = "detail">
+  <view class = "detail column card-color-1">
       <text class = "date">{{node.ad == 0 ? "BC":"AD"}} {{node.ddate}}</text>
       <text class = 'title'>{{node.title}}</text>
-      <text class = 'content'>{{node.content}}</text>
+      <view class='row' wx:if="{{node.content!=null}}">
+          <view class='col1'></view>
+          <text class ='p1 col10 '>{{node.content}}</text>
+          <view class='col1'></view>
+      </view>
   </view>
-  <view class='relateCivilization'>
-      <text class='ctitle'>相关文明</text>
-      <text class='civilization' wx:for="{{civilization}}" wx:key="id">
-          {{item.title}}
-      </text>
+  <view class='relateCivilization row card-color-1'>
+   <view class='col1'></view>
+    <view class='col3'><text class='h2'>相关文明</text></view>
+<text class='civilization' wx:for="{{civilization}}" wx:key="id">{{item.title}}</text>
   </view>
-  <view class='otherNode'></view>
+  <view class='row card-color-1' wx:if="{{closenodes.length>0}}">
+    <view class = 'col1'></view>
+    <view class = 'col3'><text class='h2'>此时</text></view>
+    <view class = 'col8'>
+      <!-- 其他文明  -->
+        <view class = 'column'>
+            <view class = 'col12 othernode card-color-2 column' wx:for = "{{closenodes}}" wx:key="id" bindtap='go' data-id='{{item.id}}'>
+              <view class='row'>
+                <view class='col1'></view> 
+                <text class='col4 p1'>{{item.ddate}}</text>
+                <view class='col1'></view> 
+                <text class='col4 p1'>{{item.ctitle}}</text>
+              </view>
+              <view class='text-center'>
+                <text class='h2'>{{item.title}}</text>
+              </view>
+            </view>
+        </view>
+    </view>
+  </view>
 
 </view>
