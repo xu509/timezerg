@@ -28,11 +28,14 @@ Page({
     })
   },
   onLoad: function (options) {
-    // var cid = options.cid;
+    wx.setNavigationBarTitle({
+      title: '时间虫子',
+    })
+    
+    var cid = options.cid;
     var _this = this;
-    var id = "931704728708976640"
-    console.log(id);
-    _this.data.cid = id;
+    // var id = "931704728708976640"
+    _this.data.cid = cid;
     _this.initTimeLine();
 
   },
@@ -41,7 +44,7 @@ Page({
 
     if (!_this.data.listNoMore){
       wx.request({
-        url: 'http://127.0.0.1:8081/civilization/timeline', //仅为示例，并非真实的接口地址
+        url: app.globalData.apiDomain + '/civilization/timeline', //仅为示例，并非真实的接口地址
         method: 'post',
         data: {
           id: _this.data.cid,
@@ -88,7 +91,6 @@ Page({
 
   },
   getUserInfo: function (e) {
-    console.log(e)
     app.globalData.userInfo = e.detail.userInfo
     this.setData({
       userInfo: e.detail.userInfo,
@@ -107,8 +109,6 @@ Page({
   },
   onReachBottom:function(){
     this.initTimeLine();
-
-    console.log(this.data.listNoMore);
 
   }
 })

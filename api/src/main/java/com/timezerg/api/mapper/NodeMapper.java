@@ -29,5 +29,11 @@ public interface NodeMapper {
     @Update("update t_timezerg_node set title = #{title},content = #{content},cover = #{cover},cdate = #{cdate},ddate = #{ddate},ad = #{AD},level = #{level} where id = #{id}")
     int update(Node node);
 
+    //73000代表200年
+    @Select("select n.*,c.title as ctitle from t_timezerg_node n left join t_timezerg_node_civilization nc on n.id = nc.nid " +
+            "left join t_timezerg_civilization c on nc.cid = c.id where abs(to_days(n.cdate) - to_days(#{cdate})) < 73000 and n.ad = #{AD} " +
+            "and nc.cid != (select cid from t_timezerg_node_civilization where nid = #{id})")
+    List<HashMap> selectCloseNode(Node node);
+
 
 }

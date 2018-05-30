@@ -13,8 +13,12 @@ Page({
 
     var _this = this;
 
+    wx.setNavigationBarTitle({
+      title: '时间虫子',
+    })
+
     wx.request({
-      url: 'http://127.0.0.1:8081/civilization/list', //仅为示例，并非真实的接口地址
+      url: app.globalData.apiDomain + '/civilization/list', //仅为示例，并非真实的接口地址
       method: 'post',
       data: {
         start: 0,
@@ -29,6 +33,9 @@ Page({
             civilizations: res.data.data.data
           })
         }
+      },
+      fail:function(res){
+        console.log(res);  
       }
     })
   },

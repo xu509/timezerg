@@ -216,9 +216,15 @@ public class NodeService {
     @Transactional
     public Object detail(JSONObject params){
         String id = params.getString("id");
+        Node node = nodeMapper.selectById(id);
+        if (node == null)
+            return new Result(ResultMessage.PARAM_ERROR);
         JSONObject result = new JSONObject();
-        result.put("node",nodeMapper.selectById(id));
+        result.put("node",node);
         result.put("civilization",nodeCivilizationMapper.selectCivilizationByNid(id));
+
+        //此时别的文明
+        result.put("closenodes",nodeMapper.selectCloseNode(node));
 
         return new Result(ResultMessage.OK,result);
     }
