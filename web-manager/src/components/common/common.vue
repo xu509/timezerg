@@ -1,34 +1,35 @@
 <script>
 const table_page_node = 1;
 const table_size_node = 10;
-const doamin = "http://127.0.0.1:8081";
+const domain = "http://127.0.0.1:8081";
+// const domain = "http://api.timezerg.com";
 const doamin_image = "http://xu-1253743633.file.myqcloud.com";
 
-const url_node_list = doamin + "/node/list";
-const url_node_add = doamin + "/node/save";
-const url_node_edit_init = doamin + "/node/edit/init";
-const url_node_edit_save = doamin + "/node/edit/submit";
-const url_civilization_list = doamin + "/civilization/list";
-const url_civilization_add = doamin + "/civilization/save";
-const url_civilization_edit_init = doamin + "/civilization/edit/init";
-const url_civilization_edit_save = doamin + "/civilization/edit/save";
-const url_civilization_upload = doamin + "/civilization/upload";
-const url_civilization_first = doamin + "/civilization/first";
-const url_civilization_down = doamin + "/civilization/down";
-const url_nation_list = doamin + "/nation/list";
-const url_nation_add = doamin + "/nation/save";
-const url_nation_edit_init = doamin + "/nation/edit/init";
-const url_nation_edit_save = doamin + "/nation/edit/save";
-const url_continent_add = doamin + "/continent/save";
+const url_node_list = domain + "/node/list";
+const url_node_add = domain + "/node/save";
+const url_node_edit_init = domain + "/node/edit/init";
+const url_node_edit_save = domain + "/node/edit/submit";
+const url_civilization_list = domain + "/civilization/list";
+const url_civilization_add = domain + "/civilization/save";
+const url_civilization_edit_init = domain + "/civilization/edit/init";
+const url_civilization_edit_save = domain + "/civilization/edit/save";
+const url_civilization_upload = domain + "/civilization/upload";
+const url_civilization_first = domain + "/civilization/first";
+const url_civilization_down = domain + "/civilization/down";
+const url_nation_list = domain + "/nation/list";
+const url_nation_add = domain + "/nation/save";
+const url_nation_edit_init = domain + "/nation/edit/init";
+const url_nation_edit_save = domain + "/nation/edit/save";
+const url_continent_add = domain + "/continent/save";
 
-const url_search_nation = doamin + "/nation/search";
-const url_search_civilization = doamin + "/civilization/search";
-const url_search_continent = doamin + "/continent/search";
+const url_search_nation = domain + "/nation/search";
+const url_search_civilization = domain + "/civilization/search";
+const url_search_continent = domain + "/continent/search";
 
 export default {
   table_page_node, //
   table_size_node, //
-  doamin,
+  domain,
   doamin_image,
   url_node_list,
   url_node_add,

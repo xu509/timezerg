@@ -136,8 +136,8 @@ public class NodeService {
     }
 
     public Object getList(JSONObject params){
-        Object[] p = {params.getInteger("start"),params.getInteger("size")};
-        List<HashMap> list = nodeMapper.getList(p);
+        JSONArray civilizations = params.getJSONArray("cids");
+        List<HashMap> list = nodeMapper.getList(civilizations.toArray(),params.getInteger("start"),params.getInteger("size"));
         JSONObject r = new JSONObject();
         for (HashMap row : list){
             String id = (String) row.get("id");
@@ -147,7 +147,7 @@ public class NodeService {
         }
 
         r.put("data",JSON.toJSON(list));
-        r.put("total",nodeMapper.getListTotal(p));
+        r.put("total",nodeMapper.getListTotal(civilizations.toArray()));
         return new Result(ResultMessage.OK,r);
     }
 

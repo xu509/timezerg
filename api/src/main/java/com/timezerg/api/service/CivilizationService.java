@@ -101,6 +101,13 @@ public class CivilizationService {
 
         r = (JSONObject) JSONObject.toJSON(civilization);
 
+        Civilization p = civilizationMapper.selectById(civilization.getPid());
+        if (p != null){
+            r.put("pid",p.getId());
+            r.put("pname",p.getTitle());
+        }
+
+
         //获取绑定大洲
         r.put("continents",civilizationContinentMapper.selectByCivilizationId(id));
 
@@ -112,6 +119,7 @@ public class CivilizationService {
         String id = params.getString("id");
         String title = params.getString("title");
         String cover = params.getString("cover");
+        String pid = params.getString("pid");
 
         Civilization civilization = civilizationMapper.selectById(id);
         if (civilization == null)
@@ -119,6 +127,10 @@ public class CivilizationService {
 
         civilization.setTitle(title);
         civilization.setCover(cover);
+
+        if (!StringUtils.isBlank(pid))
+            civilization.setPid(pid);
+
         civilizationMapper.update(civilization);
 
         //修改绑定的大洲

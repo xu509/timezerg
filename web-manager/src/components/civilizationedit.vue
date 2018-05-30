@@ -35,6 +35,18 @@
                       {{continent.title}}
                     </el-tag>
                 </el-form-item>
+                <el-form-item label="父文明">
+                   <el-autocomplete popper-class="my-autocomplete" clearable v-model="form.pname"
+                              :fetch-suggestions="queryCivilization"
+                                placeholder="搜索文明"
+                                @select="selectCivilization">
+                                <template slot-scope="props">
+                                          <div class="name">
+                                                {{ props.item.title }}
+                                            </div>
+                                </template>
+                    </el-autocomplete>
+                </el-form-item>
                 <el-form-item label = "封面(360 × 100)">
                   <el-upload
                     class="upload-demo" :limit= "fileLimit"
@@ -70,6 +82,8 @@ export default {
         id: "",
         title: "",
         continents: [],
+        pname: null,
+        pid: null,
         cover: null,
         covers: []
       },
@@ -89,20 +103,25 @@ export default {
           id: _this.form.id
         })
         .then(function(response) {
-            console.log(response);
-
+          console.log(response);
 
           if (response.data.result == 0) {
             var civilization = response.data.data;
 
+            console.log(civilization);
+
             _this.form.title = civilization.title;
             _this.form.continents = civilization.continents;
             _this.form.cover = civilization.cover;
+            _this.form.pname = civilization.pname;
+            _this.form.pid = civilization.pid;
+
             _this.loading = false;
           }
-        }).catch(function(error) {
+        })
+        .catch(function(error) {
           console.log(error);
-        });;
+        });
     },
     save() {
       var _this = this;
@@ -113,6 +132,8 @@ export default {
           id: _this.form.id,
           title: _this.form.title,
           continents: _this.form.continents,
+          pname: _this.form.pname,
+          pid: _this.form.pid,
           cover: _this.form.cover
         })
         .then(function(response) {
@@ -161,6 +182,38 @@ export default {
       };
       this.form.continents.push(continent);
     },
+
+    // 搜索文明
+    queryCivilization(queryString, cb) {
+      var _this = this;
+      var sr = [];
+      if (queryString != undefined && queryString.length > 0) {
+        axios
+          .post(_this.GLOBAL.url_search_civilization, {
+            sw: queryString
+          })
+          .then(function(response) {
+            var r = response.data;
+            if (r.result == 0) {
+              var data = r.data.data;
+              if (r.data.exist) {
+                cb(data);
+              } else {
+                cb(data);
+              }
+            } else {
+              cb(sr);
+            }
+          });
+      } else {
+        cb(sr);
+      }
+    },
+    selectCivilization(item) {
+      this.form.pid = item.id;
+      this.form.pname = item.title;
+    },
+
     closeContinentTag(continent) {
       var index = this.form.continents.indexOf(continent);
       this.form.continents.splice(index, 1);
@@ -169,8 +222,6 @@ export default {
       var _this = this;
       _this.form.cover = null;
       _this.form.covers = null;
-      console.log("remove file");
-      console.log(file, fileList);
     },
     handlePreview(file) {
       console.log("preview file");
