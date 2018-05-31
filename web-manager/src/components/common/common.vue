@@ -21,6 +21,7 @@ const url_nation_add = domain + "/nation/save";
 const url_nation_edit_init = domain + "/nation/edit/init";
 const url_nation_edit_save = domain + "/nation/edit/save";
 const url_continent_add = domain + "/continent/save";
+const url_index = domain + "/civilization/index";
 
 const url_search_nation = domain + "/nation/search";
 const url_search_civilization = domain + "/civilization/search";
@@ -31,6 +32,7 @@ export default {
   table_size_node, //
   domain,
   doamin_image,
+  url_index,
   url_node_list,
   url_node_add,
   url_node_edit_init,

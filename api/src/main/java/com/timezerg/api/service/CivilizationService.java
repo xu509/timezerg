@@ -36,6 +36,9 @@ public class CivilizationService {
     @Autowired
     CivilizationContinentMapper civilizationContinentMapper;
 
+    @Autowired
+    NodeMapper nodeMapper;
+
 
     public Object add(JSONObject params){
         Civilization civil = new Civilization();
@@ -223,6 +226,30 @@ public class CivilizationService {
         civilizationMapper.updateSortById(new Object[]{tsort , civilization.getId()});
         return new Result(ResultMessage.OK);
     }
+
+
+    @Transactional
+    public Object index(JSONObject params){
+        JSONObject result = new JSONObject();
+
+        List<HashMap> civilizationsMaps = civilizationMapper.getList(new Object[]{0,2});
+
+        JSONArray civilAry = new JSONArray();
+        for (HashMap civilMap : civilizationsMaps){
+            JSONObject civilObj = (JSONObject) JSON.toJSON(civilMap);
+
+            //获取node
+
+            civilObj.put("nodes",nodeMapper.getList(new Object[]{civilMap.get("id")},0,50));
+            civilAry.add(civilObj);
+        }
+
+        result.put("data",civilAry);
+
+        return new Result(ResultMessage.OK,result);
+    }
+
+
 
 
 

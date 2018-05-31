@@ -1,110 +1,57 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
-    <el-row>
-      <el-button>默认按钮</el-button>
-      <el-button type="primary">主要按钮111111</el-button>
-      <el-button type="success">成功按钮dd111ddddddddd</el-button>
-      <el-button type="info">信息按钮111</el-button>
-      <el-button type="warning">警告按钮</el-button>
-      <el-button type="danger">危险按钮</el-button>
-    </el-row>
-    <h2>哈哈askdf顶顶顶顶顶顶顶顶顶顶dddd13331</h2>
-    <ul>
-      <li>
-        <a
-          href="https://vuejs.org"
-          target="_blank"
-        >
-          Core Docs
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://forum.vuejs.org"
-          target="_blank"
-        >
-          Forum
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://chat.vuejs.org"
-          target="_blank"
-        >
-          Community Chat
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://twitter.com/vuejs"
-          target="_blank"
-        >
-          Twitter
-        </a>
-      </li>
-      <br>
-      <li>
-        <a
-          href="http://vuejs-templates.github.io/webpack/"
-          target="_blank"
-        >
-          Docs for This Template
-        </a>
-      </li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li>
-        <a
-          href="http://router.vuejs.org/"
-          target="_blank"
-        >
-          vue-router
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vuex.vuejs.org/"
-          target="_blank"
-        >
-          vuex
-        </a>
-      </li>
-      <li>
-        <a
-          href="http://vue-loader.vuejs.org/"
-          target="_blank"
-        >
-          vue-loader
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-        >
-          awesome-vue
-        </a>
-      </li>
-    </ul>
+      <ul>huaxia 
+          <li>111</li>
+          <li>111</li>
+          <li>111</li>
+          <li>111</li>
+          <li>111</li>
+      </ul>
   </div>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
-  name: 'HelloWorld',
-  data () {
+  name: "index",
+  data() {
     return {
-      msg: 'Welcome to Your Vue.js App'
+      datas: []
+    };
+  },
+  methods: {
+    init() {
+      this.initData();
+    },
+    initData() {
+      var _this = this;
+      axios
+        .post(_this.GLOBAL.url_index, {
+          start: 1
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            _this.datas = response.data.data.data;
+            // console.log(response.data.data.data);
+          }
+        })
+        .catch(function(error) {
+          console.log(111);
+          console.log(error);
+        });
     }
+  },
+  mounted: function() {
+    this.init();
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
+h1,
+h2 {
   font-weight: normal;
 }
 ul {

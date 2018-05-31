@@ -78,4 +78,12 @@ public class CivilizationController {
         return civilizationService.setDownSort(params);
     }
 
+
+    @PostMapping("/civilization/index")
+    public Object index(@RequestBody JSONObject params){
+        return civilizationService.index(params);
+    }
+
+
+
 }
