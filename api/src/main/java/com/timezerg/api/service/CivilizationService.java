@@ -7,9 +7,7 @@ import com.timezerg.api.config.AppConfig;
 import com.timezerg.api.mapper.CivilizationContinentMapper;
 import com.timezerg.api.mapper.CivilizationMapper;
 import com.timezerg.api.mapper.NodeMapper;
-import com.timezerg.api.model.Civilization;
-import com.timezerg.api.model.CivilizationContinent;
-import com.timezerg.api.model.Node;
+import com.timezerg.api.model.*;
 import com.timezerg.api.util.DateUtil;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
@@ -19,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by xnx on 2018/5/4.
@@ -174,7 +169,7 @@ public class CivilizationService {
             Integer ad = (Integer) data.get("ad");
 
             StringBuffer showDate = new StringBuffer();
-            if (ad == Node.Level_BC){
+            if (ad == Node.BC_VALUE){
                 showDate.append("前 ");
             }
 
@@ -234,17 +229,48 @@ public class CivilizationService {
 
         List<HashMap> civilizationsMaps = civilizationMapper.getList(new Object[]{0,2});
 
-        JSONArray civilAry = new JSONArray();
+        Set<NodeApiBean> nodeApiBeanSet = new HashSet<>();
+
         for (HashMap civilMap : civilizationsMaps){
             JSONObject civilObj = (JSONObject) JSON.toJSON(civilMap);
-
             //获取node
+            List<HashMap> nodesMap = nodeMapper.getList(new Object[]{civilMap.get("id")},0,50);
 
-            civilObj.put("nodes",nodeMapper.getList(new Object[]{civilMap.get("id")},0,50));
-            civilAry.add(civilObj);
+            for(HashMap node : nodesMap){
+                NodeApiBean nodeApiBean = new NodeApiBean();
+                nodeApiBean.setCdate((Date) node.get("cdate"));
+                nodeApiBean.setDdate((String) node.get("ddate"));
+
+                System.out.println("node api bean :" + nodeApiBean);
+                System.out.println("node:" + node);
+
+                nodeApiBean.setAD((Integer) node.get("ad"));
+
+                NodeDetailApiBean detail = new NodeDetailApiBean();
+                detail.setCid(civilObj.getString("id"));
+                detail.setCname(civilObj.getString("title"));
+                detail.setNid((String) node.get("id"));
+                detail.setNname((String) node.get("title"));
+
+                nodeApiBean.addDetail(detail);
+                nodeApiBeanSet.add(nodeApiBean);
+            }
         }
 
-        result.put("data",civilAry);
+        List<NodeApiBean> list = new ArrayList<>();
+        list.addAll(nodeApiBeanSet);
+
+
+        Collections.sort(list);
+
+        result.put("data",JSON.toJSON(list));
+        result.put("civilizations",JSON.toJSON(civilizationsMaps));
+//        result.put("times",timeAry);
+
+        System.out.println(JSON.toJSON(list));
+
+
+        //所有时间
 
         return new Result(ResultMessage.OK,result);
     }
