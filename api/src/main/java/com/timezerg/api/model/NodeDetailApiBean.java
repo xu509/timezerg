@@ -1,32 +1,25 @@
 package com.timezerg.api.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by xnx on 2018/6/1.
  */
 public class NodeDetailApiBean implements Serializable,Comparable<NodeDetailApiBean>{
 
-    String nid;
-    String ntitle;
     Date cdate;
     Integer AD;
+    List<Node> nodes;
 
-    public String getNid() {
-        return nid;
+    public List<Node> getNodes() {
+        return nodes;
     }
 
-    public void setNid(String nid) {
-        this.nid = nid;
-    }
-
-    public String getNtitle() {
-        return ntitle;
-    }
-
-    public void setNtitle(String ntitle) {
-        this.ntitle = ntitle;
+    public void setNodes(List<Node> nodes) {
+        this.nodes = nodes;
     }
 
     public Date getCdate() {
@@ -44,6 +37,29 @@ public class NodeDetailApiBean implements Serializable,Comparable<NodeDetailApiB
     public void setAD(Integer AD) {
         this.AD = AD;
     }
+
+    /**
+     *  增加单个结点
+     */
+    public void addNode(Node node){
+        if (nodes == null)
+            nodes = new ArrayList<>();
+        nodes.add(node);
+    }
+
+    public void addNode(List<Node> nodeList){
+        if (nodes == null)
+            nodes = new ArrayList<>();
+        nodes.addAll(nodeList);
+    }
+
+
+    public void initBlackBean(){
+        setNodes(null);
+    }
+
+
+
 
     @Override
     public int compareTo(NodeDetailApiBean bean) {
@@ -77,6 +93,18 @@ public class NodeDetailApiBean implements Serializable,Comparable<NodeDetailApiB
 
     @Override
     public String toString() {
-        return ntitle + " - [AD: " + AD +" ] " + cdate;
+        if (getNodes() == null)
+            return "[AD: " + AD + " ] " + cdate + " - 无结点。";
+
+        else {
+            String str = "[AD: " + AD + " ] " + cdate + " - ";
+
+            for (Node node : getNodes()){
+                str += node.getTitle();
+                str += " / ";
+            }
+            return str;
+        }
+
     }
 }

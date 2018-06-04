@@ -252,7 +252,15 @@ public class CivilizationService {
             apiBean.setCid(cid);
             apiBean.setCname(ctitle);
 
+            System.out.println(ctitle + " " + cid);
+
             List<HashMap> rows = civilizationMapper.selectTimeLine(cid,level,0,50);
+
+            if (cid.equals("938543987843665920")){
+                System.out.println("row : " + rows.size());
+            }
+
+
             List<NodeDetailApiBean> nodeDetailApiBeens = new ArrayList<>();
             for (HashMap row : rows){
 //                System.out.println(JSON.toJSONString(row));
@@ -264,17 +272,20 @@ public class CivilizationService {
                 timeApiBeenSets.add(timeBean);
 
                 NodeDetailApiBean nodeDetailApiBean = new NodeDetailApiBean();
-                nodeDetailApiBean.setNid((String) row.get("id"));
                 nodeDetailApiBean.setAD((Integer) row.get("ad"));
                 nodeDetailApiBean.setCdate((Date) row.get("cdate"));
-                nodeDetailApiBean.setNtitle((String) row.get("title"));
+
+                Node node = new Node();
+                node.setTitle((String) row.get("title"));
+                node.setId((String) row.get("id"));
+                nodeDetailApiBean.addNode(node);
 
                 nodeDetailApiBeens.add(nodeDetailApiBean);
             }
             Collections.sort(nodeDetailApiBeens);
             apiBean.setBeans(nodeDetailApiBeens);
 
-            System.out.println(JSON.toJSONString(apiBean));
+//            System.out.println(JSON.toJSONString(apiBean));
 
 
             timelines.add(apiBean);
@@ -301,26 +312,36 @@ public class CivilizationService {
                 if (apiBeans_x < apiBeans.size()){
                     NodeDetailApiBean bean = apiBeans.get(apiBeans_x);
 
-                    System.out.println("比较开始: " + bean.toString() + " | " + timeApiBean.toString());
+//                    System.out.println("比较开始: " + bean.toString() + " | " + timeApiBean.toString());
 
-                    if (timeApiBean.getAD().equals(bean.getAD()) && (timeApiBean.getCdate().getTime() == bean.getCdate().getTime())){
+                    while (Utils.compareTime(timeApiBean.getAD(),timeApiBean.getCdate(),bean.getAD(),bean.getCdate()) == 1){
+                        //当时间数组当时间大于事件数组的时间
+
+                        rBean.get(rBean.size()-1).addNode(bean.getNodes());
+                        apiBeans_x++;
+
+                        bean = apiBeans.get(apiBeans_x);
+
+                    }
+
+
+
+                    if (Utils.compareTime(timeApiBean.getAD(),timeApiBean.getCdate(),bean.getAD(),bean.getCdate()) == 0){
                         //如果时间点存在，直接增加
                         rBean.add(bean);
                         apiBeans_x++;
-                        System.out.println("相等");
+//                        System.out.println("相等");
 
-                    }else {
+                    } else {
                         NodeDetailApiBean nodeDetailApiBean = new NodeDetailApiBean();
-                        nodeDetailApiBean.setNtitle("");
-                        nodeDetailApiBean.setNid("");
+                        nodeDetailApiBean.initBlackBean();
                         rBean.add(nodeDetailApiBean);
-                        System.out.println("没有");
+//                        System.out.println("没有");
 
                     }
                 }else {
                     NodeDetailApiBean nodeDetailApiBean = new NodeDetailApiBean();
-                    nodeDetailApiBean.setNtitle("");
-                    nodeDetailApiBean.setNid("");
+                    nodeDetailApiBean.initBlackBean();
                     rBean.add(nodeDetailApiBean);
                 }
 

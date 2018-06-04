@@ -10,29 +10,29 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="12">
+      <el-col :sm="24" xs="24" :md="14" :xl="14" >
           <el-form ref="form" :model="form" label-width="120px">
                 <el-form-item label="标题">
                   <el-input v-model="form.title"></el-input>
                 </el-form-item>
                 <el-form-item label="时间">
                   <el-row :gutter="20">
-                    <el-col :span = "4">
+                    <el-col :md = "4" :xl="4" :sm="12" xs="12">
                       <el-input v-model="form.year" placeholder="年"/>
                     </el-col>
-                    <el-col :span = "3">
+                    <el-col :md = "3" :xl="3" :sm="12" xs="12">
                       <el-input v-model="form.month" placeholder="月"/>
                     </el-col>
-                    <el-col :span = "3">
+                    <el-col :md = "3" :xl="3" :sm="12" xs="12">
                       <el-input v-model="form.day" placeholder="日"/>
                     </el-col>
-                    <el-col :span = "4">
+                    <el-col :md = "4" :xl="4" :sm="12" xs="12">
                       <el-input v-model="form.hour" placeholder="时"/>
                     </el-col>
-                    <el-col :span = "4">
+                    <el-col :md = "4" :xl="4" :sm="12" xs="12">
                       <el-input v-model="form.minute" placeholder="分"/>
                     </el-col>
-                    <el-col :span = "4">
+                    <el-col :md = "4" :xl="4" :sm="12" xs="12">
                       <el-input v-model="form.second" placeholder="秒"/>
                     </el-col>
                   </el-row>

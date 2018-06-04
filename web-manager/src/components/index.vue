@@ -31,26 +31,32 @@
       </el-row>
 
       <el-row :gutter="20" class="title">
-        <el-col :md="2">
+        <el-col :md="4">
             时间
         </el-col>
-        <el-col :md="2"  v-for="item in civilizations" :key="item.id">
+        <el-col :md="6"  v-for="item in civilizations" :key="item.id">
           {{item.title}}
         </el-col>
       </el-row>
 
 
       <el-row>
-          <el-col :md="2"  class="detail">
+          <el-col :md="4"  class="detail">
               <template v-for="item in times">
                     <el-row :key="item.ddate"><div class="table-item">{{item.ddate}}</div></el-row>
               </template> 
           </el-col>
 
           <template v-for="item in timelines">
-             <el-col :md="2"  class="detail" :key="item.cid">
+             <el-col :md="6"  class="detail" :key="item.cid">
                  <template v-for="(it,index) in item.beans">
-                      <el-row :key="index"><div class="table-item">{{it.ntitle}}</div></el-row>
+                      <el-row :key="index">
+                        <div class="table-item">
+                          <template v-for="it2 in it.nodes">
+                                {{it2.title}}
+                          </template>
+                        </div>
+                      </el-row>
                  </template>
              </el-col>
           </template> 
