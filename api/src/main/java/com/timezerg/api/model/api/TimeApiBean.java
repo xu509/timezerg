@@ -1,32 +1,27 @@
-package com.timezerg.api.model;
+package com.timezerg.api.model.api;
+
+import com.timezerg.api.model.Node;
+import com.timezerg.api.model.NodeDetailApiBean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by xnx on 2018/6/1.
  */
-public class NodeDetailApiBean implements Serializable,Comparable<NodeDetailApiBean>{
+public class TimeApiBean implements Serializable,Comparable<TimeApiBean>{
 
-    String nid;
-    String ntitle;
-    Date cdate;
-    Integer AD;
+    private String ddate;
+    private Date cdate;
+    private Integer AD;
 
-    public String getNid() {
-        return nid;
+    public String getDdate() {
+        return ddate;
     }
 
-    public void setNid(String nid) {
-        this.nid = nid;
-    }
-
-    public String getNtitle() {
-        return ntitle;
-    }
-
-    public void setNtitle(String ntitle) {
-        this.ntitle = ntitle;
+    public void setDdate(String ddate) {
+        this.ddate = ddate;
     }
 
     public Date getCdate() {
@@ -46,7 +41,26 @@ public class NodeDetailApiBean implements Serializable,Comparable<NodeDetailApiB
     }
 
     @Override
-    public int compareTo(NodeDetailApiBean bean) {
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TimeApiBean that = (TimeApiBean) o;
+
+        if (cdate != null ? !cdate.equals(that.cdate) : that.cdate != null) return false;
+        return AD != null ? AD.equals(that.AD) : that.AD == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = cdate != null ? cdate.hashCode() : 0;
+        result = 31 * result + (AD != null ? AD.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public int compareTo(TimeApiBean bean) {
         if (bean.getAD() == getAD()){
             if (bean.getAD() == Node.AD_VALUE){
                 if (getCdate().getTime() < bean.getCdate().getTime()){
@@ -74,9 +88,9 @@ public class NodeDetailApiBean implements Serializable,Comparable<NodeDetailApiB
         }
     }
 
-
     @Override
     public String toString() {
-        return ntitle + " - [AD: " + AD +" ] " + cdate;
+        return "[AD: " + AD +" ] " + cdate;
+
     }
 }

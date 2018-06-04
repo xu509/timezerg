@@ -88,4 +88,17 @@ body > .el-container {
 .el-row {
   margin: 20px 0 20px 0;
 }
+
+.common-title {
+  text-align: right;
+  font-size: 16px;
+  font-family: "Hiragino Sans GB";
+}
+
+.content-warning {
+  text-align: center;
+  font-size: 14px;
+  font-family: "Hiragino Sans GB";
+  color: #e6a23c;
+}
 </style>

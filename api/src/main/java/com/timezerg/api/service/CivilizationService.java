@@ -5,9 +5,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.timezerg.api.config.AppConfig;
 import com.timezerg.api.mapper.CivilizationContinentMapper;
+import com.timezerg.api.mapper.CivilizationIndexMapper;
 import com.timezerg.api.mapper.CivilizationMapper;
 import com.timezerg.api.mapper.NodeMapper;
 import com.timezerg.api.model.*;
+import com.timezerg.api.model.api.TimeApiBean;
 import com.timezerg.api.util.DateUtil;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Time;
 import java.util.*;
 
 /**
@@ -33,6 +36,9 @@ public class CivilizationService {
 
     @Autowired
     NodeMapper nodeMapper;
+
+    @Autowired
+    CivilizationIndexMapper civilizationIndexMapper;
 
 
     public Object add(JSONObject params){
@@ -225,49 +231,109 @@ public class CivilizationService {
 
     @Transactional
     public Object index(JSONObject params){
+        Integer level = params.getInteger("level");
+
         JSONObject result = new JSONObject();
 
-        List<HashMap> civilizationsMaps = civilizationMapper.getList(new Object[]{0,2});
+        List<HashMap> civilizationMaps = civilizationIndexMapper.selectList();
 
-        Set<NodeApiBean> nodeApiBeanSet = new HashSet<>();
+        //整个时间节点
+        List<TimeApiBean> timeApiBeanList = new ArrayList<>();
+        HashSet<TimeApiBean> timeApiBeenSets = new HashSet<>();
 
-        for (HashMap civilMap : civilizationsMaps){
-            JSONObject civilObj = (JSONObject) JSON.toJSON(civilMap);
-            //获取node
-            List<HashMap> nodesMap = nodeMapper.getList(new Object[]{civilMap.get("id")},0,50);
+        //包含多个文明的数组
+        JSONArray timelines = new JSONArray();
 
-            for(HashMap node : nodesMap){
-                NodeApiBean nodeApiBean = new NodeApiBean();
-                nodeApiBean.setCdate((Date) node.get("cdate"));
-                nodeApiBean.setDdate((String) node.get("ddate"));
+        for (HashMap civilMap : civilizationMaps){
+            String cid = (String) civilMap.get("cid");
+            String ctitle = (String) civilMap.get("title");
 
-                System.out.println("node api bean :" + nodeApiBean);
-                System.out.println("node:" + node);
+            NodeApiBean apiBean = new NodeApiBean();
+            apiBean.setCid(cid);
+            apiBean.setCname(ctitle);
 
-                nodeApiBean.setAD((Integer) node.get("ad"));
+            List<HashMap> rows = civilizationMapper.selectTimeLine(cid,level,0,50);
+            List<NodeDetailApiBean> nodeDetailApiBeens = new ArrayList<>();
+            for (HashMap row : rows){
+//                System.out.println(JSON.toJSONString(row));
 
-                NodeDetailApiBean detail = new NodeDetailApiBean();
-                detail.setCid(civilObj.getString("id"));
-                detail.setCname(civilObj.getString("title"));
-                detail.setNid((String) node.get("id"));
-                detail.setNname((String) node.get("title"));
+                TimeApiBean timeBean = new TimeApiBean();
+                timeBean.setCdate((Date) row.get("cdate"));
+                timeBean.setAD((Integer) row.get("ad"));
+                timeBean.setDdate((String) row.get("ddate"));
+                timeApiBeenSets.add(timeBean);
 
-                nodeApiBean.addDetail(detail);
-                nodeApiBeanSet.add(nodeApiBean);
+                NodeDetailApiBean nodeDetailApiBean = new NodeDetailApiBean();
+                nodeDetailApiBean.setNid((String) row.get("id"));
+                nodeDetailApiBean.setAD((Integer) row.get("ad"));
+                nodeDetailApiBean.setCdate((Date) row.get("cdate"));
+                nodeDetailApiBean.setNtitle((String) row.get("title"));
+
+                nodeDetailApiBeens.add(nodeDetailApiBean);
             }
+            Collections.sort(nodeDetailApiBeens);
+            apiBean.setBeans(nodeDetailApiBeens);
+
+            System.out.println(JSON.toJSONString(apiBean));
+
+
+            timelines.add(apiBean);
         }
 
-        List<NodeApiBean> list = new ArrayList<>();
-        list.addAll(nodeApiBeanSet);
+        result.put("timelines",JSON.toJSON(timelines));
+
+        timeApiBeanList.addAll(timeApiBeenSets);
+        Collections.sort(timeApiBeanList);
 
 
-        Collections.sort(list);
 
-        result.put("data",JSON.toJSON(list));
-        result.put("civilizations",JSON.toJSON(civilizationsMaps));
-//        result.put("times",timeAry);
+        //开始处理成适合WEB输出的格式
 
-        System.out.println(JSON.toJSON(list));
+
+        for (int i = 0 ; i < timelines.size() ; i ++){
+            NodeApiBean apiBean = (NodeApiBean) timelines.get(i);
+            List<NodeDetailApiBean> apiBeans = apiBean.getBeans();
+            int apiBeans_x = 0;
+            List<NodeDetailApiBean> rBean = new ArrayList<>();
+
+            for (TimeApiBean timeApiBean : timeApiBeanList){
+
+                if (apiBeans_x < apiBeans.size()){
+                    NodeDetailApiBean bean = apiBeans.get(apiBeans_x);
+
+                    System.out.println("比较开始: " + bean.toString() + " | " + timeApiBean.toString());
+
+                    if (timeApiBean.getAD().equals(bean.getAD()) && (timeApiBean.getCdate().getTime() == bean.getCdate().getTime())){
+                        //如果时间点存在，直接增加
+                        rBean.add(bean);
+                        apiBeans_x++;
+                        System.out.println("相等");
+
+                    }else {
+                        NodeDetailApiBean nodeDetailApiBean = new NodeDetailApiBean();
+                        nodeDetailApiBean.setNtitle("");
+                        nodeDetailApiBean.setNid("");
+                        rBean.add(nodeDetailApiBean);
+                        System.out.println("没有");
+
+                    }
+                }else {
+                    NodeDetailApiBean nodeDetailApiBean = new NodeDetailApiBean();
+                    nodeDetailApiBean.setNtitle("");
+                    nodeDetailApiBean.setNid("");
+                    rBean.add(nodeDetailApiBean);
+                }
+
+            }
+
+            apiBean.setBeans(rBean);
+
+        }
+
+
+
+        result.put("timelines",JSON.toJSON(timelines));
+        result.put("times",JSON.toJSON(timeApiBeanList));
 
 
         //所有时间

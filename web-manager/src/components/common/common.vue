@@ -22,6 +22,9 @@ const url_nation_edit_init = domain + "/nation/edit/init";
 const url_nation_edit_save = domain + "/nation/edit/save";
 const url_continent_add = domain + "/continent/save";
 const url_index = domain + "/civilization/index";
+const url_civilization_index_list = domain + "/civilizationindex/list";
+const url_civilization_index_add = domain + "/civilizationindex/add";
+const url_civilization_index_del = domain + "/civilizationindex/del";
 
 const url_search_nation = domain + "/nation/search";
 const url_search_civilization = domain + "/civilization/search";
@@ -50,7 +53,10 @@ export default {
   url_nation_edit_save,
   url_search_nation,
   url_search_civilization,
-  url_search_continent
+  url_search_continent,
+  url_civilization_index_list,
+  url_civilization_index_add,
+  url_civilization_index_del
 };
 </script>
 
