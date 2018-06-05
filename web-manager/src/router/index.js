@@ -13,6 +13,9 @@ import continentAdd from '@/components/continent'
 import nation from '@/components/nation'
 import nationAdd from '@/components/nationadd'
 import nationEdit from '@/components/nationedit'
+import timeline from '@/components/timeline'
+import timelineAdd from '@/components/timelineAdd'
+import timelineEdit from '@/components/timelineEdit'
 
 Vue.use(Router)
 
@@ -69,5 +72,17 @@ export default new Router({
     path: '/nation/edit/:id',
     name: 'nationEdit',
     component: nationEdit
+  }, {
+    path: '/timeline',
+    name: 'timeline',
+    component: timeline
+  }, {
+    path: '/timeline/add',
+    name: 'timelineAdd',
+    component: timelineAdd
+  }, {
+    path: '/timeline/edit/:id',
+    name: 'timelineEdit',
+    component: timelineEdit
   }]
 })

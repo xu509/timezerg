@@ -19,15 +19,19 @@
                     <span>首页</span>
                   </template>
                 </el-menu-item>
-                <el-menu-item index="2" route = "/node">
+                <el-menu-item index="2" route = "/timeline">
+                  <i class="el-icon-star-on"></i>
+                  <span slot="title">时间线</span>
+                </el-menu-item>
+                <el-menu-item index="3" route = "/node">
                   <i class="el-icon-menu"></i>
                   <span slot="title">节点</span>
                 </el-menu-item>
-                <el-menu-item index="3" route = "/civilization">
+                <el-menu-item index="4" route = "/civilization">
                   <i class="el-icon-menu"></i>
                   <span slot="title">文明</span>
                 </el-menu-item>
-                <el-menu-item index="4" route = "/nation">
+                <el-menu-item index="5" route = "/nation">
                   <i class="el-icon-menu"></i>
                   <span slot="title">国家 / 时期</span>
                 </el-menu-item>
@@ -36,12 +40,12 @@
                   <span slot="title">朝代</span>
                 </el-menu-item> -->
 
-                <el-submenu index="5">
+                <el-submenu index="6">
                   <template slot="title">
                     <i class="el-icon-location"></i>
                     <span>设置</span>
                   </template>
-                  <el-menu-item index="5-1" route = "/continent/add">大洲</el-menu-item>
+                  <el-menu-item index="6-1" route = "/continent/add">大洲</el-menu-item>
                 </el-submenu>
               </el-menu>
 
@@ -62,15 +66,19 @@
                     <span>首页</span>
                   </template>
                 </el-menu-item>
-                <el-menu-item index="2" route = "/node">
+                <el-menu-item index="2" route = "/timeline">
+                  <i class="el-icon-star-on"></i>
+                  <span slot="title">时间线</span>
+                </el-menu-item>
+                <el-menu-item index="3" route = "/node">
                   <i class="el-icon-menu"></i>
                   <span slot="title">节点</span>
                 </el-menu-item>
-                <el-menu-item index="3" route = "/civilization">
+                <el-menu-item index="4" route = "/civilization">
                   <i class="el-icon-menu"></i>
                   <span slot="title">文明</span>
                 </el-menu-item>
-                <el-menu-item index="4" route = "/nation">
+                <el-menu-item index="5" route = "/nation">
                   <i class="el-icon-menu"></i>
                   <span slot="title">国家 / 时期</span>
                 </el-menu-item>
@@ -79,12 +87,12 @@
                   <span slot="title">朝代</span>
                 </el-menu-item> -->
 
-                <el-submenu index="5">
+                <el-submenu index="6">
                   <template slot="title">
                     <i class="el-icon-location"></i>
                     <span>设置</span>
                   </template>
-                  <el-menu-item index="5-1" route = "/continent/add">大洲</el-menu-item>
+                  <el-menu-item index="6-1" route = "/continent/add">大洲</el-menu-item>
                 </el-submenu>
               </el-menu>
             </el-col>
