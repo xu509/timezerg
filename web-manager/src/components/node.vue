@@ -15,7 +15,7 @@
 
 
     <el-row>
-      <el-col :span="6">
+      <el-col :span="6" :xs="12" :sm="12" >
           <el-autocomplete popper-class="my-autocomplete"
                               :fetch-suggestions="queryCivilization"
                                 placeholder="搜索文明"
@@ -27,7 +27,7 @@
                                 </template>
           </el-autocomplete>
       </el-col>           
-      <el-col :span = "6">
+      <el-col :span = "6" :xs="12" :sm="12" >
             <el-tag type="warning"
                       :key="civilization.id"
                       v-for="civilization in civilizations"
@@ -42,10 +42,10 @@
 
     <el-row>
       <el-col :span="24">
-        <el-table :data = "datas">
+        <el-table :data = "datas" style="width:100%">
             <el-table-column fixed prop = "ddate" label = "日期" width="160"></el-table-column>
-            <el-table-column prop = "title" label = "标题"></el-table-column>
-            <el-table-column label = "时代">
+            <el-table-column prop = "title" label = "标题" width="120"></el-table-column>
+            <el-table-column label = "时代" width="120">
                 <template slot-scope="scrope">
                     <template v-for="item in scrope.row.nations">
                         {{item.title}} &nbsp;

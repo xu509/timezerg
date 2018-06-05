@@ -1,21 +1,19 @@
 <template>
-  <div class="hello">
+  <div class="hello" v-loading = "loading">
       <el-row>
           <el-col :span="22">&nbsp;</el-col>
           <el-col :span="2"><i class="el-icon-setting" @click="clickSettingIcon"></i></el-col>
       </el-row>
 
       <el-row class="setting-box" v-show="showSetting">
-          <el-col :span="3"><p class="common-title">显示的文明：</p></el-col>
-          <el-col :span="6">
-            <template v-if="civilizations.length > 0">
-               <el-tag v-for="item in civilizations" :key="item.id" closable class="tag-civilization"  @close="handleCloseTag(item)">{{item.title}}</el-tag>
-            </template>
+          <el-col :md="3" :xs="9" :sm="9"><p class="common-title">显示的文明：</p></el-col>
+          <el-col :md="6" :xs="12" :sm="12"><template v-if="civilizations.length > 0"><el-tag v-for="item in civilizations" :key="item.id" closable class="tag-civilization"  @close="handleCloseTag(item)">{{item.title}}</el-tag></template>
             <template v-if="civilizations.length == 0">
                 <p class = "content-warning">无显示的文明</p>
             </template>
           </el-col>
-          <el-col :span="6" class="search-box">
+          <el-col :md="2" :xs="1" :sm="1"></el-col>
+          <el-col :md="6" :xs="20" :sm="20" class="search-box">
             <el-autocomplete popper-class="my-autocomplete" clearable
                               :fetch-suggestions="queryCivilization"
                                 placeholder="增加显示的文明"
@@ -26,29 +24,44 @@
                                             </div>
                                 </template>
             </el-autocomplete>
-            <el-button type="primary" icon="el-icon-plus" circle v-if="add_civilization_id != null" @click="addCivilizationIndex"></el-button>
+            <el-button type="primary" icon="el-icon-plus" circle  @click="addCivilizationIndex"></el-button>
           </el-col>
+
+          <el-col :md="6" :xs="20" :sm="20" id="level-box">
+              <el-select v-model="level" placeholder="请选择">
+                <el-option
+                  v-for="item in levels"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+          </el-col>
+
+
+
+
       </el-row>
 
       <el-row :gutter="20" class="title">
-        <el-col :md="4">
+        <el-col :md="width" :xs="width" :sm="width">
             时间
         </el-col>
-        <el-col :md="6"  v-for="item in civilizations" :key="item.id">
+        <el-col :md="width" :xs="width" :sm="width" v-for="item in civilizations" :key="item.id">
           {{item.title}}
         </el-col>
       </el-row>
 
 
       <el-row>
-          <el-col :md="4"  class="detail">
+          <el-col :md="width" :xs="width" :sm="width" class="detail">
               <template v-for="item in times">
                     <el-row :key="item.ddate"><div class="table-item">{{item.ddate}}</div></el-row>
               </template> 
           </el-col>
 
           <template v-for="item in timelines">
-             <el-col :md="6"  class="detail" :key="item.cid">
+             <el-col :md="width" :xs="width" :sm="width" class="detail" :key="item.cid">
                  <template v-for="(it,index) in item.beans">
                       <el-row :key="index">
                         <div class="table-item">
@@ -77,10 +90,18 @@ export default {
       add_civilization_name: null,
       show_civilizations: [],
       level: 3,
+      levels: [
+        { value: 1, label: "非常重要" },
+        { value: 2, label: "重要" },
+        { value: 3, label: "普通" },
+        { value: 4, label: "琐事" }
+      ],
       datas: [],
       civilizations: [],
       times: [],
       timelines: [],
+      loading: false,
+      width: 0,
       showSetting: false
     };
   },
@@ -92,6 +113,7 @@ export default {
     },
     initData() {
       var _this = this;
+      _this.loading = true;
 
       //获取显示的文明
       axios
@@ -101,6 +123,12 @@ export default {
         .then(function(response) {
           if (response.data.result == 0) {
             _this.civilizations = response.data.data;
+
+            var cnum = _this.civilizations.length;
+
+            _this.width = 24 / (cnum + 1);
+
+            console.log("width : " + _this.width);
           }
           // console.log(response.data.data[0].id);
         });
@@ -121,9 +149,7 @@ export default {
             _this.timelines = timelines;
             // console.log(times);
 
-            // _this.datas = response.data.data.data;
-            // _this.civilizations = response.data.data.civilizations;
-            // console.log(response.data.data.times);
+            _this.loading = false;
           }
         })
         .catch(function(error) {
@@ -162,7 +188,6 @@ export default {
       this.add_civilization_id = item.id;
       this.add_civilization_name = item.title;
     },
-
     //增加文明
     addCivilizationIndex() {
       var _this = this;
@@ -210,6 +235,12 @@ export default {
       this.showSetting = !this.showSetting;
     }
   },
+  watch: {
+    level() {
+      this.init();
+      // console.log(this.level);
+    }
+  },
   mounted: function() {
     this.init();
   }
@@ -244,11 +275,14 @@ export default {
 }
 
 .search-box {
-  padding-top: 20px;
+  padding-left: 15px;
 }
 
 .setting-box {
   border: solid 1px #e6e6e6;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .table-item {
@@ -257,5 +291,9 @@ export default {
   border: solid 1px #e6e6e6;
   overflow-y: auto;
   /* line-height: 20px; */
+}
+
+#level-box {
+  padding-left: 20px;
 }
 </style>

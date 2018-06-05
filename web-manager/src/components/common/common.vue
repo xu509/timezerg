@@ -1,8 +1,8 @@
 <script>
 const table_page_node = 1;
 const table_size_node = 10;
-const domain = "http://127.0.0.1:8081";
-// const domain = "http://api.timezerg.com";
+// const domain = "http://192.168.1.112:8081";
+const domain = "http://api.timezerg.com";
 const doamin_image = "http://xu-1253743633.file.myqcloud.com";
 
 const url_node_list = domain + "/node/list";
