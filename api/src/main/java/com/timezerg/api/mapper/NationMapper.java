@@ -34,7 +34,7 @@ public interface NationMapper {
     Nation selectById(String id);
 
 
-    @Update("update t_timezerg_nation set pid = #{pid} ,title = #{title},content = #{content},cover = #{cover},cdate = #{cdate},edate = #{edate},ddate = #{ddate},AD = #{AD},eAD = #{eAD}" +
+    @Update("update t_timezerg_nation set pid = #{pid} ,title = #{title},content = #{content},cover = #{cover},cdate = #{cdate},edate = #{edate},ddate = #{ddate},AD = #{AD},eAD = #{eAD},invent = #{invent}" +
             " where id = #{id}")
     int update(Nation nation);
 

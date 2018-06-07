@@ -62,6 +62,9 @@
                 <el-form-item label="显示的时间">
                   <el-input v-model="form.ddate"></el-input>
                 </el-form-item>
+                  <el-form-item label="重要发明">
+                  <el-input v-model="form.invent"></el-input>
+                </el-form-item>
                 <el-form-item label="承接">
                    <el-autocomplete popper-class="my-autocomplete"
                               :fetch-suggestions="queryNation"
@@ -69,8 +72,8 @@
                                 @select="selectNation">
                                 <template slot-scope="props">
                                           <div class="name">
-                                                {{ props.item.title }}
-                                            </div>
+                                            {{ props.item.title }}
+                                          </div>
                                 </template>
                     </el-autocomplete>
                     <el-tag type="warning" v-if = "form.pnation != null"
@@ -81,6 +84,28 @@
                       {{form.pnation}}
                     </el-tag>
                 </el-form-item>
+
+                <el-form-item label="名人">
+                   <el-autocomplete popper-class="my-autocomplete"
+                              :fetch-suggestions="queryGiant"
+                                placeholder="搜索"
+                                @select="selectGiant">
+                                <template slot-scope="props">
+                                          <div class="name">
+                                                <i class="el-icon-circle-plus-outline" v-if="props.item.isnew"></i>&nbsp;&nbsp;{{ props.item.name }}
+                                          </div>
+                                </template>
+                    </el-autocomplete>
+                    <el-tag type="warning" v-if = "form.giant != null" v-for="(item,index) in form.giant"
+                      :key="item.id"
+                      closable
+                      :disable-transitions="false"
+                      @close="closeGiantTag(index)">
+                      {{item.name}}
+                    </el-tag>
+                </el-form-item>
+
+
                 <el-form-item>
                   <el-button type="primary" @click="save" :loading="saving">更新</el-button>
                 </el-form-item>
@@ -112,6 +137,7 @@ export default {
         eday: null,
         pid: null,
         pnation: "",
+        giant: [],
         AD: 1,
         eAD: 1
       },
@@ -143,6 +169,8 @@ export default {
           eday: _this.form.eday,
           AD: _this.form.AD,
           eAD: _this.form.eAD,
+          invent: _this.form.invent,
+          giant: _this.form.giant,
           pid: _this.form.pid
         })
         .then(function(response) {
@@ -189,6 +217,8 @@ export default {
 
             _this.form.AD = nation.aD;
             _this.form.eAD = nation.eAD;
+            _this.form.invent = nation.invent;
+            _this.form.giant = nation.giant;
 
             _this.loading = false;
           } else {
@@ -198,6 +228,7 @@ export default {
         .catch(function(error) {});
     },
     queryNation(queryString, cb) {
+      var _this = this;
       var sr = [];
       if (queryString != undefined && queryString.length > 0) {
         axios
@@ -228,6 +259,56 @@ export default {
     closeNationTag() {
       this.pid = null;
       this.pnation = null;
+    },
+    queryGiant(queryString, cb) {
+      var _this = this;
+      var sr = [];
+      if (queryString != undefined && queryString.length > 0) {
+        axios
+          .post(_this.GLOBAL.url_search_giant, {
+            sw: queryString
+          })
+          .then(function(response) {
+            var r = response.data;
+            if (r.result == 0) {
+              var data = r.data.data;
+              if (r.data.exist) {
+                cb(data);
+              } else {
+                var item = {
+                  id: "11",
+                  name: queryString,
+                  isnew: true
+                };
+
+                sr.push(item);
+
+                cb(sr);
+              }
+            } else {
+              cb(sr);
+            }
+          });
+      } else {
+        cb(sr);
+      }
+    },
+    selectGiant(item) {
+      //增加
+      if (this.form.giant) {
+        console.log(111);
+        this.form.giant.push(item);
+      } else {
+        console.log(222);
+        this.form.giant = new Array();
+        this.form.giant.push(item);
+      }
+
+      // this.form.pid = item.id;
+      // this.form.pnation = item.title;
+    },
+    closeGiantTag(index) {
+      this.form.giant.splice(index, 1);
     }
   },
   mounted: function() {

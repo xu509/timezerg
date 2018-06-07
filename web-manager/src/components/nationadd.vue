@@ -62,6 +62,9 @@
                 <el-form-item label="显示的时间">
                   <el-input v-model="form.ddate"></el-input>
                 </el-form-item>
+                <el-form-item label="重要发明">
+                  <el-input v-model="form.invent"></el-input>
+                </el-form-item>
                 <el-form-item label="承接">
                    <el-autocomplete popper-class="my-autocomplete"
                               :fetch-suggestions="queryNation"
@@ -109,6 +112,7 @@ export default {
         eday: null,
         AD: 1,
         eAD: 1,
+        invent: null,
         pnation: null
       },
       switchc: {
@@ -135,6 +139,7 @@ export default {
           eday: _this.form.eday,
           AD: _this.form.AD,
           eAD: _this.form.eAD,
+          invent: _this.form.invent,
           pid: _this.form.pid
         })
         .then(function(response) {
@@ -155,6 +160,7 @@ export default {
             _this.form.AD = 1;
             _this.form.eAD = 1;
             _this.form.pid = null;
+            _this.form.invent = null;
             _this.form.pnation = null;
           } else {
             _this.$message.error(response.data.msg);

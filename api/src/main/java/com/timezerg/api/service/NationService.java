@@ -178,6 +178,8 @@ public class NationService {
 
         nation.setPid(params.getString("pid"));
 
+        nation.setInvent(params.getString("invent"));
+
         System.out.println(JSON.toJSONString(nation));
         nationMapper.update(nation);
 

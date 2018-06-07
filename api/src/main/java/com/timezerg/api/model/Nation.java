@@ -21,6 +21,7 @@ public class Nation implements Serializable {
     private String ddate; //显示的日期
     private int AD = 1; // 开启是否在公元
     private int eAD = 1; // 结束是否在公元
+    private String invent; //发明
 
     public String getId() {
         return id;
@@ -100,5 +101,13 @@ public class Nation implements Serializable {
 
     public void seteAD(int eAD) {
         this.eAD = eAD;
+    }
+
+    public String getInvent() {
+        return invent;
+    }
+
+    public void setInvent(String invent) {
+        this.invent = invent;
     }
 }

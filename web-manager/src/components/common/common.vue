@@ -1,8 +1,8 @@
 <script>
 const table_page_node = 1;
 const table_size_node = 10;
-// const domain = "http://192.168.1.112:8081";
-const domain = "http://api.timezerg.com";
+const domain = "http://127.0.0.1:8081";
+// const domain = "http://api.timezerg.com";
 const doamin_image = "http://xu-1253743633.file.myqcloud.com";
 
 const url_node_list = domain + "/node/list";
@@ -25,8 +25,10 @@ const url_index = domain + "/civilization/index";
 const url_civilization_index_list = domain + "/civilizationindex/list";
 const url_civilization_index_add = domain + "/civilizationindex/add";
 const url_civilization_index_del = domain + "/civilizationindex/del";
+const url_giant_add = domain + "/giant/save";
 
 const url_search_nation = domain + "/nation/search";
+const url_search_giant = domain + "/giant/search";
 const url_search_civilization = domain + "/civilization/search";
 const url_search_continent = domain + "/continent/search";
 
@@ -54,9 +56,11 @@ export default {
   url_search_nation,
   url_search_civilization,
   url_search_continent,
+  url_search_giant,
   url_civilization_index_list,
   url_civilization_index_add,
-  url_civilization_index_del
+  url_civilization_index_del,
+  url_giant_add
 };
 </script>
 
