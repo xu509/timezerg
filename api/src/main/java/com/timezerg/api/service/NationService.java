@@ -1,9 +1,14 @@
 package com.timezerg.api.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.timezerg.api.mapper.GiantMapper;
+import com.timezerg.api.mapper.GiantNationMapper;
 import com.timezerg.api.mapper.NationMapper;
 import com.timezerg.api.mapper.NodeMapper;
+import com.timezerg.api.model.Giant;
+import com.timezerg.api.model.GiantNation;
 import com.timezerg.api.model.Nation;
 import com.timezerg.api.model.Node;
 import com.timezerg.api.util.Result;
@@ -27,6 +32,12 @@ public class NationService {
 
     @Autowired
     NationMapper nationMapper;
+
+    @Autowired
+    GiantMapper giantMapper;
+
+    @Autowired
+    GiantNationMapper giantNationMapper;
 
 
     @Transactional
@@ -135,6 +146,13 @@ public class NationService {
         if (pnation != null)
             r.put("pnation", pnation.getTitle());
 
+        //giant
+        List<HashMap> giants = giantNationMapper.selectByNid(id);
+        for (HashMap giant : giants){
+            giant.put("isnew",false);
+        }
+        r.put("giant",JSONObject.toJSON(giants));
+
         return new Result(ResultMessage.OK, r);
     }
 
@@ -182,6 +200,47 @@ public class NationService {
 
         System.out.println(JSON.toJSONString(nation));
         nationMapper.update(nation);
+
+
+        //重要人物
+        JSONArray giants = params.getJSONArray("giant");
+        if (giants != null){
+            giantNationMapper.deleteByNid(id);
+
+            for (int i = 0 ; i < giants.size(); i++){
+                JSONObject giant = giants.getJSONObject(i);
+                String name = giant.getString("name");
+                String giantId;
+
+                if (giant.getBoolean("isnew")){
+                    //增加并绑定
+                    Giant giant1 = new Giant();
+                    giantId = Utils.generateId();
+
+                    giant1.setId(giantId);
+                    giant1.setName(name);
+                    giantMapper.add(giant1);
+
+                }else {
+                    giantId = giant.getString("id");
+                    //绑定
+                }
+
+
+                GiantNation giantNation = new GiantNation();
+                giantNation.setId(Utils.generateId());
+                giantNation.setGid(giantId);
+                giantNation.setNid(id);
+
+                if (giantNationMapper.selectByGidAndNid(giantNation) == null){
+                    giantNationMapper.add(giantNation);
+                }
+
+            }
+        }
+
+
+
 
         return new Result(ResultMessage.OK, nation);
     }
