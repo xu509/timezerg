@@ -3,14 +3,8 @@ package com.timezerg.api.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.timezerg.api.mapper.GiantMapper;
-import com.timezerg.api.mapper.GiantNationMapper;
-import com.timezerg.api.mapper.NationMapper;
-import com.timezerg.api.mapper.NodeMapper;
-import com.timezerg.api.model.Giant;
-import com.timezerg.api.model.GiantNation;
-import com.timezerg.api.model.Nation;
-import com.timezerg.api.model.Node;
+import com.timezerg.api.mapper.*;
+import com.timezerg.api.model.*;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
@@ -38,6 +32,9 @@ public class NationService {
 
     @Autowired
     GiantNationMapper giantNationMapper;
+
+    @Autowired
+    NationInstitutionMapper nationInstitutionMapper;
 
 
     @Transactional
@@ -153,6 +150,13 @@ public class NationService {
         }
         r.put("giant",JSONObject.toJSON(giants));
 
+        //institution
+        List<HashMap> institution = nationInstitutionMapper.selectByNid(id);
+//        for (HashMap giant : institution){
+//            giant.put("isnew",false);
+//        }
+        r.put("institution",JSONObject.toJSON(institution));
+
         return new Result(ResultMessage.OK, r);
     }
 
@@ -212,7 +216,9 @@ public class NationService {
                 String name = giant.getString("name");
                 String giantId;
 
-                if (giant.getBoolean("isnew")){
+                Boolean isNewFlag = giant.getBoolean("isnew");
+
+                if (isNewFlag!= null && isNewFlag){
                     //增加并绑定
                     Giant giant1 = new Giant();
                     giantId = Utils.generateId();
@@ -222,10 +228,9 @@ public class NationService {
                     giantMapper.add(giant1);
 
                 }else {
-                    giantId = giant.getString("id");
+                    giantId = giant.getString("gid");
                     //绑定
                 }
-
 
                 GiantNation giantNation = new GiantNation();
                 giantNation.setId(Utils.generateId());
@@ -239,7 +244,27 @@ public class NationService {
             }
         }
 
+        //制度
+        JSONArray institution = params.getJSONArray("institution");
+        if (institution != null){
+            nationInstitutionMapper.deleteByNid(id);
 
+            for (int i = 0 ; i < institution.size(); i++){
+                JSONObject object = institution.getJSONObject(i);
+                String iid = object.getString("iid");
+
+                NationInstitution nationInstitution = new NationInstitution();
+                nationInstitution.setId(Utils.generateId());
+                nationInstitution.setNid(id);
+                nationInstitution.setIid(iid);
+
+
+                if (nationInstitutionMapper.selectByGidAndNid(nationInstitution) == null){
+                    nationInstitutionMapper.add(nationInstitution);
+                }
+
+            }
+        }
 
 
         return new Result(ResultMessage.OK, nation);

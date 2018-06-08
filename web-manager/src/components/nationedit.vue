@@ -97,11 +97,31 @@
                                 </template>
                     </el-autocomplete>
                     <el-tag type="warning" v-if = "form.giant != null" v-for="(item,index) in form.giant"
-                      :key="item.id"
+                      :key="item.gid"
                       closable
                       :disable-transitions="false"
                       @close="closeGiantTag(index)">
                       {{item.name}}
+                    </el-tag>
+                </el-form-item>
+
+                 <el-form-item label="制度">
+                   <el-autocomplete popper-class="my-autocomplete"
+                              :fetch-suggestions="queryInstitution"
+                                placeholder="搜索"
+                                @select="selectInstitution">
+                                <template slot-scope="props">
+                                          <div class="name">
+                                                {{ props.item.title }}
+                                          </div>
+                                </template>
+                    </el-autocomplete>
+                    <el-tag type="warning" v-if = "form.institution != null" v-for="(item,index) in form.institution"
+                      :key="item.id"
+                      closable
+                      :disable-transitions="false"
+                      @close="closeInstitutionTag(index)">
+                      {{item.title}}
                     </el-tag>
                 </el-form-item>
 
@@ -138,6 +158,7 @@ export default {
         pid: null,
         pnation: "",
         giant: [],
+        institution: [],
         AD: 1,
         eAD: 1
       },
@@ -171,7 +192,8 @@ export default {
           eAD: _this.form.eAD,
           invent: _this.form.invent,
           giant: _this.form.giant,
-          pid: _this.form.pid
+          pid: _this.form.pid,
+          institution : _this.form.institution
         })
         .then(function(response) {
           console.log(response);
@@ -219,6 +241,9 @@ export default {
             _this.form.eAD = nation.eAD;
             _this.form.invent = nation.invent;
             _this.form.giant = nation.giant;
+            _this.form.institution = nation.institution;
+
+            console.log(nation.giant);
 
             _this.loading = false;
           } else {
@@ -276,6 +301,7 @@ export default {
                 cb(data);
               } else {
                 var item = {
+                  gid: "",
                   id: "11",
                   name: queryString,
                   isnew: true
@@ -309,6 +335,48 @@ export default {
     },
     closeGiantTag(index) {
       this.form.giant.splice(index, 1);
+    },
+    queryInstitution(queryString, cb) {
+      var _this = this;
+      var sr = [];
+      if (queryString != undefined && queryString.length > 0) {
+        axios
+          .post(_this.GLOBAL.url_search_institution, {
+            sw: queryString
+          })
+          .then(function(response) {
+            var r = response.data;
+            if (r.result == 0) {
+              var data = r.data.data;
+              if (r.data.exist) {
+                cb(data);
+              } else {
+                cb(null);
+              }
+            } else {
+              cb(null);
+            }
+          });
+      } else {
+        cb(sr);
+      }
+    },
+    selectInstitution(item) {
+      //增加
+      if (this.form.institution) {
+        console.log(111);
+        this.form.institution.push(item);
+      } else {
+        console.log(222);
+        this.form.institution = new Array();
+        this.form.institution.push(item);
+      }
+
+      // this.form.pid = item.id;
+      // this.form.pnation = item.title;
+    },
+    closeInstitutionTag(index) {
+      this.form.institution.splice(index, 1);
     }
   },
   mounted: function() {

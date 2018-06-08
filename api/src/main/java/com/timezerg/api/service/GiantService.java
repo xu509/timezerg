@@ -1,5 +1,7 @@
 package com.timezerg.api.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.timezerg.api.mapper.GiantMapper;
 import com.timezerg.api.model.Giant;
@@ -42,8 +44,17 @@ public class GiantService {
 
         String title = params.getString("sw");
         List<Giant> giants = giantMapper.selectLikeByTitle(title);
+
+        JSONArray jsonArray = new JSONArray();
+        for (Giant giant : giants){
+            JSONObject obj = (JSONObject) JSON.toJSON(giant);
+            obj.put("gid",giant.getId());
+            jsonArray.add(obj);
+        }
+
+
         r.put("exist", giants.size() > 0);
-        r.put("data", giants);
+        r.put("data", jsonArray);
 
         return new Result(ResultMessage.OK, r);
     }

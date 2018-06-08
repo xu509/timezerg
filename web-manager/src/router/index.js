@@ -16,6 +16,8 @@ import nationEdit from '@/components/nationedit'
 import timeline from '@/components/timeline'
 import timelineAdd from '@/components/timelineAdd'
 import timelineEdit from '@/components/timelineEdit'
+import institution from '@/components/institution'
+import institutionAdd from '@/components/institutionAdd'
 
 Vue.use(Router)
 
@@ -84,5 +86,13 @@ export default new Router({
     path: '/timeline/edit/:id',
     name: 'timelineEdit',
     component: timelineEdit
-  }]
+  }, {
+    path: '/institution',
+    name: 'institution',
+    component: institution
+  }, {
+    path: '/institution/add',
+    name: 'institutionAdd',
+    component: institutionAdd
+  }, ]
 })

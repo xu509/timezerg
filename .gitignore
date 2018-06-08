@@ -34,3 +34,4 @@ api/.mvn/wrapper/maven-wrapper.jar
 api/mvnw.cmd
 api/mvnw
 
+web-manager/dist/

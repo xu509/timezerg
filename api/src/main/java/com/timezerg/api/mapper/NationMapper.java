@@ -15,7 +15,7 @@ import java.util.List;
 @Mapper
 public interface NationMapper {
 
-    @Insert("insert into t_timezerg_nation values (#{id},#{pid},#{title},#{content},#{cover},#{cdate},#{edate},#{ddate},#{AD},#{eAD})")
+    @Insert("insert into t_timezerg_nation values (#{id},#{pid},#{title},#{content},#{cover},#{cdate},#{edate},#{ddate},#{AD},#{eAD},#{invent})")
     int add(Nation nation);
 
     @Select("(SELECT n.* FROM t_timezerg_nation n WHERE 1 = 1 AND n.AD = 0 ORDER BY n.cdate DESC LIMIT 99999999)" +
