@@ -25,7 +25,10 @@ const url_index = domain + "/civilization/index";
 const url_civilization_index_list = domain + "/civilizationindex/list";
 const url_civilization_index_add = domain + "/civilizationindex/add";
 const url_civilization_index_del = domain + "/civilizationindex/del";
+const url_giant_list = domain + "/giant/list";
 const url_giant_add = domain + "/giant/save";
+const url_giant_edit_init = domain + "/giant/edit/init";
+const url_giant_edit_save = domain + "/giant/edit/save";
 const url_institution_list = domain + "/institution/list";
 const url_institution_add = domain + "/institution/save";
 
@@ -34,6 +37,7 @@ const url_search_giant = domain + "/giant/search";
 const url_search_civilization = domain + "/civilization/search";
 const url_search_continent = domain + "/continent/search";
 const url_search_institution = domain + "/institution/search";
+const url_search_tag = domain + "/tag/search";
 
 export default {
   table_page_node, //
@@ -63,10 +67,14 @@ export default {
   url_civilization_index_list,
   url_civilization_index_add,
   url_civilization_index_del,
+  url_giant_list,
   url_giant_add,
+  url_giant_edit_init,
+  url_giant_edit_save,
   url_institution_list,
   url_institution_add,
-  url_search_institution
+  url_search_institution,
+  url_search_tag
 };
 </script>
 

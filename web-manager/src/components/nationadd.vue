@@ -10,23 +10,23 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-col :span="12">
+      <el-col :md ="18" :xs="24" :sm="24" >
           <el-form ref="form" :model="form" label-width="120px">
                 <el-form-item label="标题">
                   <el-input v-model="form.title"></el-input>
                 </el-form-item>
                 <el-form-item label="启">
                   <el-row :gutter="20">
-                    <el-col :span = "4">
+                    <el-col :md = "4" :xs="18" :sm="18">
                       <el-input v-model="form.year" placeholder="年"/>
                     </el-col>
-                    <el-col :span = "3">
+                    <el-col :md = "3" :xs="18" :sm="18">
                       <el-input v-model="form.month" placeholder="月"/>
                     </el-col>
-                    <el-col :span = "3">
+                    <el-col :md = "3" :xs="18" :sm="18">
                       <el-input v-model="form.day" placeholder="日"/>
                     </el-col>
-                     <el-col :span= "3">
+                    <el-col :md = "3" :xs="18" :sm="18">
                       <el-switch
                           v-model="form.AD"
                           active-text="AD"
@@ -39,16 +39,16 @@
                 </el-form-item>
                 <el-form-item label="终">
                   <el-row :gutter="20">
-                    <el-col :span = "4">
+                    <el-col :md = "4" :xs="18" :sm="18">
                       <el-input v-model="form.eyear" placeholder="年"/>
                     </el-col>
-                    <el-col :span = "3">
+                    <el-col :md = "3" :xs="18" :sm="18">
                       <el-input v-model="form.emonth" placeholder="月"/>
                     </el-col>
-                    <el-col :span = "3">
+                    <el-col :md = "3" :xs="18" :sm="18">
                       <el-input v-model="form.eday" placeholder="日"/>
                     </el-col>
-                    <el-col :span= "3">
+                    <el-col :md = "3" :xs="18" :sm="18">
                       <el-switch
                           v-model="form.eAD"
                           active-text="AD"

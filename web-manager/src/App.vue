@@ -47,6 +47,7 @@
                   </template>
                   <el-menu-item index="6-1" route = "/continent/add">大洲</el-menu-item>
                   <el-menu-item index="6-2" route = "/institution">制度</el-menu-item>
+                  <el-menu-item index="6-3" route = "/giant">人物</el-menu-item>
                 </el-submenu>
               </el-menu>
 
@@ -95,6 +96,7 @@
                   </template>
                   <el-menu-item index="6-1" route = "/continent/add">大洲</el-menu-item>
                   <el-menu-item index="6-2" route = "/institution">制度</el-menu-item>
+                  <el-menu-item index="6-3" route = "/giant">人物</el-menu-item>
                 </el-submenu>
               </el-menu>
             </el-col>

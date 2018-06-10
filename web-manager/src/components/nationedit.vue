@@ -138,9 +138,6 @@
 <script>
 import axios from "axios";
 
-// var url_save = "http://192.168.1.112:8081/nation/edit/save",
-//   url_search_nation = "http://192.168.1.112:8081/nation/search",
-//   url_init = "http://192.168.1.112:8081/nation/edit/init";
 export default {
   name: "NationEdit",
   data() {

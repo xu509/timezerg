@@ -16,6 +16,8 @@ import nationEdit from '@/components/nationedit'
 import timeline from '@/components/timeline'
 import timelineAdd from '@/components/timelineAdd'
 import timelineEdit from '@/components/timelineEdit'
+import giant from '@/components/giant'
+import giantEdit from '@/components/giantEdit'
 import institution from '@/components/institution'
 import institutionAdd from '@/components/institutionAdd'
 
@@ -86,7 +88,15 @@ export default new Router({
     path: '/timeline/edit/:id',
     name: 'timelineEdit',
     component: timelineEdit
-  }, {
+  },{
+    path : '/giant',
+    name : 'giant',
+    component : giant 
+  },{
+    path: '/giant/edit/:id',
+    name: 'giantEdit',
+    component: giantEdit
+  },{
     path: '/institution',
     name: 'institution',
     component: institution
@@ -94,5 +104,5 @@ export default new Router({
     path: '/institution/add',
     name: 'institutionAdd',
     component: institutionAdd
-  }, ]
+  }]
 })

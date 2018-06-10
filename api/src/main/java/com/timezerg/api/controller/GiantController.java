@@ -31,4 +31,21 @@ public class GiantController {
         return giantService.selectByTitle(params);
     }
 
+    @CrossOrigin
+    @PostMapping("/giant/list")
+    public Object list(@RequestBody JSONObject params){
+        return giantService.getList(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/giant/edit/init")
+    public Object editInit(@RequestBody JSONObject params){
+        return giantService.editInit(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/giant/edit/save")
+    public Object editSave(@RequestBody JSONObject params){
+        return giantService.editSave(params);
+    }
 }
