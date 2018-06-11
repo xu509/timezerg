@@ -1,11 +1,11 @@
 <template>
-      <el-autocomplete popper-class="my-autocomplete" clearable v-model="form.name"
-                        :fetch-suggestions="queryGiant"
-                          placeholder="搜索人物"
-                          @select="selectGiant">
+      <el-autocomplete popper-class="my-autocomplete" clearable v-model="name"
+                        :fetch-suggestions="queryCivilization"
+                          placeholder="搜索文明"
+                          @select="selectCivilization">
                           <template slot-scope="props">
                                     <div class="name">
-                                          <i class="el-icon-circle-plus-outline" v-if="props.item.isnew"></i>&nbsp;&nbsp;{{ props.item.name }}
+                                          <i class="el-icon-circle-plus-outline" v-if="props.item.isnew"></i>&nbsp;&nbsp;{{ props.item.title }}
                                       </div>
                           </template>
       </el-autocomplete>
@@ -15,46 +15,39 @@
 import axios from "axios";
 
 export default {
-  name: "inputboxgiant",
+  name: "inputboxcivilization",
   data() {
     return {
-      form: {
-        name: "",
-        content: "",
-        ddate: "",
-        tags: []
-      },
+      name: "",
       saving: false,
       loading: true
     };
   },
   methods: {
-    queryGiant(queryString, cb) {
+    queryCivilization(queryString, cb) {
       var _this = this;
       var sr = [];
       if (queryString != undefined && queryString.length > 0) {
         axios
-          .post(_this.GLOBAL.url_search_giant, {
+          .post(_this.GLOBAL.url_search_civilization, {
             sw: queryString
           })
           .then(function(response) {
             var r = response.data;
             if (r.result == 0) {
               var data = r.data.data;
-              if (!r.data.same) {
+              if (r.data.exist) {
+                cb(data);
+              } else {
                 var item = {
                   id: "11",
-                  name: queryString,
+                  title: queryString,
                   isnew: true
                 };
+
                 sr.push(item);
+                cb(sr);
               }
-
-              for (var i = 0; i < data.length; i++) {
-                sr.push(data[i]);
-              }
-
-              cb(sr);
             } else {
               cb(sr);
             }
@@ -63,9 +56,9 @@ export default {
         cb(sr);
       }
     },
-    selectGiant(item) {
-      this.form.name = item.name;
-      this.$emit("selectGiant", item);
+    selectCivilization(item) {
+      this.name = "";
+      this.$emit("selectCivilization", item);
       // this.form.tags.push(item);
     }
   },

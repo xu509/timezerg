@@ -87,7 +87,7 @@
                 </el-form-item>
 
                 <el-form-item label="名人">
-                    <InputboxGiant @selectGiant = "selectGiant"></InputboxGiant>
+                    <inputboxgiant @selectGiant = "selectGiant"></inputboxgiant>
                     <el-tag type="warning" v-if = "form.giant != null" v-for="(item,index) in form.giant"
                       :key="item.gid"
                       closable
@@ -121,7 +121,7 @@
 <script>
 import axios from "axios";
 import inputboxnation from "./plugin/inputboxnation.vue";
-import InputboxGiant from "./plugin/InputboxGiant.vue";
+import inputboxgiant from "./plugin/inputboxgiant.vue";
 import inputboxinstitution from "./plugin/inputboxinstitution.vue";
 
 export default {
@@ -157,7 +157,7 @@ export default {
   },
   components: {
     inputboxnation,
-    InputboxGiant,
+    inputboxgiant,
     inputboxinstitution
   },
   methods: {

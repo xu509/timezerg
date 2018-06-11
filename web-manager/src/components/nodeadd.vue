@@ -10,29 +10,29 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-col :sm="24" xs="24" :md="14" :xl="14" >
+      <el-col :sm="24" :xs="24" :md="14" :xl="14" >
           <el-form ref="form" :model="form" label-width="120px">
                 <el-form-item label="标题">
                   <el-input v-model="form.title"></el-input>
                 </el-form-item>
                 <el-form-item label="时间">
                   <el-row :gutter="20">
-                    <el-col :md = "4" :xl="4" :sm="12" xs="12">
+                    <el-col :md = "4" :xl="4" :sm="12" :xs="12">
                       <el-input v-model="form.year" placeholder="年"/>
                     </el-col>
-                    <el-col :md = "3" :xl="3" :sm="12" xs="12">
+                    <el-col :md = "3" :xl="3" :sm="12" :xs="12">
                       <el-input v-model="form.month" placeholder="月"/>
                     </el-col>
-                    <el-col :md = "3" :xl="3" :sm="12" xs="12">
+                    <el-col :md = "3" :xl="3" :sm="12" :xs="12">
                       <el-input v-model="form.day" placeholder="日"/>
                     </el-col>
-                    <el-col :md = "4" :xl="4" :sm="12" xs="12">
+                    <el-col :md = "4" :xl="4" :sm="12" :xs="12">
                       <el-input v-model="form.hour" placeholder="时"/>
                     </el-col>
-                    <el-col :md = "4" :xl="4" :sm="12" xs="12">
+                    <el-col :md = "4" :xl="4" :sm="12" :xs="12">
                       <el-input v-model="form.minute" placeholder="分"/>
                     </el-col>
-                    <el-col :md = "4" :xl="4" :sm="12" xs="12">
+                    <el-col :md = "4" :xl="4" :sm="12" :xs="12">
                       <el-input v-model="form.second" placeholder="秒"/>
                     </el-col>
                   </el-row>
@@ -52,46 +52,41 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="相关国家">
-                   <el-autocomplete popper-class="my-autocomplete"
-                              :fetch-suggestions="queryNation" v-model="nation"
-                                placeholder="搜索国家，比如意大利"
-                                @select="selectNation">
-                                <template slot-scope="props">
-                                          <div class="name">
-                                                {{ props.item.title }}
-                                            </div>
-                                </template>
-                    </el-autocomplete>
+                    <inputboxnation @selectNation = "selectNation"></inputboxnation>
                     <el-tag
                       :key="nation.id"
-                      v-for="nation in form.nations"
+                      v-for="(nation,index) in form.nations"
                       closable
                       :disable-transitions="false"
-                      @close="closeNationTag(nation)">
+                      @close="closeNationTag(index)">
                       {{nation.title}}
                     </el-tag>
                 </el-form-item>
 
                 <el-form-item label="相关文明">
-                   <el-autocomplete popper-class="my-autocomplete"
-                              :fetch-suggestions="queryCivilization"
-                                placeholder="搜索文明" v-model="civilization"
-                                @select="selectCivilization">
-                                <template slot-scope="props">
-                                          <div class="name">
-                                                {{ props.item.title }}
-                                            </div>
-                                </template>
-                    </el-autocomplete>
+                   <inputboxcivilization @selectCivilization = "selectCivilization"></inputboxcivilization>
                     <el-tag type="warning"
                       :key="civilization.id" 
-                      v-for="civilization in form.civilizations"
+                      v-for="(civilization,index) in form.civilizations"
                       closable
                       :disable-transitions="false"
-                      @close="closeNationTag(civilization)">
+                      @close="closeCivilizationTag(index)">
                       {{civilization.title}}
                     </el-tag>
                 </el-form-item>
+
+                <el-form-item label="相关人物">
+                  <inputboxgiant @selectGiant = "selectGiant"></inputboxgiant>
+                  <el-tag type="warning"
+                      :key="giant.id"
+                      v-for="(giant,index) in form.giants"
+                      closable
+                      :disable-transitions="false"
+                      @close="closeGiantTag(index)">
+                      {{giant.name}}
+                    </el-tag>
+                </el-form-item>
+
                 <el-form-item>
                   <el-button type="primary" @click="save" :loading="saving">创建</el-button>
                 </el-form-item>
@@ -103,9 +98,12 @@
 
 <script>
 import axios from "axios";
+import inputboxnation from "./plugin/inputboxnation.vue"
+import inputboxcivilization from "./plugin/inputboxcivilization.vue"
+import inputboxgiant from "./plugin/inputboxgiant.vue"
 
 export default {
-  name: "NodeAdd",
+  name: "nodeadd",
   data() {
     return {
       form: {
@@ -122,7 +120,9 @@ export default {
         nation: null,
         nations: [],
         civilization: null,
-        civilizations: []
+        civilizations: [],
+        giants: []
+
       },
       options: [
         {
@@ -148,6 +148,9 @@ export default {
       ],
       saving: false
     };
+  },
+  components:{
+    inputboxnation,inputboxcivilization,inputboxgiant
   },
   methods: {
     init() {
@@ -184,7 +187,8 @@ export default {
           AD: _this.form.AD,
           level: _this.form.level,
           nations: _this.form.nations,
-          civilizations: _this.form.civilizations
+          civilizations: _this.form.civilizations,
+          giants : _this.form.giants
         })
         .then(function(response) {
           if (response.data.result == 0) {
@@ -203,77 +207,23 @@ export default {
           _this.saving = false;
         });
     },
-    queryNation(queryString, cb) {
-      var _this = this;
-      var sr = [];
-      if (queryString != undefined && queryString.length > 0) {
-        axios
-          .post(_this.GLOBAL.url_search_nation, {
-            sw: queryString
-          })
-          .then(function(response) {
-            var r = response.data;
-            if (r.result == 0) {
-              var data = r.data.data;
-              if (r.data.exist) {
-                cb(data);
-              } else {
-                cb(data);
-              }
-            } else {
-              cb(sr);
-            }
-          });
-      } else {
-        cb(sr);
-      }
-    },
     selectNation(item) {
-      var nation = {
-        nationid: item.id,
-        title: item.title
-      };
-      this.form.nations.push(nation);
+      this.form.nations.push(item);
     },
-    closeNationTag(nation) {
-      var index = this.form.nations.indexOf(nation);
+    closeNationTag(index) {
       this.form.nations.splice(index, 1);
     },
-    queryCivilization(queryString, cb) {
-      var _this = this;
-      var sr = [];
-      if (queryString != undefined && queryString.length > 0) {
-        axios
-          .post(_this.GLOBAL.url_search_civilization, {
-            sw: queryString
-          })
-          .then(function(response) {
-            var r = response.data;
-            if (r.result == 0) {
-              var data = r.data.data;
-              if (r.data.exist) {
-                cb(data);
-              } else {
-                cb(data);
-              }
-            } else {
-              cb(sr);
-            }
-          });
-      } else {
-        cb(sr);
-      }
-    },
     selectCivilization(item) {
-      var civilization = {
-        cid: item.id,
-        title: item.title
-      };
-      this.form.civilizations.push(civilization);
+      this.form.civilizations.push(item);
     },
-    closeNationTag(civilization) {
-      var index = this.form.civilizations.indexOf(civilization);
+    closeCivilizationTag(index) {
       this.form.civilizations.splice(index, 1);
+    },
+    selectGiant(item){
+      this.form.giants.push(item);
+    },
+    closeGiantTag(index){
+      this.form.giants.splice(index,1);
     }
   }
 };

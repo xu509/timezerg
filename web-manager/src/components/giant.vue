@@ -15,7 +15,7 @@
 
     <el-row>
        <el-col :span="8">
-            <InputboxGiant @selectGiant = "selectGiant"></InputboxGiant>
+            <inputboxgiant @selectGiant = "selectGiant"></inputboxgiant>
             <el-tag type="success" v-if="name != null" closable  @close="closeSearchName()">
                   {{name}}
             </el-tag>
@@ -72,7 +72,7 @@
 
 <script>
 import axios from "axios";
-import InputboxGiant from "./plugin/InputboxGiant.vue";
+import inputboxgiant from "./plugin/inputboxgiant.vue";
 
 export default {
   name: "Node",
@@ -86,7 +86,7 @@ export default {
     };
   },
   components: {
-    InputboxGiant
+    inputboxgiant
   },
   methods: {
     init() {

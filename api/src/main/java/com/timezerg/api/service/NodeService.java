@@ -3,13 +3,8 @@ package com.timezerg.api.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.timezerg.api.mapper.CivilizationMapper;
-import com.timezerg.api.mapper.NodeCivilizationMapper;
-import com.timezerg.api.mapper.NodeMapper;
-import com.timezerg.api.mapper.NodeNationMapper;
-import com.timezerg.api.model.Node;
-import com.timezerg.api.model.NodeCivilization;
-import com.timezerg.api.model.NodeNation;
+import com.timezerg.api.mapper.*;
+import com.timezerg.api.model.*;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
@@ -39,10 +34,24 @@ public class NodeService {
     @Autowired
     NodeCivilizationMapper nodeCivilizationMapper;
 
+    @Autowired
+    NationMapper nationMapper;
 
+    @Autowired
+    CivilizationMapper civilizationMapper;
+
+    @Autowired
+    NodeGiantMapper nodeGiantMapper;
+
+    @Autowired
+    GiantMapper giantMapper;
+
+
+    @Transactional
     public Object add(JSONObject params){
         Node node = new Node();
-        node.setId(Utils.generateId());
+        String nodeId = Utils.generateId();
+        node.setId(nodeId);
         node.setTitle(params.getString("title"));
         node.setContent(params.getString("content"));
         node.setAD(params.getInteger("AD"));
@@ -71,33 +80,24 @@ public class NodeService {
         //相关国家
         nodeMapper.add(node);
 
-        // 修改 nation 的相关国家
+        // 修改 node 的相关国家
         JSONArray nations = params.getJSONArray("nations");
-        for (int i = 0 ; i < nations.size() ; i++){
-            JSONObject nation = nations.getJSONObject(i);
-            String nationId = nation.getString("nationid");
-            NodeNation nodeNation = new NodeNation();
-            nodeNation.setId(Utils.generateId());
-            nodeNation.setNationid(nationId);
-            nodeNation.setNodeid(node.getId());
-            nodeNationMapper.add(nodeNation);
-        }
+        bindNation(nations,nodeId);
 
-        // 修改 nation 的相关文明
+        // 修改 node 的相关文明
         JSONArray civilizations = params.getJSONArray("civilizations");
-        for (int i = 0 ; i < civilizations.size();i++){
-            JSONObject civilization = civilizations.getJSONObject(i);
-            String cid = civilization.getString("cid");
-            NodeCivilization nodeCivilization = new NodeCivilization();
-            nodeCivilization.setId(Utils.generateId());
-            nodeCivilization.setCid(cid);
-            nodeCivilization.setNid(node.getId());
-            nodeCivilizationMapper.add(nodeCivilization);
-        }
+        bindCivilization(civilizations,nodeId);
+
+        // 绑定人物
+        JSONArray giants = params.getJSONArray("giants");
+        bindGiant(giants,nodeId);
 
         return new Result(ResultMessage.OK,node);
     }
 
+    /*
+    *  edit init
+    * */
     public Object init(JSONObject params){
         String id = params.getString("id");
         Node node = nodeMapper.selectById(id);
@@ -121,12 +121,25 @@ public class NodeService {
 
         //绑定的相关国家
         List<HashMap> nationMaps = nodeNationMapper.selectByNodeId(id);
+        for (HashMap nationMap : nationMaps){
+            nationMap.put("id",nationMap.get("nationid"));
+        }
         result.put("nations",JSON.toJSON(nationMaps));
 
         //绑定的文明
         List<HashMap> civilizationMaps = nodeCivilizationMapper.selectByNodeId(id);
+        for (HashMap civilizationMap : civilizationMaps){
+            civilizationMap.put("id",civilizationMap.get("cid"));
+        }
         result.put("civilizations",JSON.toJSON(civilizationMaps));
 
+
+        //绑定的人物
+        List<HashMap> giantMaps = nodeGiantMapper.selectByNodeId(id);
+        for (HashMap giantMap : giantMaps){
+            giantMap.put("id",giantMap.get("gid"));
+        }
+        result.put("giants",JSON.toJSON(giantMaps));
 
         return new Result(ResultMessage.OK,result);
     }
@@ -184,31 +197,18 @@ public class NodeService {
         node.setCdate(calendar.getTime());
         nodeMapper.update(node);
 
-        // 修改 nation 的相关国家
+        // 修改 node 的相关国家
         JSONArray nations = params.getJSONArray("nations");
-        nodeNationMapper.deleteByNodeId(id);
-        for (int i = 0 ; i < nations.size() ; i++){
-            JSONObject nation = nations.getJSONObject(i);
-            String nationId = nation.getString("nationid");
-            NodeNation nodeNation = new NodeNation();
-            nodeNation.setId(Utils.generateId());
-            nodeNation.setNationid(nationId);
-            nodeNation.setNodeid(id);
-            nodeNationMapper.add(nodeNation);
-        }
+        bindNation(nations,id);
 
-        // 修改 nation 的相关文明
+        // 修改 node 的相关文明
         JSONArray civilizations = params.getJSONArray("civilizations");
-        nodeCivilizationMapper.deleteByNodeId(id);
-        for (int i = 0 ; i < civilizations.size();i++){
-            JSONObject civilization = civilizations.getJSONObject(i);
-            String cid = civilization.getString("cid");
-            NodeCivilization nodeCivilization = new NodeCivilization();
-            nodeCivilization.setId(Utils.generateId());
-            nodeCivilization.setCid(cid);
-            nodeCivilization.setNid(id);
-            nodeCivilizationMapper.add(nodeCivilization);
-        }
+        bindCivilization(civilizations,id);
+
+        //修改 node 当相关人物
+        JSONArray giants = params.getJSONArray("giants");
+        bindGiant(giants,id);
+
 
         return new Result(ResultMessage.OK,node);
     }
@@ -229,5 +229,84 @@ public class NodeService {
         return new Result(ResultMessage.OK,result);
     }
 
+
+    /*
+    *  绑定国家
+    * */
+    private void bindNation(JSONArray nationAry,String nid){
+        System.out.println(JSON.toJSONString(nationAry));
+        nodeNationMapper.deleteByNodeId(nid);
+        for (int i = 0 ; i < nationAry.size() ; i++){
+            JSONObject nationObj = nationAry.getJSONObject(i);
+            Boolean isnew = nationObj.getBoolean("isnew");
+            String id = nationObj.getString("id");
+            if (isnew != null && isnew){
+                Nation nation = new Nation();
+                id = Utils.generateId();
+                nation.setId(id);
+                nation.setTitle(nationObj.getString("title"));
+                nationMapper.add(nation);
+            }
+
+            NodeNation nodeNation = new NodeNation();
+            nodeNation.setId(Utils.generateId());
+            nodeNation.setNationid(id);
+            nodeNation.setNodeid(nid);
+            nodeNationMapper.add(nodeNation);
+
+        }
+    }
+
+    /*
+     *  绑定文明
+     * */
+    private void bindCivilization(JSONArray civilizationAry,String nid){
+        nodeCivilizationMapper.deleteByNodeId(nid);
+        for (int i = 0 ; i < civilizationAry.size() ; i++){
+            JSONObject obj = civilizationAry.getJSONObject(i);
+            Boolean isnew = obj.getBoolean("isnew");
+            String id = obj.getString("id");
+            if (isnew != null && isnew){
+                Civilization civilization = new Civilization();
+                id = Utils.generateId();
+                civilization.setId(id);
+                civilization.setTitle(obj.getString("title"));
+                civilizationMapper.add(civilization);
+            }
+
+            NodeCivilization nodeCivilization = new NodeCivilization();
+            nodeCivilization.setId(Utils.generateId());
+            nodeCivilization.setNid(nid);
+            nodeCivilization.setCid(id);
+            nodeCivilizationMapper.add(nodeCivilization);
+
+        }
+    }
+
+    /*
+     *  绑定人物
+     * */
+    private void bindGiant(JSONArray giantAry,String nid){
+        nodeGiantMapper.deleteByNodeId(nid);
+        for (int i = 0 ; i < giantAry.size() ; i++){
+            JSONObject obj = giantAry.getJSONObject(i);
+            Boolean isnew = obj.getBoolean("isnew");
+            String id = obj.getString("id");
+            if (isnew != null && isnew){
+                Giant giant = new Giant();
+                id = Utils.generateId();
+                giant.setId(id);
+                giant.setName(obj.getString("name"));
+                giantMapper.add(giant);
+            }
+
+            NodeGiant nodeGiant = new NodeGiant();
+            nodeGiant.setId(Utils.generateId());
+            nodeGiant.setNid(nid);
+            nodeGiant.setGid(id);
+            nodeGiantMapper.add(nodeGiant);
+
+        }
+    }
 
 }

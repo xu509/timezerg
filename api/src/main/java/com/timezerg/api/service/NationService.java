@@ -236,7 +236,6 @@ public class NationService {
 
         nation.setInvent(params.getString("invent"));
 
-//        System.out.println(JSON.toJSONString(nation));
         nationMapper.update(nation);
 
 
