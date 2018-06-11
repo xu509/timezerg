@@ -18,13 +18,27 @@ public interface NationMapper {
     @Insert("insert into t_timezerg_nation values (#{id},#{pid},#{title},#{content},#{cover},#{cdate},#{edate},#{ddate},#{AD},#{eAD},#{invent})")
     int add(Nation nation);
 
-    @Select("(SELECT n.* FROM t_timezerg_nation n WHERE 1 = 1 AND n.AD = 0 ORDER BY n.cdate DESC LIMIT 99999999)" +
+    @Select("(SELECT n.* FROM t_timezerg_nation n WHERE 1 = 1 AND n.AD = 0 ORDER BY n.cdate DESC LIMIT 99999999) " +
             "UNION ALL " +
             "(SELECT n2.* FROM t_timezerg_nation n2 WHERE 1 = 1 AND n2.AD = 1 ORDER BY n2.cdate ASC LIMIT 99999999) limit #{array[0]},#{array[1]}")
     List<HashMap> getList(Object[] params);
 
     @Select("select count(*) from t_timezerg_nation")
     Long getListTotal(Object[] params);
+
+    @Select("(SELECT n.* FROM t_timezerg_nation n WHERE 1 = 1 AND n.AD = 0 AND n.fid is null ORDER BY n.cdate DESC LIMIT 99999999) " +
+            "UNION ALL " +
+            "(SELECT n2.* FROM t_timezerg_nation n2 WHERE 1 = 1 AND n2.AD = 1 AND n2.fid is null ORDER BY n2.cdate ASC LIMIT 99999999) limit #{array[0]},#{array[1]}")
+    List<HashMap> getTopList(Object[] params);
+
+    @Select("select count(*) from t_timezerg_nation where fid is null")
+    Long getTopListTotal(Object[] params);
+
+    @Select("SELECT n.* FROM t_timezerg_nation n WHERE 1 = 1 AND n.cdate is null ORDER BY n.id DESC limit #{array[0]},#{array[1]}")
+    List<HashMap> getUncheckList(Object[] params);
+
+    @Select("select count(*) from t_timezerg_nation n where n.cdate is null")
+    Long getUncheckListTotal(Object[] params);
 
 
     @Select("select * from t_timezerg_nation where title like CONCAT('%',#{title},'%') limit 0,10")
@@ -34,7 +48,7 @@ public interface NationMapper {
     Nation selectById(String id);
 
 
-    @Update("update t_timezerg_nation set pid = #{pid} ,title = #{title},content = #{content},cover = #{cover},cdate = #{cdate},edate = #{edate},ddate = #{ddate},AD = #{AD},eAD = #{eAD},invent = #{invent}" +
+    @Update("update t_timezerg_nation set pid = #{pid} ,fid = #{fid},title = #{title},content = #{content},cover = #{cover},cdate = #{cdate},edate = #{edate},ddate = #{ddate},AD = #{AD},eAD = #{eAD},invent = #{invent}" +
             " where id = #{id}")
     int update(Nation nation);
 

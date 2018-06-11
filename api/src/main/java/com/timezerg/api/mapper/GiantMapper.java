@@ -1,10 +1,8 @@
 package com.timezerg.api.mapper;
 
+import com.timezerg.api.mapper.provider.GiantMapperProvider;
 import com.timezerg.api.model.Giant;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,11 +19,14 @@ public interface GiantMapper {
     @Select("select * from t_timezerg_giant where name like CONCAT('%',#{name},'%') limit 0,10")
     List<Giant> selectLikeByTitle(String name);
 
-    @Select("select * from t_timezerg_giant order by id desc limit #{array[0]},#{array[1]}")
-    List<HashMap> getList(Object[] params);
+    @Select("select * from t_timezerg_giant where name = #{name}")
+    Giant selectByName(String name);
 
-    @Select("select count(*) from t_timezerg_giant")
-    Long getListTotal(Object[] params);
+    @SelectProvider(type= GiantMapperProvider.class,method = "getList")
+    List<HashMap> getList(@Param("name") String name, @Param("start") Integer start, @Param("limit") Integer limit);
+
+    @SelectProvider(type= GiantMapperProvider.class,method = "getListTotal")
+    Long getListTotal(@Param("name") String name);
 
     @Select("select * from t_timezerg_giant where id = #{id}")
     Giant selectById(String id);

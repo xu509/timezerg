@@ -13,6 +13,7 @@ public class Nation implements Serializable {
 
     private String id;
     private String pid; //国家可延续
+    private String fid; //所属，例如春秋的诸侯国所属一个时代
     private String title;
     private String content;
     private String cover;
@@ -109,5 +110,13 @@ public class Nation implements Serializable {
 
     public void setInvent(String invent) {
         this.invent = invent;
+    }
+
+    public String getFid() {
+        return fid;
+    }
+
+    public void setFid(String fid) {
+        this.fid = fid;
     }
 }

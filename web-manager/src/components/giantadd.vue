@@ -5,7 +5,7 @@
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item :to = "{path : '/giant'}">人物</el-breadcrumb-item>
-          <el-breadcrumb-item>修改</el-breadcrumb-item>
+          <el-breadcrumb-item>增加</el-breadcrumb-item>
         </el-breadcrumb>
       </el-col>
     </el-row>
@@ -25,7 +25,7 @@
                   </el-input>
                 </el-form-item>
 
-                <el-form-item label="TAG">
+                <el-form-item label="特征">
                     <InputboxTag @selectTag = "selectTag"></InputboxTag>
                     <el-tag type="warning" v-if = "form.tags != null" v-for="(item,index) in form.tags"
                       :key="item.id"
@@ -37,8 +37,8 @@
                 </el-form-item>
 
                 <el-form-item label="所属国家">
-                    <inputboxnation @selectNation = "selectNation"></inputboxnation>
-                    <el-tag type="warning" v-if = "form.nations != null" v-for="(item,index) in form.nations"
+                  <inputboxnation @selectNation = "selectNation"></inputboxnation>
+                  <el-tag type="warning" v-if = "form.nations != null" v-for="(item,index) in form.nations"
                       :key="item.id"
                       closable
                       :disable-transitions="false"
@@ -49,7 +49,7 @@
 
 
                 <el-form-item>
-                  <el-button type="primary" @click="save" :loading="saving">更新</el-button>
+                  <el-button type="primary" @click="save" :loading="saving">增加</el-button>
                 </el-form-item>
           </el-form>
       </el-col>
@@ -63,14 +63,12 @@ import inputboxnation from "./plugin/inputboxnation.vue";
 import InputboxTag from "./plugin/inputboxTag.vue";
 
 export default {
-  name: "GiantEdit",
+  name: "GiantAdd",
   data() {
     return {
-      id: "",
       form: {
         name: "",
         content: "",
-        ddate: "",
         tags: [],
         nations: []
       },
@@ -90,10 +88,10 @@ export default {
       _this.loading = true;
 
       axios
-        .post(_this.GLOBAL.url_giant_edit_save, {
+        .post(_this.GLOBAL.url_giant_add, {
           id: _this.id,
-          name: _this.form.name,
           content: _this.form.content,
+          name: _this.form.name,
           tags: _this.form.tags,
           nations: _this.form.nations
         })
@@ -101,7 +99,7 @@ export default {
           console.log(response);
           if (response.data.result == 0) {
             _this.$message({
-              message: "更新成功！",
+              message: _this.form.name + " 添加成功！",
               type: "success"
             });
             _this.init();
@@ -117,61 +115,12 @@ export default {
     },
     init() {
       var _this = this;
+      _this.form.name = null;
+      _this.form.content = null;
+      _this.form.tags = new Array();
+      _this.form.nations = new Array();
       _this.saving = false;
-
-      axios
-        .post(_this.GLOBAL.url_giant_edit_init, {
-          id: _this.id
-        })
-        .then(function(response) {
-          if (response.data.result == 0) {
-            var giant = response.data.data;
-
-            _this.form.name = giant.name;
-            _this.form.content = giant.content;
-            _this.form.tags = giant.tags;
-            _this.form.nations = giant.nations;
-
-            // console.log(nation.giant);
-
-            _this.loading = false;
-          } else {
-            this.$message.error(response.data.data);
-          }
-        })
-        .catch(function(error) {});
-    },
-    queryTag(queryString, cb) {
-      var _this = this;
-      var sr = [];
-      if (queryString != undefined && queryString.length > 0) {
-        axios
-          .post(_this.GLOBAL.url_search_tag, {
-            sw: queryString
-          })
-          .then(function(response) {
-            var r = response.data;
-            if (r.result == 0) {
-              var data = r.data.data;
-              if (r.data.exist) {
-                cb(data);
-              } else {
-                var item = {
-                  id: "11",
-                  title: queryString,
-                  isnew: true
-                };
-
-                sr.push(item);
-                cb(sr);
-              }
-            } else {
-              cb(sr);
-            }
-          });
-      } else {
-        cb(sr);
-      }
+      _this.loading = false;
     },
     selectTag(item) {
       this.form.tags.push(item);
@@ -188,7 +137,6 @@ export default {
     }
   },
   mounted: function() {
-    this.id = this.$route.params.id;
     this.init();
   }
 };

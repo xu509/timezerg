@@ -66,36 +66,28 @@
                   <el-input v-model="form.invent"></el-input>
                 </el-form-item>
                 <el-form-item label="承接">
-                   <el-autocomplete popper-class="my-autocomplete"
-                              :fetch-suggestions="queryNation"
-                                placeholder="搜索"
-                                @select="selectNation">
-                                <template slot-scope="props">
-                                          <div class="name">
-                                            {{ props.item.title }}
-                                          </div>
-                                </template>
-                    </el-autocomplete>
+                    <inputboxnation @selectNation="selectPNation"></inputboxnation>
                     <el-tag type="warning" v-if = "form.pnation != null"
                       :key="form.pid"
                       closable
                       :disable-transitions="false"
-                      @close="closeNationTag()">
+                      @close="closePNationTag()">
                       {{form.pnation}}
+                    </el-tag>
+                </el-form-item>
+                <el-form-item label="附属">
+                    <inputboxnation @selectNation="selectFNation"></inputboxnation>
+                    <el-tag type="warning" v-if = "form.fnation != null"
+                      :key="form.id"
+                      closable
+                      :disable-transitions="false"
+                      @close="closeFNationTag()">
+                      {{form.fnation}}
                     </el-tag>
                 </el-form-item>
 
                 <el-form-item label="名人">
-                   <el-autocomplete popper-class="my-autocomplete"
-                              :fetch-suggestions="queryGiant"
-                                placeholder="搜索"
-                                @select="selectGiant">
-                                <template slot-scope="props">
-                                          <div class="name">
-                                                <i class="el-icon-circle-plus-outline" v-if="props.item.isnew"></i>&nbsp;&nbsp;{{ props.item.name }}
-                                          </div>
-                                </template>
-                    </el-autocomplete>
+                    <InputboxGiant @selectGiant = "selectGiant"></InputboxGiant>
                     <el-tag type="warning" v-if = "form.giant != null" v-for="(item,index) in form.giant"
                       :key="item.gid"
                       closable
@@ -106,16 +98,7 @@
                 </el-form-item>
 
                  <el-form-item label="制度">
-                   <el-autocomplete popper-class="my-autocomplete"
-                              :fetch-suggestions="queryInstitution"
-                                placeholder="搜索"
-                                @select="selectInstitution">
-                                <template slot-scope="props">
-                                          <div class="name">
-                                                {{ props.item.title }}
-                                          </div>
-                                </template>
-                    </el-autocomplete>
+                   <inputboxinstitution @select ="selectInstitution"></inputboxinstitution>
                     <el-tag type="warning" v-if = "form.institution != null" v-for="(item,index) in form.institution"
                       :key="item.id"
                       closable
@@ -137,6 +120,9 @@
 
 <script>
 import axios from "axios";
+import inputboxnation from "./plugin/inputboxnation.vue";
+import InputboxGiant from "./plugin/InputboxGiant.vue";
+import inputboxinstitution from "./plugin/inputboxinstitution.vue";
 
 export default {
   name: "NationEdit",
@@ -154,6 +140,8 @@ export default {
         eday: null,
         pid: null,
         pnation: "",
+        fid: null,
+        fnation: "",
         giant: [],
         institution: [],
         AD: 1,
@@ -166,6 +154,11 @@ export default {
       saving: false,
       loading: true
     };
+  },
+  components: {
+    inputboxnation,
+    InputboxGiant,
+    inputboxinstitution
   },
   methods: {
     save() {
@@ -190,7 +183,8 @@ export default {
           invent: _this.form.invent,
           giant: _this.form.giant,
           pid: _this.form.pid,
-          institution : _this.form.institution
+          fid: _this.form.fid,
+          institution: _this.form.institution
         })
         .then(function(response) {
           console.log(response);
@@ -232,6 +226,8 @@ export default {
             _this.form.eday = nation.eday;
 
             _this.form.pid = nation.pid;
+            _this.form.fid = nation.fid;
+            _this.form.fnation = nation.fnation;
             _this.form.pnation = nation.pnation;
 
             _this.form.AD = nation.aD;
@@ -240,7 +236,7 @@ export default {
             _this.form.giant = nation.giant;
             _this.form.institution = nation.institution;
 
-            console.log(nation.giant);
+            // console.log(nation.giant);
 
             _this.loading = false;
           } else {
@@ -249,72 +245,21 @@ export default {
         })
         .catch(function(error) {});
     },
-    queryNation(queryString, cb) {
-      var _this = this;
-      var sr = [];
-      if (queryString != undefined && queryString.length > 0) {
-        axios
-          .post(_this.GLOBAL.url_search_nation, {
-            sw: queryString
-          })
-          .then(function(response) {
-            var r = response.data;
-            if (r.result == 0) {
-              var data = r.data.data;
-              if (r.data.exist) {
-                cb(data);
-              } else {
-                cb(data);
-              }
-            } else {
-              cb(sr);
-            }
-          });
-      } else {
-        cb(sr);
-      }
-    },
-    selectNation(item) {
+    selectPNation(item) {
       this.form.pid = item.id;
       this.form.pnation = item.title;
     },
-    closeNationTag() {
-      this.pid = null;
-      this.pnation = null;
+    closePNationTag() {
+      this.form.pid = null;
+      this.form.pnation = null;
     },
-    queryGiant(queryString, cb) {
-      var _this = this;
-      var sr = [];
-      if (queryString != undefined && queryString.length > 0) {
-        axios
-          .post(_this.GLOBAL.url_search_giant, {
-            sw: queryString
-          })
-          .then(function(response) {
-            var r = response.data;
-            if (r.result == 0) {
-              var data = r.data.data;
-              if (r.data.exist) {
-                cb(data);
-              } else {
-                var item = {
-                  gid: "",
-                  id: "11",
-                  name: queryString,
-                  isnew: true
-                };
-
-                sr.push(item);
-
-                cb(sr);
-              }
-            } else {
-              cb(sr);
-            }
-          });
-      } else {
-        cb(sr);
-      }
+    selectFNation(item) {
+      this.form.fid = item.id;
+      this.form.fnation = item.title;
+    },
+    closeFNationTag() {
+      this.fid = null;
+      this.fnation = null;
     },
     selectGiant(item) {
       //增加
@@ -332,31 +277,6 @@ export default {
     },
     closeGiantTag(index) {
       this.form.giant.splice(index, 1);
-    },
-    queryInstitution(queryString, cb) {
-      var _this = this;
-      var sr = [];
-      if (queryString != undefined && queryString.length > 0) {
-        axios
-          .post(_this.GLOBAL.url_search_institution, {
-            sw: queryString
-          })
-          .then(function(response) {
-            var r = response.data;
-            if (r.result == 0) {
-              var data = r.data.data;
-              if (r.data.exist) {
-                cb(data);
-              } else {
-                cb(null);
-              }
-            } else {
-              cb(null);
-            }
-          });
-      } else {
-        cb(sr);
-      }
     },
     selectInstitution(item) {
       //增加

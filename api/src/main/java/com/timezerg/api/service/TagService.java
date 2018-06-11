@@ -1,5 +1,7 @@
 package com.timezerg.api.service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.timezerg.api.mapper.TagMapper;
 import com.timezerg.api.model.Tag;
@@ -38,8 +40,17 @@ public class TagService {
         JSONObject r = new JSONObject();
         String title = params.getString("sw");
         List<Tag> tags = tagMapper.selectLikeByTitle(title);
+
+        JSONArray tagAry = new JSONArray();
+        for (Tag tag :tags){
+            JSONObject tagObj = (JSONObject) JSON.toJSON(tag);
+            tagObj.put("tid",tag.getId());
+            tagAry.add(tagObj);
+        }
+
+
         r.put("exist", tags.size() > 0);
-        r.put("data", tags);
+        r.put("data", tagAry);
 
         return new Result(ResultMessage.OK, r);
     }

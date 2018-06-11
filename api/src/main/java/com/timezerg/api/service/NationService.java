@@ -36,6 +36,9 @@ public class NationService {
     @Autowired
     NationInstitutionMapper nationInstitutionMapper;
 
+    @Autowired
+    InstitutionMapper institutionMapper;
+
 
     @Transactional
     public Object add(JSONObject params) {
@@ -84,11 +87,28 @@ public class NationService {
 
 
     public Object getList(JSONObject params) {
-        Object[] p = {params.getInteger("start"), params.getInteger("size")};
-        List<HashMap> list = nationMapper.getList(p);
+        Integer type = params.getInteger("type");
         JSONObject r = new JSONObject();
-        r.put("data", list);
-        r.put("total", nationMapper.getListTotal(p));
+
+        if (type == 1){
+            //默认
+            Object[] p = {params.getInteger("start"), params.getInteger("size")};
+            List<HashMap> list = nationMapper.getList(p);
+            r.put("data", list);
+            r.put("total", nationMapper.getListTotal(p));
+        }else if (type == 2){
+            //顶级
+            Object[] p = {params.getInteger("start"), params.getInteger("size")};
+            List<HashMap> list = nationMapper.getTopList(p);
+            r.put("data", list);
+            r.put("total", nationMapper.getTopListTotal(p));
+        }else if (type == 3){
+            //未完善
+            Object[] p = {params.getInteger("start"), params.getInteger("size")};
+            List<HashMap> list = nationMapper.getUncheckList(p);
+            r.put("data", list);
+            r.put("total", nationMapper.getUncheckListTotal(p));
+        }
         return new Result(ResultMessage.OK, r);
     }
 
@@ -98,8 +118,16 @@ public class NationService {
 
         String title = params.getString("sw");
         List<Nation> nations = nationMapper.selectLikeByTitle(title);
+
+        JSONArray nationAry = new JSONArray();
+        for (Nation nation : nations){
+            JSONObject nationObj = (JSONObject) JSON.toJSON(nation);
+            nationObj.put("nid",nation.getId());
+            nationAry.add(nationObj);
+        }
+
         r.put("exist", nations.size() > 0);
-        r.put("data", nations);
+        r.put("data", nationAry);
 
         return new Result(ResultMessage.OK, r);
     }
@@ -142,6 +170,11 @@ public class NationService {
         Nation pnation = nationMapper.selectById(nation.getPid());
         if (pnation != null)
             r.put("pnation", pnation.getTitle());
+
+
+        Nation fnation = nationMapper.selectById(nation.getFid());
+        if (fnation != null)
+            r.put("fnation", fnation.getTitle());
 
         //giant
         List<HashMap> giants = giantNationMapper.selectByNid(id);
@@ -199,10 +232,11 @@ public class NationService {
         nation.seteAD(params.getInteger("eAD"));
 
         nation.setPid(params.getString("pid"));
+        nation.setFid(params.getString("fid"));
 
         nation.setInvent(params.getString("invent"));
 
-        System.out.println(JSON.toJSONString(nation));
+//        System.out.println(JSON.toJSONString(nation));
         nationMapper.update(nation);
 
 
@@ -246,16 +280,37 @@ public class NationService {
 
         //制度
         JSONArray institution = params.getJSONArray("institution");
-        if (institution != null){
-            nationInstitutionMapper.deleteByNid(id);
+        bindInstitution(institution,id);
 
-            for (int i = 0 ; i < institution.size(); i++){
-                JSONObject object = institution.getJSONObject(i);
+        return new Result(ResultMessage.OK, nation);
+    }
+
+
+    private void bindInstitution(JSONArray institutionAry,String nid){
+        if (institutionAry != null){
+            nationInstitutionMapper.deleteByNid(nid);
+
+            for (int i = 0 ; i < institutionAry.size(); i++){
+                JSONObject object = institutionAry.getJSONObject(i);
                 String iid = object.getString("iid");
+
+                boolean isnew = object.getBoolean("isnew");
+                if (isnew){
+                    String title = object.getString("title");
+                    if (institutionMapper.selectByTitle(title) == null){
+                        Institution institution = new Institution();
+                        iid = Utils.generateId();
+                        institution.setId(iid);
+                        institution.setTitle(title);
+                        institutionMapper.add(institution);
+                    }else {
+                        return;
+                    }
+                }
 
                 NationInstitution nationInstitution = new NationInstitution();
                 nationInstitution.setId(Utils.generateId());
-                nationInstitution.setNid(id);
+                nationInstitution.setNid(nid);
                 nationInstitution.setIid(iid);
 
 
@@ -265,10 +320,9 @@ public class NationService {
 
             }
         }
-
-
-        return new Result(ResultMessage.OK, nation);
     }
+
+
 
 
 }

@@ -7,12 +7,13 @@ import 'element-ui/lib/theme-chalk/display.css';
 // element 加载
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import global_ from './components/common/common'
+import global_ from './components/common/common';
 
 Vue.config.productionTip = false;
 Vue.prototype.GLOBAL = global_;
 
 Vue.use(ElementUI);
+// Vue.use(InputboxNation);
 
 if (module.hot) {
   module.hot.accept();

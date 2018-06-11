@@ -20,6 +20,9 @@ public interface InstitutionMapper {
     @Select("select * from t_timezerg_institution where id = #{id}")
     Institution selectById(String id);
 
+    @Select("select * from t_timezerg_institution where title = #{title}")
+    Institution selectByTitle(String title);
+
     @Select("select n.* from t_timezerg_institution n where 1 = 1 order by n.id desc limit #{array[0]},#{array[1]}")
     List<HashMap> getList(Object[] params);
 

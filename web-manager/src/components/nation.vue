@@ -14,6 +14,14 @@
     </el-row>
 
     <el-row>
+      <el-radio-group v-model="tt" size="small">
+        <el-radio-button :label="tabletypes.default">默认</el-radio-button>
+        <el-radio-button :label="tabletypes.top" >顶级</el-radio-button>
+        <el-radio-button :label="tabletypes.uncheck">待完善</el-radio-button>
+      </el-radio-group>
+    </el-row>
+
+    <el-row>
       <el-col :span="24">
         <el-table :data = "datas">
             <el-table-column fixed prop = "ddate" label = "日期"  ></el-table-column>
@@ -47,9 +55,15 @@
 import axios from "axios";
 
 export default {
-  name: "Node",
+  name: "nation",
   data() {
     return {
+      tt: 1,
+      tabletypes: {
+        default: 1,
+        top: 2,
+        uncheck: 3
+      },
       datas: [],
       page_size: 10, //page大小
       current_page: 1, // 当前游码
@@ -66,6 +80,7 @@ export default {
 
       axios
         .post(_this.GLOBAL.url_nation_list, {
+          type: _this.tt,
           start: start,
           size: _this.page_size
         })
@@ -98,6 +113,9 @@ export default {
       this.initTable();
     },
     current_page: function(cp) {
+      this.initTable();
+    },
+    tt: function(tt) {
       this.initTable();
     }
   },

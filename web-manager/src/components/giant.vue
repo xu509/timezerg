@@ -14,9 +14,37 @@
     </el-row>
 
     <el-row>
+       <el-col :span="8">
+            <InputboxGiant @selectGiant = "selectGiant"></InputboxGiant>
+            <el-tag type="success" v-if="name != null" closable  @close="closeSearchName()">
+                  {{name}}
+            </el-tag>
+       </el-col>
+    </el-row>
+
+    <el-row>
       <el-col :span="24">
         <el-table :data = "datas">
+            <el-table-column type="expand" >
+                 <template slot-scope="props">
+                      {{props.row.content}}
+                 </template>
+            </el-table-column>
             <el-table-column prop = "name" label = "姓名"></el-table-column>
+            <el-table-column label = "国">
+               <template slot-scope="scope">
+                    <el-tag v-for="item in scope.row.nations" :key="item.id">
+                      {{item.title}}
+                    </el-tag>
+                </template>
+            </el-table-column>
+            <el-table-column label = "TAG">
+               <template slot-scope="scope">
+                    <el-tag type="info" v-for="item in scope.row.tags" :key="item.id">
+                      {{item.title}}
+                    </el-tag>
+                </template>
+            </el-table-column>
             <el-table-column fixed="right" label="操作">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" @click = "go('giantEdit', scope.row.id )">编辑</el-button>
@@ -44,16 +72,21 @@
 
 <script>
 import axios from "axios";
+import InputboxGiant from "./plugin/InputboxGiant.vue";
 
 export default {
   name: "Node",
   data() {
     return {
+      name: null,
       datas: [],
       page_size: 10, //page大小
       current_page: 1, // 当前游码
       total: 0 // 总数
     };
+  },
+  components: {
+    InputboxGiant
   },
   methods: {
     init() {
@@ -65,6 +98,7 @@ export default {
 
       axios
         .post(_this.GLOBAL.url_giant_list, {
+          name: _this.name,
           start: start,
           size: _this.page_size
         })
@@ -90,6 +124,12 @@ export default {
     },
     handleCurrentChange(currentPage) {
       this.current_page = currentPage;
+    },
+    selectGiant(item) {
+      this.name = item.name;
+    },
+    closeSearchName() {
+      this.name = null;
     }
   },
   watch: {
@@ -97,6 +137,9 @@ export default {
       this.initTable();
     },
     current_page: function(cp) {
+      this.initTable();
+    },
+    name: function(name) {
       this.initTable();
     }
   },

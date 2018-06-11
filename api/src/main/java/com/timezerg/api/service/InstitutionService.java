@@ -60,17 +60,21 @@ public class InstitutionService {
         String title = params.getString("sw");
         List<Institution> institutions = institutionMapper.selectLikeByTitle(title);
 
+        boolean same = false;
         JSONArray institutionAry = new JSONArray();
         for (Institution institution : institutions){
             JSONObject object = (JSONObject) JSON.toJSON(institution);
             object.put("iid",institution.getId());
             institutionAry.add(object);
+
+            if (institution.getTitle().equals(title))
+                same = true;
+
         }
-
-
 
         r.put("exist", institutions.size() > 0);
         r.put("data", institutionAry);
+        r.put("same",same);
 
         return new Result(ResultMessage.OK, r);
     }
