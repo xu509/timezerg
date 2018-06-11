@@ -46,6 +46,14 @@
                     <el-radio label="1">AD</el-radio>
                   </el-radio-group>
                 </el-form-item>
+                <el-form-item label="详细">
+                  <el-input
+                    type="textarea"
+                    :rows="2"
+                    placeholder="请输入内容"
+                    v-model="form.content">
+                  </el-input>
+                </el-form-item>
                  <el-form-item label="重要度">
                     <el-select v-model="form.level" placeholder="重要度">
                         <el-option v-for="item in options" :key = "item.value" :label = "item.label" :value = "item.value"></el-option>
@@ -108,6 +116,7 @@ export default {
     return {
       form: {
         title: "",
+        content : "",
         ddate: "",
         year: null,
         month: null,
@@ -156,6 +165,7 @@ export default {
     init() {
       var _this = this;
       _this.form.title = null;
+      _this.form.content = null;
       _this.form.ddate = null;
       _this.form.year = null;
       _this.form.month = null;
@@ -168,6 +178,7 @@ export default {
       _this.form.nations = [];
       _this.form.nation = null;
       _this.form.civilizations = [];
+      _this.form.giants = [];
       _this.form.civilization = null;
       _this.saving = false;
     },
@@ -178,6 +189,7 @@ export default {
       axios
         .post(_this.GLOBAL.url_node_add, {
           title: _this.form.title,
+          content : _this.form.content,
           ddate: _this.form.ddate,
           year: _this.form.year,
           month: _this.form.month,
