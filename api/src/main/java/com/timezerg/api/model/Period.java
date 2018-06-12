@@ -5,15 +5,12 @@ import java.util.Date;
 
 /**
  * Created by xnx on 2018/5/4.
- * 国家
+ * 时期
  */
-public class Nation implements Serializable {
+public class Period implements Serializable {
 
-    private static final long serialVersionUID = 6921257177384426481L;
-
+    private static final long serialVersionUID = 5036166082138215739L;
     private String id;
-    private String pid; //国家可延续
-    private String fid; //所属，例如春秋的诸侯国所属一个时代
     private String title;
     private String content;
     private String cover;
@@ -22,7 +19,6 @@ public class Nation implements Serializable {
     private String ddate; //显示的日期
     private int AD = 1; // 开启是否在公元
     private int eAD = 1; // 结束是否在公元
-    private String invent; //发明
 
     public String getId() {
         return id;
@@ -64,12 +60,12 @@ public class Nation implements Serializable {
         this.cdate = cdate;
     }
 
-    public String getPid() {
-        return pid;
+    public Date getEdate() {
+        return edate;
     }
 
-    public void setPid(String pid) {
-        this.pid = pid;
+    public void setEdate(Date edate) {
+        this.edate = edate;
     }
 
     public String getDdate() {
@@ -78,14 +74,6 @@ public class Nation implements Serializable {
 
     public void setDdate(String ddate) {
         this.ddate = ddate;
-    }
-
-    public Date getEdate() {
-        return edate;
-    }
-
-    public void setEdate(Date edate) {
-        this.edate = edate;
     }
 
     public int getAD() {
@@ -102,21 +90,5 @@ public class Nation implements Serializable {
 
     public void seteAD(int eAD) {
         this.eAD = eAD;
-    }
-
-    public String getInvent() {
-        return invent;
-    }
-
-    public void setInvent(String invent) {
-        this.invent = invent;
-    }
-
-    public String getFid() {
-        return fid;
-    }
-
-    public void setFid(String fid) {
-        this.fid = fid;
     }
 }

@@ -1,5 +1,7 @@
 package com.timezerg.api.mapper.provider;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Map;
 
 /**
@@ -11,6 +13,7 @@ public class NodeMapperProvider {
         StringBuffer sql = new StringBuffer("(SELECT n.* FROM t_timezerg_node n LEFT JOIN t_timezerg_node_civilization nc ON n.id = nc.nid WHERE 1 = 1 AND n.Ad = 0 ");
 
         Object[] civilizations = (Object[]) map.get("cids");
+        String searchtitle = (String) map.get("searchtitle");
 
         if (civilizations != null && civilizations.length >0){
             sql.append("AND nc.cid in(");
@@ -22,6 +25,11 @@ public class NodeMapperProvider {
             sql.deleteCharAt(i);
             sql.append(")");
         }
+        if (!StringUtils.isBlank(searchtitle)){
+            sql.append(" AND n.title like CONCAT('%',#{searchtitle},'%') ");
+        }
+
+
         sql.append(" ORDER BY n.cdate DESC LIMIT 99999999)");
         sql.append(" UNION ALL ");
         sql.append("(SELECT n.* FROM t_timezerg_node n LEFT JOIN t_timezerg_node_civilization nc ON n.id = nc.nid WHERE 1 = 1 AND n.Ad = 1 ");
@@ -34,6 +42,9 @@ public class NodeMapperProvider {
             Integer i = sql.lastIndexOf(",");
             sql.deleteCharAt(i);
             sql.append(")");
+        }
+        if (!StringUtils.isBlank(searchtitle)){
+            sql.append(" AND n.title like CONCAT('%',#{searchtitle},'%') ");
         }
         sql.append(" ORDER BY n.cdate ASC LIMIT 99999999)");
         sql.append(" LIMIT #{start},#{limit}");
@@ -46,6 +57,7 @@ public class NodeMapperProvider {
         StringBuffer sql = new StringBuffer("SELECT count(*) from ((SELECT n.* FROM t_timezerg_node n LEFT JOIN t_timezerg_node_civilization nc ON n.id = nc.nid WHERE 1 = 1 AND n.Ad = 0 ");
 
         Object[] civilizations = (Object[]) map.get("cids");
+        String searchtitle = (String) map.get("searchtitle");
 
         if (civilizations != null && civilizations.length >0){
             sql.append("AND nc.cid in(");
@@ -56,6 +68,9 @@ public class NodeMapperProvider {
             Integer i = sql.lastIndexOf(",");
             sql.deleteCharAt(i);
             sql.append(")");
+        }
+        if (!StringUtils.isBlank(searchtitle)){
+            sql.append(" AND n.title like CONCAT('%',#{searchtitle},'%') ");
         }
         sql.append(" ORDER BY n.cdate DESC LIMIT 99999999)");
         sql.append(" UNION ALL ");
@@ -69,6 +84,9 @@ public class NodeMapperProvider {
             Integer i = sql.lastIndexOf(",");
             sql.deleteCharAt(i);
             sql.append(")");
+        }
+        if (!StringUtils.isBlank(searchtitle)){
+            sql.append(" AND n.title like CONCAT('%',#{searchtitle},'%') ");
         }
         sql.append(" ORDER BY n.cdate ASC LIMIT 99999999)) t");
 

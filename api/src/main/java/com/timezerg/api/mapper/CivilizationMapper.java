@@ -28,6 +28,9 @@ public interface CivilizationMapper {
     @Select("select * from t_timezerg_civilization where title like CONCAT('%',#{title},'%') limit 0,10")
     List<Civilization> selectLikeByTitle(String title);
 
+    @Select("select * from t_timezerg_civilization where title = #{title}")
+    Civilization selectByTitle(String title);
+
     @Update("update t_timezerg_civilization set title = #{title},pid = #{pid},content = #{content},cover = #{cover},cdate = #{cdate} where id = #{id}")
     int update(Civilization civilization);
 

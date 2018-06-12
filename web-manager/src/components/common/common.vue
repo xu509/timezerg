@@ -19,7 +19,17 @@ const url_civilization_down = domain + "/civilization/down";
 const url_nation_list = domain + "/nation/list";
 const url_nation_add = domain + "/nation/save";
 const url_nation_edit_init = domain + "/nation/edit/init";
+const url_nation_edit_init_tag = domain + "/nation/edit/init/tag";
 const url_nation_edit_save = domain + "/nation/edit/save";
+const url_nation_tag_save = domain + "/nation/edit/tag/save";
+const url_nation_tag_delete = domain + "/nation/edit/tag/delete";
+const url_period_list = domain + "/period/list";
+const url_period_add = domain + "/period/save";
+const url_period_edit_init = domain + "/period/edit/init";
+const url_period_edit_init_tag = domain + "/period/edit/init/tag";
+const url_period_edit_save = domain + "/period/edit/save";
+const url_period_tag_save = domain + "/period/edit/tag/save";
+const url_period_tag_delete = domain + "/period/edit/tag/delete";
 const url_continent_add = domain + "/continent/save";
 const url_index = domain + "/civilization/index";
 const url_civilization_index_list = domain + "/civilizationindex/list";
@@ -37,6 +47,7 @@ const url_search_giant = domain + "/giant/search";
 const url_search_civilization = domain + "/civilization/search";
 const url_search_continent = domain + "/continent/search";
 const url_search_institution = domain + "/institution/search";
+const url_search_period = domain + "/period/search";
 const url_search_tag = domain + "/tag/search";
 
 export default {
@@ -59,8 +70,19 @@ export default {
   url_nation_list,
   url_nation_add,
   url_nation_edit_init,
+  url_nation_edit_init_tag,
   url_nation_edit_save,
+  url_nation_tag_save,
+  url_nation_tag_delete,
+  url_period_list,
+  url_period_add,
+  url_period_edit_init,
+  url_period_edit_init_tag,
+  url_period_edit_save,
+  url_period_tag_save,
+  url_period_tag_delete,
   url_search_nation,
+  url_search_period,
   url_search_civilization,
   url_search_continent,
   url_search_giant,

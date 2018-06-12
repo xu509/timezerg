@@ -1,10 +1,8 @@
 package com.timezerg.api.mapper;
 
+import com.timezerg.api.mapper.provider.NationMapperProvider;
 import com.timezerg.api.model.Nation;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -18,13 +16,11 @@ public interface NationMapper {
     @Insert("insert into t_timezerg_nation values (#{id},#{pid},#{fid},#{title},#{content},#{cover},#{cdate},#{edate},#{ddate},#{AD},#{eAD},#{invent})")
     int add(Nation nation);
 
-    @Select("(SELECT n.* FROM t_timezerg_nation n WHERE 1 = 1 AND n.AD = 0 ORDER BY n.cdate DESC LIMIT 99999999) " +
-            "UNION ALL " +
-            "(SELECT n2.* FROM t_timezerg_nation n2 WHERE 1 = 1 AND n2.AD = 1 ORDER BY n2.cdate ASC LIMIT 99999999) limit #{array[0]},#{array[1]}")
-    List<HashMap> getList(Object[] params);
+    @SelectProvider(type= NationMapperProvider.class,method = "getList")
+    List<HashMap> getList(@Param("searchtitle") String searchtitle,@Param("start") Integer start, @Param("limit") Integer limit);
 
-    @Select("select count(*) from t_timezerg_nation")
-    Long getListTotal(Object[] params);
+    @SelectProvider(type= NationMapperProvider.class,method = "getListTotal")
+    Long getListTotal(@Param("searchtitle") String searchtitle);
 
     @Select("(SELECT n.* FROM t_timezerg_nation n WHERE 1 = 1 AND n.AD = 0 AND n.fid is null ORDER BY n.cdate DESC LIMIT 99999999) " +
             "UNION ALL " +
@@ -43,6 +39,9 @@ public interface NationMapper {
 
     @Select("select * from t_timezerg_nation where title like CONCAT('%',#{title},'%') limit 0,10")
     List<Nation> selectLikeByTitle(String title);
+
+    @Select("select * from t_timezerg_nation where title = #{title}")
+    Nation selectByTitle(String title);
 
     @Select("select * from t_timezerg_nation where id = #{id}")
     Nation selectById(String id);

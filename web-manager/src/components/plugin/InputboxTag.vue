@@ -15,7 +15,7 @@
 import axios from "axios";
 
 export default {
-  name: "InputboxTag",
+  name: "inputboxtag",
   data() {
     return {
       title: null,

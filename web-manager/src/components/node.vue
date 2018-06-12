@@ -15,7 +15,7 @@
 
 
     <el-row>
-      <el-col :span="6" :xs="12" :sm="12" >
+      <el-col :xs="12" :sm="12" :md = "6">
           <el-autocomplete popper-class="my-autocomplete"
                               :fetch-suggestions="queryCivilization"
                                 placeholder="搜索文明"
@@ -27,7 +27,7 @@
                                 </template>
           </el-autocomplete>
       </el-col>           
-      <el-col :span = "6" :xs="12" :sm="12" >
+      <el-col :xs="12" :sm="12" :md = "6">
             <el-tag type="warning"
                       :key="civilization.id"
                       v-for="civilization in civilizations"
@@ -37,6 +37,12 @@
                       {{civilization.title}}
             </el-tag>
       </el-col>
+      <el-col :xs="12" :sm="12" :md = "4">
+        <el-input v-model="search_title" placeholder="搜索标题"></el-input>
+      </el-col>
+      <el-col :xs="12" :sm="12" :md = "6">
+      </el-col>
+
     </el-row>
 
 
@@ -91,6 +97,7 @@ export default {
       datas: [],
       civilizations: [],
       cids: [],
+      search_title: null,
       page_size: 20, //page大小
       current_page: 2, // 当前游码
       total: 0 // 总数
@@ -110,7 +117,8 @@ export default {
         .post(_this.GLOBAL.url_node_list, {
           start: start,
           size: _this.page_size,
-          cids: _this.cids
+          cids: _this.cids,
+          searchtitle: _this.search_title
         })
         .then(function(response) {
           if (response.data.result == 0) {
@@ -209,7 +217,9 @@ export default {
       this.initTable();
     },
     cids: function(c) {
-      console.log("1111");
+      this.initTable();
+    },
+    search_title: function(st) {
       this.initTable();
     }
   },

@@ -43,9 +43,27 @@ public class NationController {
     }
 
     @CrossOrigin
+    @PostMapping("/nation/edit/init/tag")
+    public Object editInitTag(@RequestBody JSONObject params){
+        return nationService.editInitTag(params);
+    }
+
+    @CrossOrigin
     @PostMapping("/nation/edit/save")
     public Object edit(@RequestBody JSONObject params){
         return nationService.edit(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/nation/edit/tag/save")
+    public Object editTagSave(@RequestBody JSONObject params){
+        return nationService.addTag(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/nation/edit/tag/delete")
+    public Object editTagDelete(@RequestBody JSONObject params){
+        return nationService.deleteTag(params);
     }
 
 }

@@ -13,6 +13,9 @@ import continentAdd from '@/components/continent'
 import nation from '@/components/nation'
 import nationAdd from '@/components/nationadd'
 import nationEdit from '@/components/nationedit'
+import period from '@/components/period'
+import periodAdd from '@/components/periodadd'
+import periodEdit from '@/components/periodedit'
 import timeline from '@/components/timeline'
 import timelineAdd from '@/components/timelineAdd'
 import timelineEdit from '@/components/timelineEdit'
@@ -77,6 +80,18 @@ export default new Router({
     path: '/nation/edit/:id',
     name: 'nationEdit',
     component: nationEdit
+  }, {
+    path: '/period',
+    name: 'period',
+    component: period
+  }, {
+    path: '/period/add',
+    name: 'periodAdd',
+    component: periodAdd
+  }, {
+    path: '/period/edit/:id',
+    name: 'periodEdit',
+    component: periodEdit
   }, {
     path: '/timeline',
     name: 'timeline',

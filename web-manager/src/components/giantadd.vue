@@ -26,7 +26,7 @@
                 </el-form-item>
 
                 <el-form-item label="特征">
-                    <InputboxTag @selectTag = "selectTag"></InputboxTag>
+                    <inputboxtag @selectTag = "selectTag"></inputboxtag>
                     <el-tag type="warning" v-if = "form.tags != null" v-for="(item,index) in form.tags"
                       :key="item.id"
                       closable
@@ -60,7 +60,7 @@
 <script>
 import axios from "axios";
 import inputboxnation from "./plugin/inputboxnation.vue";
-import InputboxTag from "./plugin/inputboxTag.vue";
+import inputboxtag from "./plugin/inputboxtag.vue";
 
 export default {
   name: "GiantAdd",
@@ -78,7 +78,7 @@ export default {
   },
   components: {
     inputboxnation,
-    InputboxTag
+    inputboxtag
   },
   methods: {
     save() {

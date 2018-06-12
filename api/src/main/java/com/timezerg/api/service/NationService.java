@@ -39,6 +39,11 @@ public class NationService {
     @Autowired
     InstitutionMapper institutionMapper;
 
+    @Autowired
+    NationTagMapper nationTagMapper;
+
+    @Autowired
+    TagMapper tagMapper;
 
     @Transactional
     public Object add(JSONObject params) {
@@ -90,21 +95,24 @@ public class NationService {
         Integer type = params.getInteger("type");
         JSONObject r = new JSONObject();
 
+        String title = params.getString("searchtitle");
+        Integer start = params.getInteger("start");
+        Integer size = params.getInteger("size");
+
         if (type == 1){
             //默认
-            Object[] p = {params.getInteger("start"), params.getInteger("size")};
-            List<HashMap> list = nationMapper.getList(p);
+            List<HashMap> list = nationMapper.getList(title,start,size);
             r.put("data", list);
-            r.put("total", nationMapper.getListTotal(p));
+            r.put("total", nationMapper.getListTotal(title));
         }else if (type == 2){
             //顶级
-            Object[] p = {params.getInteger("start"), params.getInteger("size")};
+            Object[] p = {start, size};
             List<HashMap> list = nationMapper.getTopList(p);
             r.put("data", list);
             r.put("total", nationMapper.getTopListTotal(p));
         }else if (type == 3){
             //未完善
-            Object[] p = {params.getInteger("start"), params.getInteger("size")};
+            Object[] p = {start, size};
             List<HashMap> list = nationMapper.getUncheckList(p);
             r.put("data", list);
             r.put("total", nationMapper.getUncheckListTotal(p));
@@ -192,6 +200,60 @@ public class NationService {
 
         return new Result(ResultMessage.OK, r);
     }
+
+
+    public Object editInitTag(JSONObject params){
+        String id = params.getString("id");
+        Nation nation = nationMapper.selectById(id);
+        if (nation == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+        List<HashMap> tagMaps = nationTagMapper.selectTagsByNid(id);
+
+//        System.out.println(JSON.toJSONString(tagMaps));
+        JSONObject data = new JSONObject();
+        data.put("nation",nation);
+        data.put("tags",tagMaps);
+        return new Result(ResultMessage.OK,data);
+    }
+
+    @Transactional
+    public Object addTag(JSONObject params){
+        JSONObject tag = params.getJSONObject("tag");
+        String nid = params.getString("nid");
+        String tid = tag.getString("tid");
+
+//        System.out.println(params);
+
+        Boolean isNew = tag.getBoolean("isnew");
+        if (isNew != null && isNew){
+            String title = tag.getString("title");
+            Tag t = new Tag();
+            tid = Utils.generateId();
+            t.setId(tid);
+            t.setTitle(title);
+            tagMapper.add(t);
+        }
+
+        NationTag nationTag = new NationTag();
+        nationTag.setId(Utils.generateId());
+        nationTag.setNid(nid);
+        nationTag.setTid(tid);
+
+       if (nationTagMapper.selectByNidAndTid(nationTag) != null){
+           return new Result(ResultMessage.PARAM_ERROR);
+       }
+        nationTagMapper.add(nationTag);
+
+        return new Result(ResultMessage.OK);
+    }
+
+    @Transactional
+    public Object deleteTag(JSONObject params){
+        String id = (String) params.get("id");
+        nationTagMapper.deleteById(id);
+        return new Result(ResultMessage.OK);
+    }
+
 
     @Transactional
     public Object edit(JSONObject params) {

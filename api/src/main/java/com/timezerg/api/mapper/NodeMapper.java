@@ -21,10 +21,10 @@ public interface NodeMapper {
     Node selectById(String id);
 
     @SelectProvider(type= NodeMapperProvider.class,method = "getList")
-    List<HashMap> getList(@Param("cids") Object[] cids, @Param("start") Integer start, @Param("limit") Integer limit);
+    List<HashMap> getList(@Param("cids") Object[] cids, @Param("searchtitle") String searchtitle,@Param("start") Integer start, @Param("limit") Integer limit);
 
     @SelectProvider(type= NodeMapperProvider.class,method = "getListTotal")
-    Long getListTotal(@Param("cids") Object[] cids);
+    Long getListTotal(@Param("cids") Object[] cids, @Param("searchtitle") String searchtitle);
 
     @Update("update t_timezerg_node set title = #{title},content = #{content},cover = #{cover},cdate = #{cdate},ddate = #{ddate},ad = #{AD},level = #{level} where id = #{id}")
     int update(Node node);

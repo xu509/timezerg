@@ -33,7 +33,15 @@
                 </el-menu-item>
                 <el-menu-item index="5" route = "/nation">
                   <i class="el-icon-menu"></i>
-                  <span slot="title">国家 / 时期</span>
+                  <span slot="title">国家</span>
+                </el-menu-item>
+                <el-menu-item index="6" route = "/period">
+                  <i class="el-icon-menu"></i>
+                  <span slot="title">时代</span>
+                </el-menu-item>
+                <el-menu-item index="7" route = "/giant">
+                  <i class="el-icon-menu"></i>
+                  <span slot="title">人物</span>
                 </el-menu-item>
                 <!-- <el-menu-item index="5" route = "/dynasty">
                   <i class="el-icon-menu"></i>
@@ -47,7 +55,6 @@
                   </template>
                   <el-menu-item index="6-1" route = "/continent/add">大洲</el-menu-item>
                   <el-menu-item index="6-2" route = "/institution">制度</el-menu-item>
-                  <el-menu-item index="6-3" route = "/giant">人物</el-menu-item>
                 </el-submenu>
               </el-menu>
 
@@ -82,7 +89,15 @@
                 </el-menu-item>
                 <el-menu-item index="5" route = "/nation">
                   <i class="el-icon-menu"></i>
-                  <span slot="title">国家 / 时期</span>
+                  <span slot="title">国家</span>
+                </el-menu-item>
+                <el-menu-item index="6" route = "/period">
+                  <i class="el-icon-menu"></i>
+                  <span slot="title">时代</span>
+                </el-menu-item>
+                <el-menu-item index="7" route = "/giant">
+                  <i class="el-icon-menu"></i>
+                  <span slot="title">人物</span>
                 </el-menu-item>
                 <!-- <el-menu-item index="5" route = "/dynasty">
                   <i class="el-icon-menu"></i>
@@ -96,7 +111,6 @@
                   </template>
                   <el-menu-item index="6-1" route = "/continent/add">大洲</el-menu-item>
                   <el-menu-item index="6-2" route = "/institution">制度</el-menu-item>
-                  <el-menu-item index="6-3" route = "/giant">人物</el-menu-item>
                 </el-submenu>
               </el-menu>
             </el-col>
@@ -212,5 +226,45 @@ body > .el-container {
   height: 100%;
   background-color: #5c5c5c;
   opacity: 0.2;
+}
+
+.tag-margin {
+  margin-left: 5px;
+}
+
+.paragraph-title-main {
+  font-size: 20px;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
+
+.paragraph-title {
+  font-size: 18px;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
+
+.paragraph-title-small {
+  font-size: 16px;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
+
+.paragraph-content {
+  font-size: 14px;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
+
+.paragraph-content-small {
+  font-size: 13px;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+}
+
+.paragraph-assist {
+  font-size: 12px;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
 }
 </style>
