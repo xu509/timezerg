@@ -1,5 +1,5 @@
 <template>
-      <el-autocomplete popper-class="my-autocomplete" clearable v-model="form.name"
+      <el-autocomplete popper-class="my-autocomplete" clearable v-model="name"
                         :fetch-suggestions="queryGiant"
                           placeholder="搜索人物"
                           @select="selectGiant">
@@ -18,12 +18,7 @@ export default {
   name: "inputboxgiant",
   data() {
     return {
-      form: {
-        name: "",
-        content: "",
-        ddate: "",
-        tags: []
-      },
+      name:null,
       saving: false,
       loading: true
     };
@@ -64,7 +59,7 @@ export default {
       }
     },
     selectGiant(item) {
-      this.form.name = item.name;
+      this.name = null;
       this.$emit("selectGiant", item);
       // this.form.tags.push(item);
     }
