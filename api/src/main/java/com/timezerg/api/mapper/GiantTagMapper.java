@@ -18,6 +18,9 @@ public interface GiantTagMapper {
     @Select("select * from t_timezerg_giant_tag where gid = #{gid} and tid = #{tid}")
     GiantTag selectByGidAndTid(GiantTag giantTag);
 
+    @Select("select * from t_timezerg_giant_tag where id = #{id}")
+    GiantTag selectById(String id);
+
     @Select("SELECT gt.*,t.title FROM t_timezerg_giant_tag gt LEFT JOIN t_timezerg_tag t ON gt.tid = t.id WHERE gt.gid = #{gid}")
     List<HashMap> selectTagsByGid(String gid);
 
@@ -31,6 +34,10 @@ public interface GiantTagMapper {
 
     @Delete("DELETE FROM t_timezerg_giant_tag WHERE gid = #{gid}")
     int deleteByGId(String gid);
+
+    @Delete("DELETE FROM t_timezerg_giant_tag WHERE id = #{id}")
+    int deleteById(String id);
+
 
 
 }

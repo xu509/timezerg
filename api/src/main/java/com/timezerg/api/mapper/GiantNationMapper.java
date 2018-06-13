@@ -22,11 +22,17 @@ public interface GiantNationMapper {
     @Select("select * from t_timezerg_giant_nation where gid = #{gid} and nid = #{nid}")
     GiantNation selectByGidAndNid(GiantNation giantNation);
 
+    @Select("select * from t_timezerg_giant_nation where id = #{id}")
+    GiantNation selectById(String id);
+
     @Delete("delete from t_timezerg_giant_nation where nid = #{nid}")
     void deleteByNid(String nid);
 
     @Delete("delete from t_timezerg_giant_nation where gid = #{gid}")
     void deleteByGid(String gid);
+
+    @Delete("delete from t_timezerg_giant_nation where id = #{id}")
+    void deleteById(String id);
 
 
     @Select("SELECT gn.*,g.name FROM t_timezerg_giant_nation gn LEFT JOIN t_timezerg_giant g ON gn.gid = g.id WHERE gn.nid = #{nid}")

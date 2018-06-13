@@ -22,4 +22,7 @@ public interface TagMapper {
     @Select("select * from t_timezerg_tag where id = #{id}")
     Tag selectById(String id);
 
+    @Select("select * from t_timezerg_tag where title = #{title}")
+    Tag selectByTitle(String title);
+
 }

@@ -11,11 +11,11 @@
     </el-row>
 
     <el-row>
-        <p class="paragraph-title">{{form.name}}</p>      
+        <p class="paragraph-title">{{form.name}}</p>     
     </el-row>
     <el-row>
           <el-tabs tab-position="top" style="height: 100%;" v-model="activeTab">
-            <el-tab-pane label="基础" name="1" :loading = "form.loading">
+            <el-tab-pane label="基础" name="1" v-loading = "form.loading">
                 <el-row>
                   <el-col :md ="18" :xs="24" :sm="24" >
                       <el-form ref="form" :model="form" label-width="120px">
@@ -48,7 +48,7 @@
             </el-tab-pane>
 
             <el-tab-pane label="相关" name="2">
-                <el-card class="box-card">
+                <el-card class="box-card" v-loading = "relate.loading">
                     <el-row>
                         <inputboxnation @selectNation = "selectNation"></inputboxnation>
                     </el-row>
@@ -70,23 +70,25 @@
             </el-tab-pane>
 
             <el-tab-pane label="贴条" name="3">
-                <el-row>
-                    <inputboxtag @selectTag = "selectTag"></inputboxtag>
-                </el-row>
-                <el-row>
-                  <template v-if="relate.nations == null || relate.nations.length == 0">
-                        <p class="paragraph-content">无数据</p>
-                  </template>
-                  <template v-if="tag.tags != null && tag.tags.length > 0">
-                      <el-tag type="warning" v-for="item in tag.tags" class="tag-margin"
-                        :key="item.id"
-                        closable
-                        :disable-transitions="false"
-                        @close="closeTagTag(item)">
-                        {{item.title}}
-                      </el-tag>
-                  </template>
-                </el-row>
+                <el-card class="box-card" v-loading = "tag.loading">
+                    <el-row>
+                        <inputboxtag @selectTag = "selectTag"></inputboxtag>
+                    </el-row>
+                    <el-row>
+                      <template v-if="tag.tags == null || tag.tags.length == 0">
+                            <p class="paragraph-content">无数据</p>
+                      </template>
+                      <template v-if="tag.tags != null && tag.tags.length > 0">
+                          <el-tag type="warning" v-for="item in tag.tags" class="tag-margin"
+                            :key="item.id"
+                            closable
+                            :disable-transitions="false"
+                            @close="closeTagTag(item)">
+                            {{item.title}}
+                          </el-tag>
+                      </template>
+                    </el-row>
+                </el-card>
             </el-tab-pane>
 
 
@@ -135,9 +137,9 @@ export default {
       if (this.activeTab == "1") {
         this.initTabBasic();
       } else if (this.activeTab == "2") {
-        // this.initTabRelate();
+        this.initTabRelate();
       } else {
-        // this.initTagTab();
+        this.initTabTag();
       }
     },
 
@@ -153,13 +155,9 @@ export default {
         .then(function(response) {
           if (response.data.result == 0) {
             var giant = response.data.data;
-
-            console.log(giant);
-
             _this.form.name = giant.name;
             _this.form.content = giant.content;
             _this.form.pgiant = giant.pgiant;
-
             _this.form.loading = false;
           } else {
             this.$message.error(response.data.data);
@@ -205,50 +203,221 @@ export default {
       this.form.pgiant = null;
     },
 
-    queryTag(queryString, cb) {
+    // 相关
+    initTabRelate() {
+      // console.log("init tab relate");
       var _this = this;
-      var sr = [];
-      if (queryString != undefined && queryString.length > 0) {
-        axios
-          .post(_this.GLOBAL.url_search_tag, {
-            sw: queryString
-          })
-          .then(function(response) {
-            var r = response.data;
-            if (r.result == 0) {
-              var data = r.data.data;
-              if (r.data.exist) {
-                cb(data);
-              } else {
-                var item = {
-                  id: "11",
-                  title: queryString,
-                  isnew: true
-                };
+      _this.relate.loading = true;
 
-                sr.push(item);
-                cb(sr);
-              }
-            } else {
-              cb(sr);
-            }
-          });
-      } else {
-        cb(sr);
-      }
-    },
-    selectTag(item) {
-      this.form.tags.push(item);
-    },
-    closeTag(index) {
-      this.form.tags.splice(index, 1);
+      axios
+        .post(_this.GLOBAL.url_giant_edit_init_relate, {
+          id: _this.id
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            var data = response.data.data;
+            _this.form.name = data.name;
+            _this.relate.nations = data.nations;
+            // _this.form.pgiant = giant.pgiant;
+            _this.relate.loading = false;
+          } else {
+            this.$message.error(response.data.data);
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     },
     selectNation(item) {
-      this.form.nations.push(item);
-      console.log(item.title);
+      var _this = this;
+      //提交
+      var content = "确认添加国家： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_giant_edit_relate_nation_save, {
+              gid: _this.id,
+              nation: item
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "添加成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
     },
-    closeNation(index) {
-      this.form.nations.splice(index, 1);
+    closeNationTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认删除国家： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_giant_edit_relate_nation_delete, {
+              id: item.id
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+
+    // 贴条
+    initTabTag() {
+      var _this = this;
+      _this.tag.loading = true;
+
+      axios
+        .post(_this.GLOBAL.url_giant_edit_init_tag, {
+          id: _this.id
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            var data = response.data.data;
+            _this.form.name = data.name;
+            _this.tag.tags = data.tags;
+            // _this.form.pgiant = giant.pgiant;
+            _this.tag.loading = false;
+          } else {
+            this.$message.error(response.data.data);
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    selectTag(item) {
+       var _this = this;
+      //提交
+      var content = "确认添加tag： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_giant_edit_tag_save, {
+              gid: _this.id,
+              tag: item
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "添加成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    closeTagTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认删除tag： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_giant_edit_tag_delete, {
+              id: item.id
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
     }
   },
   watch: {

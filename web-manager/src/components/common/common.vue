@@ -20,7 +20,12 @@ const url_nation_list = domain + "/nation/list";
 const url_nation_add = domain + "/nation/save";
 const url_nation_edit_init = domain + "/nation/edit/init";
 const url_nation_edit_init_tag = domain + "/nation/edit/init/tag";
+const url_nation_edit_init_relate = domain + "/nation/edit/init/relate";
 const url_nation_edit_save = domain + "/nation/edit/save";
+const url_nation_edit_relate_giant_save = domain + "/nation/edit/relate/giant/save";
+const url_nation_edit_relate_institution_save = domain + "/nation/edit/relate/institution/save";
+const url_nation_edit_relate_giant_delete = domain + "/nation/edit/relate/giant/delete";
+const url_nation_edit_relate_institution_delete = domain + "/nation/edit/relate/institution/delete";
 const url_nation_tag_save = domain + "/nation/edit/tag/save";
 const url_nation_tag_delete = domain + "/nation/edit/tag/delete";
 const url_period_list = domain + "/period/list";
@@ -47,7 +52,13 @@ const url_civilization_index_del = domain + "/civilizationindex/del";
 const url_giant_list = domain + "/giant/list";
 const url_giant_add = domain + "/giant/save";
 const url_giant_edit_init = domain + "/giant/edit/init";
+const url_giant_edit_init_relate = domain + "/giant/edit/init/relate";
+const url_giant_edit_init_tag = domain + "/giant/edit/init/tag";
 const url_giant_edit_save = domain + "/giant/edit/save";
+const url_giant_edit_relate_nation_save = domain + "/giant/edit/relate/nation/save";
+const url_giant_edit_relate_nation_delete = domain + "/giant/edit/relate/nation/delete";
+const url_giant_edit_tag_save = domain + "/giant/edit/tag/save";
+const url_giant_edit_tag_delete = domain + "/giant/edit/tag/delete";
 const url_institution_list = domain + "/institution/list";
 const url_institution_add = domain + "/institution/save";
 
@@ -80,7 +91,12 @@ export default {
   url_nation_add,
   url_nation_edit_init,
   url_nation_edit_init_tag,
+  url_nation_edit_init_relate,
   url_nation_edit_save,
+  url_nation_edit_relate_giant_save,
+  url_nation_edit_relate_giant_delete,
+  url_nation_edit_relate_institution_save,
+  url_nation_edit_relate_institution_delete,
   url_nation_tag_save,
   url_nation_tag_delete,
   url_period_list,
@@ -106,7 +122,13 @@ export default {
   url_giant_list,
   url_giant_add,
   url_giant_edit_init,
+  url_giant_edit_init_relate,
+  url_giant_edit_init_tag,
   url_giant_edit_save,
+  url_giant_edit_relate_nation_save,
+  url_giant_edit_relate_nation_delete,
+  url_giant_edit_tag_save,
+  url_giant_edit_tag_delete,
   url_institution_list,
   url_institution_add,
   url_search_institution,

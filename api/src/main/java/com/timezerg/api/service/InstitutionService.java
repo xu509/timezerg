@@ -14,6 +14,7 @@ import com.timezerg.api.model.Nation;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +42,24 @@ public class InstitutionService {
         institution.setContent(params.getString("content"));
         institution.setType(params.getInteger("type"));
         institutionMapper.add(institution);
+        return new Result(ResultMessage.OK, institution);
+    }
+
+    @Transactional
+    public Object add(Institution institution) {
+        if (institution == null || StringUtils.isBlank(institution.getTitle())){
+            return new Result(ResultMessage.PARAM_ERROR,"institution add");
+        }
+
+        if (StringUtils.isBlank(institution.getId()))
+            institution.setId(Utils.generateId());
+
+        String title = institution.getTitle();
+        if (institutionMapper.selectByTitle(title) != null){
+            return new Result(ResultMessage.DUPLICATION_ERROR,"institution add");
+        }
+        institutionMapper.add(institution);
+
         return new Result(ResultMessage.OK, institution);
     }
 

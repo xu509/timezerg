@@ -19,10 +19,16 @@ public interface NationInstitutionMapper {
     int add(NationInstitution nationInstitution);
 
     @Select("select * from t_timezerg_nation_institution where iid = #{iid} and nid = #{nid}")
-    NationInstitution selectByGidAndNid(NationInstitution nationInstitution);
+    NationInstitution selectByIidAndNid(NationInstitution nationInstitution);
+
+    @Select("select * from t_timezerg_nation_institution where id = #{id}")
+    NationInstitution selectById(String id);
 
     @Delete("delete from t_timezerg_nation_institution where nid = #{nid}")
     void deleteByNid(String nid);
+
+    @Delete("delete from t_timezerg_nation_institution where id = #{id}")
+    void deleteById(String id);
 
     @Select("SELECT ni.*,i.title,i.type FROM t_timezerg_nation_institution ni LEFT JOIN t_timezerg_institution i ON ni.iid = i.id WHERE ni.nid = #{nid}")
     List<HashMap> selectByNid(String nid);

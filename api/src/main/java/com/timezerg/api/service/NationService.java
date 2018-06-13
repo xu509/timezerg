@@ -32,13 +32,25 @@ public class NationService {
     GiantMapper giantMapper;
 
     @Autowired
+    GiantService giantService;
+
+    @Autowired
     GiantNationMapper giantNationMapper;
+
+    @Autowired
+    GiantNationService giantNationService;
 
     @Autowired
     NationInstitutionMapper nationInstitutionMapper;
 
     @Autowired
+    NationInstitutionService nationInstitutionService;
+
+    @Autowired
     InstitutionMapper institutionMapper;
+
+    @Autowired
+    InstitutionService institutionService;
 
     @Autowired
     NationTagMapper nationTagMapper;
@@ -199,22 +211,42 @@ public class NationService {
         if (fnation != null)
             r.put("fnation", fnation.getTitle());
 
-        //giant
-        List<HashMap> giants = giantNationMapper.selectByNid(id);
-        for (HashMap giant : giants){
-            giant.put("isnew",false);
-        }
-        r.put("giant",JSONObject.toJSON(giants));
-
-        //institution
-        List<HashMap> institution = nationInstitutionMapper.selectByNid(id);
-//        for (HashMap giant : institution){
+//        //giant
+//        List<HashMap> giants = giantNationMapper.selectByNid(id);
+//        for (HashMap giant : giants){
 //            giant.put("isnew",false);
 //        }
-        r.put("institution",JSONObject.toJSON(institution));
+//        r.put("giant",JSONObject.toJSON(giants));
+//
+//        //institution
+//        List<HashMap> institution = nationInstitutionMapper.selectByNid(id);
+////        for (HashMap giant : institution){
+////            giant.put("isnew",false);
+////        }
+//        r.put("institution",JSONObject.toJSON(institution));
 
         return new Result(ResultMessage.OK, r);
     }
+
+    public Object editInitRelate(JSONObject params) {
+        String id = params.getString("id");
+        Nation nation = nationMapper.selectById(id);
+        if (nation == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        JSONObject r = (JSONObject) JSON.toJSON(nation);
+
+        //名人
+        List<HashMap> giants = giantNationMapper.selectByNid(id);
+        r.put("giants",giants);
+
+        //制度
+        List<HashMap> institution = nationInstitutionMapper.selectByNid(id);
+        r.put("institutions",institution);
+
+        return new Result(ResultMessage.OK,r);
+    }
+
 
 
     public Object editInitTag(JSONObject params){
@@ -316,47 +348,47 @@ public class NationService {
         nationMapper.update(nation);
 
 
-        //重要人物
-        JSONArray giants = params.getJSONArray("giant");
-        if (giants != null){
-            giantNationMapper.deleteByNid(id);
+//        //重要人物
+//        JSONArray giants = params.getJSONArray("giant");
+//        if (giants != null){
+//            giantNationMapper.deleteByNid(id);
+//
+//            for (int i = 0 ; i < giants.size(); i++){
+//                JSONObject giant = giants.getJSONObject(i);
+//                String name = giant.getString("name");
+//                String giantId;
+//
+//                Boolean isNewFlag = giant.getBoolean("isnew");
+//
+//                if (isNewFlag!= null && isNewFlag){
+//                    //增加并绑定
+//                    Giant giant1 = new Giant();
+//                    giantId = Utils.generateId();
+//
+//                    giant1.setId(giantId);
+//                    giant1.setName(name);
+//                    giantMapper.add(giant1);
+//
+//                }else {
+//                    giantId = giant.getString("gid");
+//                    //绑定
+//                }
+//
+//                GiantNation giantNation = new GiantNation();
+//                giantNation.setId(Utils.generateId());
+//                giantNation.setGid(giantId);
+//                giantNation.setNid(id);
+//
+//                if (giantNationMapper.selectByGidAndNid(giantNation) == null){
+//                    giantNationMapper.add(giantNation);
+//                }
+//
+//            }
+//        }
 
-            for (int i = 0 ; i < giants.size(); i++){
-                JSONObject giant = giants.getJSONObject(i);
-                String name = giant.getString("name");
-                String giantId;
-
-                Boolean isNewFlag = giant.getBoolean("isnew");
-
-                if (isNewFlag!= null && isNewFlag){
-                    //增加并绑定
-                    Giant giant1 = new Giant();
-                    giantId = Utils.generateId();
-
-                    giant1.setId(giantId);
-                    giant1.setName(name);
-                    giantMapper.add(giant1);
-
-                }else {
-                    giantId = giant.getString("gid");
-                    //绑定
-                }
-
-                GiantNation giantNation = new GiantNation();
-                giantNation.setId(Utils.generateId());
-                giantNation.setGid(giantId);
-                giantNation.setNid(id);
-
-                if (giantNationMapper.selectByGidAndNid(giantNation) == null){
-                    giantNationMapper.add(giantNation);
-                }
-
-            }
-        }
-
-        //制度
-        JSONArray institution = params.getJSONArray("institution");
-        bindInstitution(institution,id);
+//        //制度
+//        JSONArray institution = params.getJSONArray("institution");
+//        bindInstitution(institution,id);
 
         return new Result(ResultMessage.OK, nation);
     }
@@ -390,7 +422,7 @@ public class NationService {
                 nationInstitution.setIid(iid);
 
 
-                if (nationInstitutionMapper.selectByGidAndNid(nationInstitution) == null){
+                if (nationInstitutionMapper.selectByIidAndNid(nationInstitution) == null){
                     nationInstitutionMapper.add(nationInstitution);
                 }
 
@@ -399,6 +431,63 @@ public class NationService {
     }
 
 
+    @Transactional
+    public Object addRelateGiant(JSONObject params){
+        JSONObject giant = params.getJSONObject("giant");
+        String nid = params.getString("nid");
+        String gid = giant.getString("gid");
+
+        Boolean isNew = giant.getBoolean("isnew");
+        if (isNew != null && isNew){
+            String name = giant.getString("name");
+            Giant g = new Giant();
+            gid = Utils.generateId();
+            g.setId(gid);
+            g.setName(name);
+            giantService.add(g);
+        }
+
+        GiantNation giantNation = new GiantNation();
+        giantNation.setId(Utils.generateId());
+        giantNation.setNid(nid);
+        giantNation.setGid(gid);
+
+        return giantNationService.add(giantNation);
+    }
+
+    @Transactional
+    public Object deleteRelateGiant(JSONObject params){
+        return giantNationService.delete(params.getString("id"));
+    }
+
+    @Transactional
+    public Object addRelateInstitution(JSONObject params){
+        JSONObject institution = params.getJSONObject("institution");
+        String nid = params.getString("nid");
+        String iid = institution.getString("iid");
+
+        Boolean isNew = institution.getBoolean("isnew");
+        if (isNew != null && isNew){
+            String name = institution.getString("title");
+            Institution i = new Institution();
+            iid = Utils.generateId();
+            i.setId(iid);
+            i.setTitle(name);
+            institutionService.add(i);
+        }
+
+        NationInstitution nationInstitution = new NationInstitution();
+        nationInstitution.setId(Utils.generateId());
+        nationInstitution.setNid(nid);
+        nationInstitution.setIid(iid);
+
+        return nationInstitutionService.add(nationInstitution);
+    }
+
+    @Transactional
+    public Object deleteRelateInstitution(JSONObject params){
+        return nationInstitutionService.delete(params.getString("id"));
+    }
 
 
 }

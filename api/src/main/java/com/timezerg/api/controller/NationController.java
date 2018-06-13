@@ -43,6 +43,37 @@ public class NationController {
     }
 
     @CrossOrigin
+    @PostMapping("/nation/edit/init/relate")
+    public Object editInitRelate(@RequestBody JSONObject params){
+        return nationService.editInitRelate(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/nation/edit/relate/giant/save")
+    public Object editRelateGiantSave(@RequestBody JSONObject params){
+        return nationService.addRelateGiant(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/nation/edit/relate/giant/delete")
+    public Object editRelateGiantDelete(@RequestBody JSONObject params){
+        return nationService.deleteRelateGiant(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/nation/edit/relate/institution/save")
+    public Object editRelateInstitutionSave(@RequestBody JSONObject params){
+        return nationService.addRelateInstitution(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/nation/edit/relate/institution/delete")
+    public Object editRelateInstitutionDelete(@RequestBody JSONObject params){
+        return nationService.deleteRelateInstitution(params);
+    }
+
+
+    @CrossOrigin
     @PostMapping("/nation/edit/init/tag")
     public Object editInitTag(@RequestBody JSONObject params){
         return nationService.editInitTag(params);

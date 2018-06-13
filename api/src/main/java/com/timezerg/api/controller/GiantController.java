@@ -48,4 +48,40 @@ public class GiantController {
     public Object editSave(@RequestBody JSONObject params){
         return giantService.editSave(params);
     }
+
+    @CrossOrigin
+    @PostMapping("/giant/edit/init/relate")
+    public Object editInitRelate(@RequestBody JSONObject params){
+        return giantService.editInitRelate(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/giant/edit/relate/nation/save")
+    public Object editAddNation(@RequestBody JSONObject params){
+        return giantService.editAddNation(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/giant/edit/relate/nation/delete")
+    public Object editDeleteNation(@RequestBody JSONObject params){
+        return giantService.editDeleteNation(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/giant/edit/init/tag")
+    public Object editInitTag(@RequestBody JSONObject params){
+        return giantService.editInitTag(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/giant/edit/tag/save")
+    public Object editAddTag(@RequestBody JSONObject params){
+        return giantService.editAddTag(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/giant/edit/tag/delete")
+    public Object editDeleteTag(@RequestBody JSONObject params){
+        return giantService.editDeleteTag(params);
+    }
 }

@@ -8,6 +8,7 @@ import com.timezerg.api.model.Tag;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,25 @@ public class TagService {
         Tag tag = new Tag();
         tag.setId(Utils.generateId());
         tag.setTitle(params.getString("title"));
+        tagMapper.add(tag);
+
+        return new Result(ResultMessage.OK, tag);
+    }
+
+    @Transactional
+    public Object add(Tag tag) {
+
+        if (tag == null || StringUtils.isBlank(tag.getTitle())){
+            return new Result(ResultMessage.PARAM_ERROR,"tag add error");
+        }
+
+        if (tagMapper.selectByTitle(tag.getTitle()) != null){
+            return new Result(ResultMessage.DUPLICATION_ERROR,"tag");
+        }
+
+        if (StringUtils.isBlank(tag.getId()))
+            tag.setId(Utils.generateId());
+
         tagMapper.add(tag);
 
         return new Result(ResultMessage.OK, tag);

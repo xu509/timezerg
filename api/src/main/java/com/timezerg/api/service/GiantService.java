@@ -30,6 +30,9 @@ public class GiantService {
     GiantTagMapper giantTagMapper;
 
     @Autowired
+    GiantTagService giantTagService;
+
+    @Autowired
     TagMapper tagMapper;
 
     @Autowired
@@ -37,6 +40,15 @@ public class GiantService {
 
     @Autowired
     NationMapper nationMapper;
+
+    @Autowired
+    NationService nationService;
+
+    @Autowired
+    GiantNationService giantNationService;
+
+    @Autowired
+    TagService tagService;
 
 
     @Transactional
@@ -58,6 +70,25 @@ public class GiantService {
         bindTag(params.getJSONArray("tags"),gid);
         //nations
         bindNations(params.getJSONArray("nations"),gid);
+
+        return new Result(ResultMessage.OK, giant);
+    }
+
+
+    @Transactional
+    public Object add(Giant giant) {
+        if (giant == null || StringUtils.isBlank(giant.getName())){
+            return new Result(ResultMessage.PARAM_ERROR,"giant add");
+        }
+
+        if (StringUtils.isBlank(giant.getId()))
+            giant.setId(Utils.generateId());
+
+        String name = giant.getName();
+        if (giantMapper.selectByName(name) != null){
+            return new Result(ResultMessage.DUPLICATION_ERROR,"giant add");
+        }
+        giantMapper.add(giant);
 
         return new Result(ResultMessage.OK, giant);
     }
@@ -127,6 +158,7 @@ public class GiantService {
         return new Result(ResultMessage.OK, r);
     }
 
+    @Transactional
     public Object editInit(JSONObject params){
         String id = params.getString("id");
         Giant giant = giantMapper.selectById(id);
@@ -140,17 +172,18 @@ public class GiantService {
             obj.put("pgiant",pgiant);
         }
 
-        // tags
-//        List<HashMap> tagMaps = giantTagMapper.selectTagsByGid(id);
-////        for (HashMap tagMap : tagMaps){
-////            tagMap.put("")
-////        }
-//        obj.put("tags",tagMaps);
-//
-//        //nations
-//        List<HashMap> nationsMap = giantNationMapper.selectByGid(id);
-//        obj.put("nations",nationsMap);
+        return new Result(ResultMessage.OK,obj);
+    }
 
+    @Transactional
+    public Object editInitRelate(JSONObject params){
+        String id = params.getString("id");
+        Giant giant = giantMapper.selectById(id);
+        if (giant == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        JSONObject obj = (JSONObject) JSON.toJSON(giant);
+        obj.put("nations",giantNationMapper.selectByGid(id));
         return new Result(ResultMessage.OK,obj);
     }
 
@@ -190,6 +223,101 @@ public class GiantService {
 
         return new Result(ResultMessage.OK,giant);
     }
+
+    /*
+    *   增加nation
+    * */
+    @Transactional
+    public Object editAddNation(JSONObject params){
+        String gid = params.getString("gid");
+        JSONObject nationObj = params.getJSONObject("nation");
+        Giant giant = giantMapper.selectById(gid);
+        if (giant == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        String nid = nationObj.getString("nid");
+        Boolean isnew = nationObj.getBoolean("isnew");
+        if (isnew != null && isnew){
+            Nation nation = new Nation();
+            nid = Utils.generateId();
+            nation.setId(nid);
+            nation.setTitle(nationObj.getString("title"));
+            nationService.add(nation);
+        }
+
+        GiantNation giantNation = new GiantNation();
+        giantNation.setId(Utils.generateId());
+        giantNation.setNid(nid);
+        giantNation.setGid(gid);
+        giantNationService.add(giantNation);
+
+        return new Result(ResultMessage.OK,giant);
+    }
+
+    /*
+     *   删除nation
+     * */
+    @Transactional
+    public Object editDeleteNation(JSONObject params){
+        String id = params.getString("id");
+        return giantNationService.delete(id);
+    }
+
+
+    /**
+     *  初始化贴条
+     */
+    @Transactional
+    public Object editInitTag(JSONObject params){
+        String id = params.getString("id");
+        Giant giant = giantMapper.selectById(id);
+        if (giant == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        JSONObject obj = (JSONObject) JSON.toJSON(giant);
+        obj.put("tags",giantTagMapper.selectTagsByGid(id));
+        return new Result(ResultMessage.OK,obj);
+    }
+
+    /**
+     *   增加 tag
+     */
+    @Transactional
+    public Object editAddTag(JSONObject params){
+        String gid = params.getString("gid");
+        JSONObject tagObj = params.getJSONObject("tag");
+        Giant giant = giantMapper.selectById(gid);
+        if (giant == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        String tid = tagObj.getString("tid");
+        Boolean isnew = tagObj.getBoolean("isnew");
+        if (isnew != null && isnew){
+            Tag tag = new Tag();
+            tid = Utils.generateId();
+            tag.setId(tid);
+            tag.setTitle(tagObj.getString("title"));
+            tagService.add(tag);
+        }
+
+        GiantTag giantTag = new GiantTag();
+        giantTag.setId(Utils.generateId());
+        giantTag.setTid(tid);
+        giantTag.setGid(gid);
+        giantTagService.add(giantTag);
+
+        return new Result(ResultMessage.OK,giant);
+    }
+
+    /*
+     *   删除tag
+     * */
+    @Transactional
+    public Object editDeleteTag(JSONObject params){
+        String id = params.getString("id");
+        return giantTagService.delete(id);
+    }
+
 
 
     /**

@@ -27,14 +27,12 @@ export default {
       var _this = this;
       var sr = [];
       if (queryString != undefined && queryString.length > 0) {
-        console.log(_this.GLOBAL.url_search_institution);
         axios
           .post(_this.GLOBAL.url_search_institution, {
             sw: queryString
           })
           .then(function(response) {
             var r = response.data;
-            console.log(r);
             if (r.result == 0) {
               var data = r.data.data;
               if (r.data.exist) {
@@ -59,7 +57,7 @@ export default {
     },
     selectInstitution(item) {
       this.title = null;
-      this.$emit("select", item);
+      this.$emit("selectInstitution", item);
       // this.form.tags.push(item);
     }
   },
