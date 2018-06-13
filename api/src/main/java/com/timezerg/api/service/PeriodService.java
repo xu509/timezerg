@@ -3,6 +3,7 @@ package com.timezerg.api.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.timezerg.api.mapper.*;
 import com.timezerg.api.model.*;
 import com.timezerg.api.util.Result;
@@ -37,8 +38,25 @@ public class PeriodService {
     NationPeriodMapper nationPeriodMapper;
 
     @Autowired
+    PeriodTagMapper periodTagMapper;
+
+    @Autowired
     CivilizationPeriodMapper civilizationPeriodMapper;
 
+    @Autowired
+    CivilizationService civilizationService;
+
+    @Autowired
+    CivilizationPeriodService civilizationPeriodService;
+
+    @Autowired
+    NationPeriodService nationPeriodService;
+
+    @Autowired
+    NationService nationService;
+
+    @Autowired
+    PeriodTagService periodTagService;
 
     @Transactional
     public Object add(JSONObject params) {
@@ -65,7 +83,7 @@ public class PeriodService {
         calendar.set(Calendar.DAY_OF_MONTH, day == null ? 1 : day);
         period.setCdate(calendar.getTime());
 
-        if (eyear != null){
+        if (eyear != null) {
             calendar.clear();
             calendar.set(Calendar.YEAR, eyear);
             calendar.set(Calendar.MONTH, emonth == null ? 0 : emonth);
@@ -76,10 +94,10 @@ public class PeriodService {
         periodMapper.add(period);
 
         JSONArray civilizationAry = params.getJSONArray("civilizations");
-        bindCivilization(civilizationAry,pid);
+        bindCivilization(civilizationAry, pid);
 
         JSONArray nationAry = params.getJSONArray("nations");
-        bindNation(nationAry,pid);
+        bindNation(nationAry, pid);
 
         return new Result(ResultMessage.OK);
     }
@@ -93,7 +111,7 @@ public class PeriodService {
         Integer size = params.getInteger("size");
 
         //默认
-        List<HashMap> list = periodMapper.getList(title,start,size);
+        List<HashMap> list = periodMapper.getList(title, start, size);
         r.put("data", list);
         r.put("total", periodMapper.getListTotal(title));
 
@@ -108,9 +126,9 @@ public class PeriodService {
         List<Period> periods = periodMapper.selectLikeByTitle(title);
 
         JSONArray periodAry = new JSONArray();
-        for (Period period : periods){
+        for (Period period : periods) {
             JSONObject periodObj = (JSONObject) JSON.toJSON(period);
-            periodObj.put("pid",period.getId());
+            periodObj.put("pid", period.getId());
             periodAry.add(periodObj);
         }
 
@@ -122,15 +140,15 @@ public class PeriodService {
 
     public Object editInit(JSONObject params) {
         String id = params.getString("id");
-        Nation nation = nationMapper.selectById(id);
-        if (nation == null)
+        Period period = periodMapper.selectById(id);
+        if (period == null)
             return new Result(ResultMessage.PARAM_ERROR);
 
-        JSONObject r = (JSONObject) JSONObject.toJSON(nation);
+        JSONObject r = (JSONObject) JSONObject.toJSON(period);
 
-        Date cdate = nation.getCdate();
-        int year =  1,month = 0,day = 0;
-        if (cdate != null){
+        Date cdate = period.getCdate();
+        int year = 1, month = 0, day = 0;
+        if (cdate != null) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(cdate);
             year = calendar.get(Calendar.YEAR);
@@ -141,9 +159,9 @@ public class PeriodService {
         r.put("month", month);
         r.put("day", day);
 
-        Date edate = nation.getEdate();
-        int eyear,emonth,eday;
-        if (edate != null){
+        Date edate = period.getEdate();
+        int eyear, emonth, eday;
+        if (edate != null) {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(edate);
             eyear = calendar.get(Calendar.YEAR);
@@ -156,68 +174,89 @@ public class PeriodService {
 
         //nations
         List<HashMap> nations = nationPeriodMapper.selectNationByPid(id);
-        r.put("nations",JSONObject.toJSON(nations));
+        r.put("nations", JSONObject.toJSON(nations));
 
         //civilizations
         List<HashMap> civilizations = civilizationPeriodMapper.selectCivilizationByPid(id);
-        r.put("civilizations",JSONObject.toJSON(civilizations));
+        r.put("civilizations", JSONObject.toJSON(civilizations));
 
         return new Result(ResultMessage.OK, r);
     }
 
 
-//    public Object editInitTag(JSONObject params){
-//        String id = params.getString("id");
-//        Nation nation = nationMapper.selectById(id);
-//        if (nation == null)
-//            return new Result(ResultMessage.PARAM_ERROR);
-//        List<HashMap> tagMaps = nationTagMapper.selectTagsByNid(id);
-//
-////        System.out.println(JSON.toJSONString(tagMaps));
-//        JSONObject data = new JSONObject();
-//        data.put("nation",nation);
-//        data.put("tags",tagMaps);
-//        return new Result(ResultMessage.OK,data);
-//    }
-//
-//    @Transactional
-//    public Object addTag(JSONObject params){
-//        JSONObject tag = params.getJSONObject("tag");
-//        String nid = params.getString("nid");
-//        String tid = tag.getString("tid");
-//
-////        System.out.println(params);
-//
-//        Boolean isNew = tag.getBoolean("isnew");
-//        if (isNew != null && isNew){
-//            String title = tag.getString("title");
-//            Tag t = new Tag();
-//            tid = Utils.generateId();
-//            t.setId(tid);
-//            t.setTitle(title);
-//            tagMapper.add(t);
-//        }
-//
-//        NationTag nationTag = new NationTag();
-//        nationTag.setId(Utils.generateId());
-//        nationTag.setNid(nid);
-//        nationTag.setTid(tid);
-//
-//       if (nationTagMapper.selectByNidAndTid(nationTag) != null){
-//           return new Result(ResultMessage.PARAM_ERROR);
-//       }
-//        nationTagMapper.add(nationTag);
-//
-//        return new Result(ResultMessage.OK);
-//    }
-//
-//    @Transactional
-//    public Object deleteTag(JSONObject params){
-//        String id = (String) params.get("id");
-//        nationTagMapper.deleteById(id);
-//        return new Result(ResultMessage.OK);
-//    }
+    // 初始化相关
+    public Object editInitRelate(JSONObject params) {
+        JSONObject data = new JSONObject();
 
+        String id = params.getString("id");
+        Period period = periodMapper.selectById(id);
+        if (period == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        data.put("period", period);
+        data.put("civilizations", civilizationPeriodMapper.selectCivilizationByPid(id));
+        data.put("nations", nationPeriodMapper.selectNationByPid(id));
+
+        return new Result(ResultMessage.OK, data);
+    }
+
+    // 添加文明
+    public Object editAddRelateCivilization(JSONObject params) {
+        String pid = params.getString("pid");
+        JSONObject civilization = params.getJSONObject("civilization");
+
+        return bindCivilization(civilization,pid);
+    }
+
+    // 删除文明
+    public Object editDeleteRelateCivilization(JSONObject params) {
+        String id = params.getString("id");
+        return civilizationPeriodService.delete(id);
+    }
+
+    // 添加国家
+    public Object editAddRelateNation(JSONObject params) {
+        String pid = params.getString("pid");
+        JSONObject nation = params.getJSONObject("nation");
+
+        return bindNation(nation,pid);
+    }
+
+    // 删除国家
+    public Object editDeleteRelateNation(JSONObject params) {
+        String id = params.getString("id");
+        return nationPeriodService.delete(id);
+    }
+
+
+
+    // 初始化贴条
+    public Object editInitTags(JSONObject params) {
+        JSONObject data = new JSONObject();
+
+        String id = params.getString("id");
+        Period period = periodMapper.selectById(id);
+        if (period == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        data.put("period", period);
+        data.put("tags", periodTagMapper.selectListByPid(id));
+
+        return new Result(ResultMessage.OK, data);
+    }
+
+    // 添加贴条
+    public Object editAddTag(JSONObject params) {
+        String pid = params.getString("pid");
+        JSONObject tag = params.getJSONObject("tag");
+        return periodTagService.add(tag,pid);
+    }
+
+    // 删除贴条
+    public Object editDeleteTag(JSONObject params) {
+        String id = params.getString("id");
+        return periodTagService.delete(id);
+    }
 
     @Transactional
     public Object edit(JSONObject params) {
@@ -256,37 +295,33 @@ public class PeriodService {
         period.setAD(params.getInteger("AD"));
         period.seteAD(params.getInteger("eAD"));
 
+
+        period.setContent(params.getString("content"));
+
         periodMapper.update(period);
-
-
-        JSONArray civilizationAry = params.getJSONArray("civilizations");
-        bindCivilization(civilizationAry,id);
-
-        JSONArray nationAry = params.getJSONArray("nations");
-        bindNation(nationAry,id);
 
         return new Result(ResultMessage.OK, period);
     }
 
 
-    private void bindCivilization(JSONArray civilizationAry,String pid){
-        if (civilizationAry != null){
+    private void bindCivilization(JSONArray civilizationAry, String pid) {
+        if (civilizationAry != null) {
             civilizationPeriodMapper.deleteByPid(pid);
 
-            for (int i = 0 ; i < civilizationAry.size(); i++){
+            for (int i = 0; i < civilizationAry.size(); i++) {
                 JSONObject object = civilizationAry.getJSONObject(i);
                 String cid = object.getString("cid");
 
-                boolean isnew = object.getBoolean("isnew");
-                if (isnew){
+                Boolean isnew = object.getBoolean("isnew");
+                if (isnew != null && isnew) {
                     String title = object.getString("title");
-                    if (civilizationMapper.selectByTitle(title) == null){
+                    if (civilizationMapper.selectByTitle(title) == null) {
                         Civilization civilization = new Civilization();
                         cid = Utils.generateId();
                         civilization.setId(cid);
                         civilization.setTitle(title);
                         civilizationMapper.add(civilization);
-                    }else {
+                    } else {
                         return;
                     }
                 }
@@ -296,7 +331,7 @@ public class PeriodService {
                 civilizationPeriod.setCid(cid);
                 civilizationPeriod.setPid(pid);
 
-                if (civilizationPeriodMapper.selectByCidAndPid(civilizationPeriod) == null){
+                if (civilizationPeriodMapper.selectByCidAndPid(civilizationPeriod) == null) {
                     civilizationPeriodMapper.add(civilizationPeriod);
                 }
 
@@ -304,24 +339,74 @@ public class PeriodService {
         }
     }
 
-    private void bindNation(JSONArray nationAry,String pid){
-        if (nationAry != null){
+    private Object bindCivilization(JSONObject civilizationObj, String pid) {
+        Period period = periodMapper.selectById(pid);
+        if (period == null)
+            return new Result(ResultMessage.PARAM_ERROR,"时代ID错误");
+
+        String cid = civilizationObj.getString("id");
+        Boolean isnew = civilizationObj.getBoolean("isnew");
+        if (isnew != null && isnew) {
+            String title = civilizationObj.getString("title");
+            Civilization civilization = new Civilization();
+            cid = Utils.generateId();
+            civilization.setId(cid);
+            civilization.setTitle(title);
+            Result r = (Result) civilizationService.add(civilization);
+            if (!Result.isOk(r))
+                return r;
+        }
+
+        CivilizationPeriod civilizationPeriod = new CivilizationPeriod();
+        civilizationPeriod.setId(Utils.generateId());
+        civilizationPeriod.setCid(cid);
+        civilizationPeriod.setPid(pid);
+        return civilizationPeriodService.add(civilizationPeriod);
+    }
+
+    private Object bindNation(JSONObject nationObj, String pid) {
+        Period period = periodMapper.selectById(pid);
+        if (period == null)
+            return new Result(ResultMessage.PARAM_ERROR,"时代ID错误");
+
+        String nid = nationObj.getString("id");
+        Boolean isnew = nationObj.getBoolean("isnew");
+        if (isnew != null && isnew) {
+            String title = nationObj.getString("title");
+            Nation nation = new Nation();
+            nid = Utils.generateId();
+            nation.setId(nid);
+            nation.setTitle(title);
+            Result r = (Result) nationService.add(nation);
+            if (!Result.isOk(r))
+                return r;
+        }
+
+        NationPeriod nationPeriod = new NationPeriod();
+        nationPeriod.setId(Utils.generateId());
+        nationPeriod.setNid(nid);
+        nationPeriod.setPid(pid);
+        return nationPeriodService.add(nationPeriod);
+    }
+
+    private void bindNation(JSONArray nationAry, String pid) {
+        if (nationAry != null) {
             nationPeriodMapper.deleteByPId(pid);
 
-            for (int i = 0 ; i < nationAry.size(); i++){
+            for (int i = 0; i < nationAry.size(); i++) {
                 JSONObject object = nationAry.getJSONObject(i);
                 String nid = object.getString("nid");
 
                 boolean isnew = object.getBoolean("isnew");
-                if (isnew){
+                if (isnew) {
                     String title = object.getString("title");
-                    if (nationMapper.selectLikeByTitle(title) == null){
+                    if (nationMapper.selectLikeByTitle(title) == null) {
                         Nation nation = new Nation();
                         nid = Utils.generateId();
                         nation.setId(nid);
                         nation.setTitle(title);
                         nationMapper.add(nation);
-                    }else {
+                    } else {
                         return;
                     }
                 }
@@ -331,14 +416,13 @@ public class PeriodService {
                 nationPeriod.setNid(nid);
                 nationPeriod.setPid(pid);
 
-                if (nationPeriodMapper.selectByNidAndPid(nationPeriod) == null){
+                if (nationPeriodMapper.selectByNidAndPid(nationPeriod) == null) {
                     nationPeriodMapper.add(nationPeriod);
                 }
 
             }
         }
     }
-
 
 
 }

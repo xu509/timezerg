@@ -17,17 +17,18 @@
        <el-col :span="8">
             <inputboxgiant @selectGiant = "selectGiant"></inputboxgiant>
             <el-tag type="success" v-if="name != null" closable  @close="closeSearchName()">
-                  {{name}}
+                  {{sname}}
             </el-tag>
        </el-col>
     </el-row>
 
-    <el-row>
-      <el-col :span="24">
-        <el-table :data = "datas">
+    <el-row v-loading = "loading_table">
+      <el-col :span="24" >
+        <el-table :data = "datas" >
             <el-table-column type="expand" >
                  <template slot-scope="props">
-                      {{props.row.content}}
+                   <p class="paragraph-content-small" v-if="props.row.cgiants != null">别名：<template v-for="item in props.row.cgiants">{{item.name}}&nbsp;</template></p>
+                   <p class="paragraph-content-small">{{props.row.content}}</p>
                  </template>
             </el-table-column>
             <el-table-column prop = "name" label = "姓名"></el-table-column>
@@ -78,6 +79,8 @@ export default {
   name: "Node",
   data() {
     return {
+      loading_table: true,
+      sname: null,
       name: null,
       datas: [],
       page_size: 10, //page大小
@@ -94,6 +97,7 @@ export default {
     },
     initTable() {
       var _this = this;
+      _this.loading_table = true;
       var start = (_this.current_page - 1) * _this.page_size;
 
       axios
@@ -106,6 +110,7 @@ export default {
           if (response.data.result == 0) {
             _this.datas = response.data.data.data;
             _this.total = response.data.data.total;
+            _this.loading_table = false;
           }
         })
         .catch(function(error) {});
@@ -127,6 +132,10 @@ export default {
     },
     selectGiant(item) {
       this.name = item.name;
+      this.sname = item.sname;
+      // console.log("giant id: " + item.id);
+      // console.log("giant name: " + item.name);
+      // console.log("giant sname: " + item.sname);
     },
     closeSearchName() {
       this.name = null;

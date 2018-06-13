@@ -8,7 +8,8 @@ public enum ResultMessage {
 
 	OK("0", "成功"),
 	PARAM_ERROR("11","参数错误"),
-	INNER_ERROR("12","内部错误");
+	INNER_ERROR("12","内部错误"),
+	DUPLICATION_ERROR("13","重复错误");
 
 
 	private String result;

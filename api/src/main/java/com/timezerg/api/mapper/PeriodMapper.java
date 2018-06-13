@@ -30,7 +30,6 @@ public interface PeriodMapper {
     @Select("select * from t_timezerg_period where id = #{id}")
     Period selectById(String id);
 
-
     @Update("update t_timezerg_period set title = #{title},content = #{content},cover = #{cover},cdate = #{cdate},edate = #{edate},ddate = #{ddate},AD = #{AD},eAD = #{eAD}" +
             " where id = #{id}")
     int update(Period period);

@@ -42,11 +42,56 @@ public class PeriodController {
         return periodService.editInit(params);
     }
 
+
+    @CrossOrigin
+    @PostMapping("/period/edit/init/relate")
+    public Object editInitRelate(@RequestBody JSONObject params) {
+        return periodService.editInitRelate(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/period/edit/relate/civilization/save")
+    public Object editRelateAdd(@RequestBody JSONObject params) {
+        return periodService.editAddRelateCivilization(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/period/edit/relate/civilization/delete")
+    public Object editRelateDelete(@RequestBody JSONObject params) {
+        return periodService.editDeleteRelateCivilization(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/period/edit/relate/nation/save")
+    public Object editNationAdd(@RequestBody JSONObject params) {
+        return periodService.editAddRelateNation(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/period/edit/relate/nation/delete")
+    public Object editNationDelete(@RequestBody JSONObject params) {
+        return periodService.editDeleteRelateNation(params);
+    }
+
     @CrossOrigin
     @PostMapping("/period/edit/init/tag")
     public Object editInitTag(@RequestBody JSONObject params) {
-        return periodService.editInitTag(params);
+        return periodService.editInitTags(params);
     }
+
+    @CrossOrigin
+    @PostMapping("/period/edit/tag/save")
+    public Object editTagAdd(@RequestBody JSONObject params) {
+        return periodService.editAddTag(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/period/edit/tag/delete")
+    public Object editTagDelete(@RequestBody JSONObject params) {
+        return periodService.editDeleteTag(params);
+    }
+
+
 
     @CrossOrigin
     @PostMapping("/period/edit/save")
@@ -54,16 +99,5 @@ public class PeriodController {
         return periodService.edit(params);
     }
 
-    @CrossOrigin
-    @PostMapping("/period/edit/tag/save")
-    public Object editTagSave(@RequestBody JSONObject params) {
-        return periodService.addTag(params);
-    }
-
-    @CrossOrigin
-    @PostMapping("/period/edit/tag/delete")
-    public Object editTagDelete(@RequestBody JSONObject params) {
-        return periodService.deleteTag(params);
-    }
 
 }

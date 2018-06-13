@@ -42,14 +42,14 @@
 
     <el-row>
       <el-col :span="24">
-        <el-pagiperiod @size-change="handleSizeChange"
+        <el-pagination @size-change="handleSizeChange"
                       @current-change="handleCurrentChange"
                       :current-page="current_page"
                       :page-sizes="[10, 20, 50, 100]"
                       :page-size="page_size"
                       layout="sizes,total,next, pager,prev,jumper "
                       :total="total">
-        </el-pagiperiod>
+        </el-pagination>
       </el-col>
     </el-row>
 
@@ -120,7 +120,6 @@ export default {
       this.initTable();
     },
     search_title: function(st) {
-      this.tt = 1;
       this.initTable();
     }
   },

@@ -26,10 +26,19 @@ const url_nation_tag_delete = domain + "/nation/edit/tag/delete";
 const url_period_list = domain + "/period/list";
 const url_period_add = domain + "/period/save";
 const url_period_edit_init = domain + "/period/edit/init";
+const url_period_edit_init_relate = domain + "/period/edit/init/relate";
 const url_period_edit_init_tag = domain + "/period/edit/init/tag";
 const url_period_edit_save = domain + "/period/edit/save";
 const url_period_tag_save = domain + "/period/edit/tag/save";
 const url_period_tag_delete = domain + "/period/edit/tag/delete";
+const url_period_relate_civilization_save =
+  domain + "/period/edit/relate/civilization/save";
+const url_period_relate_civilization_delete =
+  domain + "/period/edit/relate/civilization/delete";
+const url_period_relate_nation_save =
+  domain + "/period/edit/relate/nation/save";
+const url_period_relate_nation_delete =
+  domain + "/period/edit/relate/nation/delete";
 const url_continent_add = domain + "/continent/save";
 const url_index = domain + "/civilization/index";
 const url_civilization_index_list = domain + "/civilizationindex/list";
@@ -81,6 +90,11 @@ export default {
   url_period_edit_save,
   url_period_tag_save,
   url_period_tag_delete,
+  url_period_edit_init_relate,
+  url_period_relate_civilization_save,
+  url_period_relate_civilization_delete,
+  url_period_relate_nation_save,
+  url_period_relate_nation_delete,
   url_search_nation,
   url_search_period,
   url_search_civilization,

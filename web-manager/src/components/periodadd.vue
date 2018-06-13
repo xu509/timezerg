@@ -65,7 +65,7 @@
                 <el-form-item label="详细">
                   <el-input
                     type="textarea"
-                    :rows="2"
+                    :rows="4"
                     placeholder="请输入内容"
                     v-model="form.content">
                   </el-input>
@@ -145,6 +145,8 @@ export default {
       _this.form.eday = null;
       _this.form.AD = 1;
       _this.form.eAD = 1;
+      _this.form.civilizations = [];
+      _this.form.nations = [];
     },
     save() {
       var _this = this;

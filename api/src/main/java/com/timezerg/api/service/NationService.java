@@ -8,6 +8,7 @@ import com.timezerg.api.model.*;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +86,20 @@ public class NationService {
             nation.setPid(null);
         else
             nation.setPid(pid);
+        nationMapper.add(nation);
+
+        return new Result(ResultMessage.OK, nation);
+    }
+
+    @Transactional
+    public Object add(Nation nation) {
+        if (nation == null || StringUtils.isBlank(nation.getTitle()))
+            return new Result(ResultMessage.PARAM_ERROR,"国家添加错误");
+
+        if (nationMapper.selectByTitle(nation.getTitle()) != null){
+            return new Result(ResultMessage.DUPLICATION_ERROR,"国家标题重复");
+        }
+
         nationMapper.add(nation);
 
         return new Result(ResultMessage.OK, nation);

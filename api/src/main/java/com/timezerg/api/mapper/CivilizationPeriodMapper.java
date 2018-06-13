@@ -22,6 +22,9 @@ public interface CivilizationPeriodMapper {
     @Select("select * from t_timezerg_civilization_period where cid = #{cid} and pid = #{pid}")
     CivilizationPeriod selectByCidAndPid(CivilizationPeriod civilizationPeriod);
 
+    @Select("select * from t_timezerg_civilization_period where id = #{id}")
+    CivilizationPeriod selectById(String id);
+
     @Select("SELECT cp.*,c.title FROM t_timezerg_civilization_period cp LEFT JOIN t_timezerg_civilization c ON cp.cid = c.id WHERE cp.pid = #{pid}")
     List<HashMap> selectCivilizationByPid(String pid);
 

@@ -8,6 +8,7 @@ import com.timezerg.api.model.*;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,11 +74,24 @@ public class GiantService {
         JSONArray jsonArray = new JSONArray();
         for (Giant giant : giants){
             JSONObject obj = (JSONObject) JSON.toJSON(giant);
-            obj.put("gid",giant.getId());
+
+            String gid = giant.getId();
+            String sname = giant.getName();
+            String id = giant.getId();
 
             if (giant.getName().equals(title))
                 same = true;
 
+            if (!StringUtils.isBlank(giant.getPid())){
+                String pname = giantMapper.selectById(giant.getPid()).getName();
+                obj.put("pname",pname);
+                sname = pname + " - " + giant.getName();
+                gid = giant.getPid();
+                id = gid;
+            }
+            obj.put("sname",sname);
+            obj.put("gid",gid);
+            obj.put("id",id);
             jsonArray.add(obj);
         }
 
@@ -100,6 +114,10 @@ public class GiantService {
 
             row.put("tags",giantTagMapper.selectTagsByGid(gid));
 
+            long cgnum = giantMapper.selectCountByPid(gid);
+            if (cgnum > 0){
+                row.put("cgiants",giantMapper.selectByPid(gid));
+            }
         }
 
 
@@ -116,18 +134,22 @@ public class GiantService {
             return new Result(ResultMessage.PARAM_ERROR);
 
         JSONObject obj = (JSONObject) JSON.toJSON(giant);
+        Giant pgiant = giantMapper.selectById(giant.getPid());
+
+        if (pgiant != null){
+            obj.put("pgiant",pgiant);
+        }
+
         // tags
-        List<HashMap> tagMaps = giantTagMapper.selectTagsByGid(id);
-//        for (HashMap tagMap : tagMaps){
-//            tagMap.put("")
-//        }
-        obj.put("tags",tagMaps);
-
-        //nations
-        List<HashMap> nationsMap = giantNationMapper.selectByGid(id);
-        obj.put("nations",nationsMap);
-
-
+//        List<HashMap> tagMaps = giantTagMapper.selectTagsByGid(id);
+////        for (HashMap tagMap : tagMaps){
+////            tagMap.put("")
+////        }
+//        obj.put("tags",tagMaps);
+//
+//        //nations
+//        List<HashMap> nationsMap = giantNationMapper.selectByGid(id);
+//        obj.put("nations",nationsMap);
 
         return new Result(ResultMessage.OK,obj);
     }
@@ -147,15 +169,24 @@ public class GiantService {
         }
 
         giant.setName(params.getString("name"));
+
+        JSONObject pgiantObj = params.getJSONObject("pgiant");
+        Boolean isnew = pgiantObj.getBoolean("isnew");
+        String pid = pgiantObj.getString("gid");
+        if (isnew != null && isnew){
+            Giant pGiant = new Giant();
+            pid = Utils.generateId();
+            pGiant.setId(pid);
+            pGiant.setName(pgiantObj.getString("name"));
+            giantMapper.add(pGiant);
+        }
+        if (!StringUtils.isBlank(pid)){
+            while (!StringUtils.isBlank(giantMapper.selectById(pid).getPid())){
+                pid = giantMapper.selectById(pid).getPid();
+            }
+            giant.setPid(pid);
+        }
         giantMapper.update(giant);
-
-        //tags
-        JSONArray tagsAry = params.getJSONArray("tags");
-        bindTag(tagsAry,id);
-
-        //nations
-        JSONArray nationsAry = params.getJSONArray("nations");
-        bindNations(nationsAry,id);
 
         return new Result(ResultMessage.OK,giant);
     }

@@ -4,7 +4,7 @@
       <el-col :span="24">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item :to = "{path : '/nation'}">国家</el-breadcrumb-item>
+          <el-breadcrumb-item :to = "{path : '/period'}">时代</el-breadcrumb-item>
           <el-breadcrumb-item>修改</el-breadcrumb-item>
         </el-breadcrumb>
       </el-col>
@@ -67,50 +67,13 @@
                       <el-form-item label="显示的时间">
                         <el-input v-model="form.ddate"></el-input>
                       </el-form-item>
-                        <el-form-item label="重要发明">
-                        <el-input v-model="form.invent"></el-input>
-                      </el-form-item>
-                      <el-form-item label="承接">
-                          <inputboxnation @selectNation="selectPNation"></inputboxnation>
-                          <el-tag type="warning" v-if = "form.pnation != null"
-                            :key="form.pid"
-                            closable
-                            :disable-transitions="false"
-                            @close="closePNationTag()">
-                            {{form.pnation}}
-                          </el-tag>
-                      </el-form-item>
-                      <el-form-item label="附属">
-                          <inputboxnation @selectNation="selectFNation"></inputboxnation>
-                          <el-tag type="warning" v-if = "form.fnation != null"
-                            :key="form.id"
-                            closable
-                            :disable-transitions="false"
-                            @close="closeFNationTag()">
-                            {{form.fnation}}
-                          </el-tag>
-                      </el-form-item>
-
-                      <el-form-item label="名人">
-                          <inputboxgiant @selectGiant = "selectGiant"></inputboxgiant>
-                          <el-tag type="warning" v-if = "form.giant != null" v-for="(item,index) in form.giant"
-                            :key="item.gid"
-                            closable
-                            :disable-transitions="false"
-                            @close="closeGiantTag(index)">
-                            {{item.name}}
-                          </el-tag>
-                      </el-form-item>
-
-                      <el-form-item label="制度">
-                        <inputboxinstitution @select ="selectInstitution"></inputboxinstitution>
-                          <el-tag type="warning" v-if = "form.institution != null" v-for="(item,index) in form.institution"
-                            :key="item.id"
-                            closable
-                            :disable-transitions="false"
-                            @close="closeInstitutionTag(index)">
-                            {{item.title}}
-                          </el-tag>
+                      <el-form-item label="详细">
+                        <el-input
+                          type="textarea"
+                          :rows="4"
+                          placeholder="请输入内容"
+                          v-model="form.content">
+                        </el-input>
                       </el-form-item>
 
 
@@ -120,27 +83,69 @@
                 </el-form>
             </el-col>
          </el-tab-pane>
-         <el-tab-pane label="贴条" :name="tabs.tag"> 
-           <el-col :md="12"  :xs="16" :sm="16" >
+
+          <el-tab-pane label="相关" :name="tabs.relate" :loading = "relate.loading">
+            <el-card class="box-card">
               <el-row>
-                  <inputboxtag @selectTag = "selectTag"></inputboxtag>
+                  <inputboxcivilization @selectCivilization = "selectCivilization"></inputboxcivilization>
               </el-row>
               <el-row>
-                <template v-if="tags == null || tags.length == 0">
+                <template v-if="relate.civilizations == null || relate.civilizations.length == 0">
                     <p class="paragraph-content">无数据</p>
                 </template>
-                <template v-if="tags != null && tags.length > 0">
-                    <el-tag type="warning" v-for="item in tags" class="tag-margin"
+                <template v-if="relate.civilizations != null && relate.civilizations.length > 0">
+                    <el-tag type="warning" v-for="item in relate.civilizations" class="tag-margin"
                       :key="item.id"
                       closable
                       :disable-transitions="false"
-                      @close="closeTag(item)">
+                      @close="closeCivilizationTag(item)">
                       {{item.title}}
                     </el-tag>
                 </template>
               </el-row>
+            </el-card>
+            <el-row></el-row>
+            <el-card class="box-card">
+              <el-row>
+                  <inputboxnation @selectNation = "selectNation"></inputboxnation>
+              </el-row>
+              <el-row>
+                <template v-if="relate.nations == null || relate.nations.length == 0">
+                    <p class="paragraph-content">无数据</p>
+                </template>
+                <template v-if="relate.nations != null && relate.nations.length > 0">
+                    <el-tag type="warning" v-for="item in relate.nations" class="tag-margin"
+                      :key="item.id"
+                      closable
+                      :disable-transitions="false"
+                      @close="closeNationTag(item)">
+                      {{item.title}}
+                    </el-tag>
+                </template>
+              </el-row>
+            </el-card>
+          </el-tab-pane>
 
-           </el-col>
+         <el-tab-pane label="贴条" :name="tabs.tag" :loading = "tag.loading"> 
+            <el-card class="box-card">
+              <el-row>
+                  <inputboxtag @selectTag="selectTag"></inputboxtag>
+              </el-row>
+              <el-row>
+                <template v-if="tag.tags == null || tag.tags.length == 0">
+                    <p class="paragraph-content">无数据</p>
+                </template>
+                <template v-if="tag.tags != null && tag.tags.length > 0">
+                    <el-tag type="warning" v-for="item in tag.tags" class="tag-margin"
+                      :key="item.id"
+                      closable
+                      :disable-transitions="false"
+                      @close="closeTagTag(item)">
+                      {{item.title}}
+                    </el-tag>
+                </template>
+              </el-row>
+            </el-card>
           </el-tab-pane>
       </el-tabs>
     </el-row>
@@ -149,23 +154,24 @@
 
 <script>
 import axios from "axios";
-import inputboxnation from "./plugin/inputboxnation.vue";
-import inputboxgiant from "./plugin/inputboxgiant.vue";
-import inputboxinstitution from "./plugin/inputboxinstitution.vue";
 import inputboxtag from "./plugin/inputboxtag.vue";
+import inputboxcivilization from "./plugin/inputboxcivilization.vue";
+import inputboxnation from "./plugin/inputboxnation.vue";
 
 export default {
-  name: "NationEdit",
+  name: "periodedit",
   data() {
     return {
       id: "",
-      activeTab: "2",
+      activeTab: "1",
       tabs: {
         basic: "1",
-        tag: "2"
+        tag: "3",
+        relate: "2"
       },
       form: {
         title: "",
+        content: "",
         ddate: "",
         year: null,
         month: null,
@@ -173,16 +179,18 @@ export default {
         eyear: null,
         emonth: null,
         eday: null,
-        pid: null,
-        pnation: "",
-        fid: null,
-        fnation: "",
-        giant: [],
-        institution: [],
         AD: 1,
         eAD: 1
       },
-      tags: [],
+      relate: {
+        loading: true,
+        civilizations: [],
+        nations: []
+      },
+      tag: {
+        loading: true,
+        tags: []
+      },
       switchc: {
         activev: 1,
         inactivev: 0
@@ -193,15 +201,16 @@ export default {
     };
   },
   components: {
-    inputboxnation,
-    inputboxgiant,
-    inputboxinstitution,
-    inputboxtag
+    inputboxtag,
+    inputboxcivilization,
+    inputboxnation
   },
   methods: {
     init() {
       if (this.activeTab == "1") {
         this.initTabBasic();
+      } else if (this.activeTab == "2") {
+        this.initTabRelate();
       } else {
         this.initTagTab();
       }
@@ -215,9 +224,10 @@ export default {
       _this.loading = true;
 
       axios
-        .post(_this.GLOBAL.url_nation_edit_save, {
+        .post(_this.GLOBAL.url_period_edit_save, {
           id: _this.id,
           title: _this.form.title,
+          content: _this.form.content,
           ddate: _this.form.ddate,
           year: _this.form.year,
           month: _this.form.month,
@@ -226,12 +236,7 @@ export default {
           emonth: _this.form.emonth,
           eday: _this.form.eday,
           AD: _this.form.AD,
-          eAD: _this.form.eAD,
-          invent: _this.form.invent,
-          giant: _this.form.giant,
-          pid: _this.form.pid,
-          fid: _this.form.fid,
-          institution: _this.form.institution
+          eAD: _this.form.eAD
         })
         .then(function(response) {
           if (response.data.result == 0) {
@@ -249,34 +254,27 @@ export default {
       _this.loading = true;
 
       axios
-        .post(_this.GLOBAL.url_nation_edit_init, {
+        .post(_this.GLOBAL.url_period_edit_init, {
           id: _this.id
         })
         .then(function(response) {
           if (response.data.result == 0) {
-            var nation = response.data.data;
+            var period = response.data.data;
 
-            _this.form.title = nation.title;
-            _this.form.ddate = nation.ddate;
-            _this.form.year = nation.year;
-            _this.form.month = nation.month;
-            _this.form.day = nation.day;
-            _this.form.eyear = nation.eyear;
-            _this.form.emonth = nation.emonth;
-            _this.form.eday = nation.eday;
+            _this.form.title = period.title;
+            _this.form.content = period.content;
+            _this.form.ddate = period.ddate;
+            _this.form.year = period.year;
+            _this.form.month = period.month;
+            _this.form.day = period.day;
+            _this.form.eyear = period.eyear;
+            _this.form.emonth = period.emonth;
+            _this.form.eday = period.eday;
 
-            _this.form.pid = nation.pid;
-            _this.form.fid = nation.fid;
-            _this.form.fnation = nation.fnation;
-            _this.form.pnation = nation.pnation;
+            _this.form.AD = period.aD;
+            _this.form.eAD = period.eAD;
 
-            _this.form.AD = nation.aD;
-            _this.form.eAD = nation.eAD;
-            _this.form.invent = nation.invent;
-            _this.form.giant = nation.giant;
-            _this.form.institution = nation.institution;
-
-            // console.log(nation.giant);
+            // console.log(period.giant);
 
             _this.loading = false;
           } else {
@@ -285,79 +283,35 @@ export default {
         })
         .catch(function(error) {});
     },
-    selectPNation(item) {
-      this.form.pid = item.id;
-      this.form.pnation = item.title;
-    },
-    closePNationTag() {
-      this.form.pid = null;
-      this.form.pnation = null;
-    },
-    selectFNation(item) {
-      this.form.fid = item.id;
-      this.form.fnation = item.title;
-    },
-    closeFNationTag() {
-      this.fid = null;
-      this.fnation = null;
-    },
-    selectGiant(item) {
-      //增加
-      if (this.form.giant) {
-        console.log(111);
-        this.form.giant.push(item);
-      } else {
-        console.log(222);
-        this.form.giant = new Array();
-        this.form.giant.push(item);
-      }
-
-      // this.form.pid = item.id;
-      // this.form.pnation = item.title;
-    },
-    closeGiantTag(index) {
-      this.form.giant.splice(index, 1);
-    },
-    selectInstitution(item) {
-      //增加
-      if (this.form.institution) {
-        console.log(111);
-        this.form.institution.push(item);
-      } else {
-        console.log(222);
-        this.form.institution = new Array();
-        this.form.institution.push(item);
-      }
-
-      // this.form.pid = item.id;
-      // this.form.pnation = item.title;
-    },
-    closeInstitutionTag(index) {
-      this.form.institution.splice(index, 1);
-    },
     // 基础结束
 
-    //贴条
-    initTagTab() {
+    //相关信息
+    initTabRelate() {
       var _this = this;
-      _this.loadingTagTab = true;
+      _this.relate.loading = true;
 
       axios
-        .post(_this.GLOBAL.url_nation_edit_init_tag, {
+        .post(_this.GLOBAL.url_period_edit_init_relate, {
           id: _this.id
         })
         .then(function(response) {
           if (response.data.result == 0) {
             var data = response.data.data;
-            _this.tags = data.tags;
-            _this.form.title = data.nation.title;
+            _this.form.title = data.period.title;
+            _this.relate.civilizations = data.civilizations;
+            _this.relate.nations = data.nations;
+            _this.relate.loading = false;
+          } else {
+            this.$message.error(response.data.data);
           }
-        });
+        })
+        .catch(function(error) {});
     },
-    selectTag(item) {
+
+    selectCivilization(item) {
       var _this = this;
       //提交
-      var content = "确认添加贴条： " + item.title + "？";
+      var content = "确认添加文明： " + item.title + "？";
 
       this.$confirm(content, "确认", {
         confirmButtonText: "确定",
@@ -367,17 +321,21 @@ export default {
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_nation_tag_save, {
-              nid: _this.id,
-              tag: item
+            .post(_this.GLOBAL.url_period_relate_civilization_save, {
+              pid: _this.id,
+              civilization: item
             })
             .then(function(response) {
-              console.log(222);
               if (response.data.result == 0) {
-                _this.initTagTab();
+                _this.init();
                 _this.$message({
                   type: "success",
                   message: "添加成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
                 });
               }
             })
@@ -392,26 +350,202 @@ export default {
           });
         });
     },
-    closeTag(item) {
+    closeCivilizationTag(item) {
       var _this = this;
       //提交
-      var content = "确认删除贴条： " + item.title + "？";
+      var content = "确认删除文明： " + item.title + "？";
 
       this.$confirm(content, "确认", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "info"
       })
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_nation_tag_delete, {
+            .post(_this.GLOBAL.url_period_relate_civilization_delete, {
               id: item.id
             })
             .then(function(response) {
-              console.log(222);
               if (response.data.result == 0) {
-                _this.initTagTab();
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    selectNation(item) {
+      var _this = this;
+      //提交
+      var content = "确认添加国家： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_period_relate_nation_save, {
+              pid: _this.id,
+              nation: item
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "添加成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    closeNationTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认删除国家： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_period_relate_nation_delete, {
+              id: item.id
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+
+    //贴条
+    initTagTab() {
+      var _this = this;
+      _this.tag.loading = true;
+
+      axios
+        .post(_this.GLOBAL.url_period_edit_init_tag, {
+          id: _this.id
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            var data = response.data.data;
+            _this.form.title = data.period.title;
+            _this.tag.tags = data.tags;
+          } else {
+            this.$message.error(response.data.data);
+          }
+        })
+        .catch(function(error) {});
+    },
+    selectTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认添加贴条： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_period_tag_save, {
+              pid: _this.id,
+              tag: item
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "添加成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    closeTagTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认删除贴条： " + item.title + "？";
+
+      this.$confirm(content, "确认", { 
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_period_tag_delete, {
+              id: item.id
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
                 _this.$message({
                   type: "success",
                   message: "删除成功!"
@@ -432,11 +566,7 @@ export default {
   },
   watch: {
     activeTab: function(at) {
-      if (at == "1") {
-        this.initTabBasic();
-      } else {
-        this.initTagTab();
-      }
+      this.init();
     }
   },
   mounted: function() {

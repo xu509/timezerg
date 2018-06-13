@@ -21,6 +21,9 @@ public interface NationPeriodMapper {
     @Select("select * from t_timezerg_nation_period where nid = #{nid} and pid = #{pid}")
     NationPeriod selectByNidAndPid(NationPeriod nationPeriod);
 
+    @Select("select * from t_timezerg_nation_period where id = #{id}")
+    NationPeriod selectById(String id);
+
     @Select("SELECT np.*,n.title FROM t_timezerg_nation_period np LEFT JOIN t_timezerg_nation n ON np.nid = n.id WHERE np.pid = #{pid}")
     List<HashMap> selectNationByPid(String pid);
 

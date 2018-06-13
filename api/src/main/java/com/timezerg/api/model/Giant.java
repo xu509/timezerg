@@ -11,6 +11,7 @@ public class Giant implements Serializable {
 
     private static final long serialVersionUID = -6176313969365538749L;
     private String id;
+    private String pid; //父名人
     private String name;
     private String content;
 
@@ -20,6 +21,14 @@ public class Giant implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid;
     }
 
     public String getName() {

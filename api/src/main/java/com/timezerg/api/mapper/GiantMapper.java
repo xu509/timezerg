@@ -13,7 +13,7 @@ import java.util.List;
 @Mapper
 public interface GiantMapper {
 
-    @Insert("insert into t_timezerg_giant values (#{id},#{name},#{content})")
+    @Insert("insert into t_timezerg_giant values (#{id},#{pid},#{name},#{content})")
     int add(Giant gaint);
 
     @Select("select * from t_timezerg_giant where name like CONCAT('%',#{name},'%') limit 0,10")
@@ -31,7 +31,13 @@ public interface GiantMapper {
     @Select("select * from t_timezerg_giant where id = #{id}")
     Giant selectById(String id);
 
-    @Update("update t_timezerg_giant set name = #{name},content = #{content} where id = #{id}")
+    @Select("select * from t_timezerg_giant where pid = #{pid}")
+    List<Giant> selectByPid(String pid);
+
+    @Select("select count(0) from t_timezerg_giant where pid = #{pid}")
+    Long selectCountByPid(String pid);
+
+    @Update("update t_timezerg_giant set name = #{name},pid = #{pid},content = #{content} where id = #{id}")
     void update(Giant giant);
 
 }

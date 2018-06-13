@@ -55,6 +55,23 @@ public class CivilizationService {
         return new Result(ResultMessage.OK,civil);
     }
 
+    /**
+     *  保存文明
+     */
+    public Object add(Civilization civilization){
+        if (civilization == null || StringUtils.isBlank(civilization.getTitle())){
+            return new Result(ResultMessage.PARAM_ERROR,"文明创建错误");
+        }
+        //
+        if (civilizationMapper.selectByTitle(civilization.getTitle()) != null)
+            return new Result(ResultMessage.DUPLICATION_ERROR,"文明创建错误");
+
+        civilizationMapper.add(civilization);
+        return new Result(ResultMessage.OK,civilization);
+    }
+
+
+
 
     public Object getList(JSONObject params){
         Object[] p = {params.getInteger("start"),params.getInteger("size")};

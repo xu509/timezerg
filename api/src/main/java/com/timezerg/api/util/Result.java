@@ -44,4 +44,13 @@ public class Result {
     public void setData(Object data) {
         this.data = data;
     }
+
+
+    public static boolean isOk(Result r){
+        if (r.getResult().equals(ResultMessage.OK.getResult()))
+            return true;
+        else
+            return false;
+    }
+
 }

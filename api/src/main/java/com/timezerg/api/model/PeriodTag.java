@@ -4,13 +4,11 @@ import java.io.Serializable;
 
 /**
  * Created by xnx on 2018/5/4.
- * 名人 - tag
  */
-public class GiantTag implements Serializable {
-
+public class PeriodTag implements Serializable {
 
     private String id;
-    private String gid;
+    private String pid;
     private String tid;
 
     public String getId() {
@@ -21,12 +19,12 @@ public class GiantTag implements Serializable {
         this.id = id;
     }
 
-    public String getGid() {
-        return gid;
+    public String getPid() {
+        return pid;
     }
 
-    public void setGid(String gid) {
-        this.gid = gid;
+    public void setPid(String pid) {
+        this.pid = pid;
     }
 
     public String getTid() {
@@ -36,5 +34,4 @@ public class GiantTag implements Serializable {
     public void setTid(String tid) {
         this.tid = tid;
     }
-
 }

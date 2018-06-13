@@ -5,7 +5,7 @@
                           @select="selectGiant">
                           <template slot-scope="props">
                                     <div class="name">
-                                          <i class="el-icon-circle-plus-outline" v-if="props.item.isnew"></i>&nbsp;&nbsp;{{ props.item.name }}
+                                          <i class="el-icon-circle-plus-outline" v-if="props.item.isnew"></i>&nbsp;{{ props.item.name }}
                                       </div>
                           </template>
       </el-autocomplete>
@@ -18,7 +18,7 @@ export default {
   name: "inputboxgiant",
   data() {
     return {
-      name:null,
+      name: null,
       saving: false,
       loading: true
     };
