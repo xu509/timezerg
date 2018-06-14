@@ -19,6 +19,7 @@
             <el-tag type="success" v-if="name != null" closable  @close="closeSearchName()">
                   {{sname}}
             </el-tag>
+            <el-button size="small" type="primary" round v-if="showadd" @click="addGiant">增加</el-button>
        </el-col>
     </el-row>
 
@@ -76,12 +77,13 @@ import axios from "axios";
 import inputboxgiant from "./plugin/inputboxgiant.vue";
 
 export default {
-  name: "Node",
+  name: "giant",
   data() {
     return {
       loading_table: true,
       sname: null,
       name: null,
+      showadd: false,
       datas: [],
       page_size: 10, //page大小
       current_page: 1, // 当前游码
@@ -93,6 +95,9 @@ export default {
   },
   methods: {
     init() {
+      this.sname = null;
+      this.name = null;
+      this.showadd = false;
       this.initTable();
     },
     initTable() {
@@ -131,14 +136,44 @@ export default {
       this.current_page = currentPage;
     },
     selectGiant(item) {
+      if (item.isnew) {
+        this.showadd = true;
+      } else {
+        this.showadd = false;
+      }
       this.name = item.name;
       this.sname = item.sname;
-      // console.log("giant id: " + item.id);
-      // console.log("giant name: " + item.name);
-      // console.log("giant sname: " + item.sname);
+      if (this.sname == null) {
+        this.sname = item.name;
+      }
     },
     closeSearchName() {
       this.name = null;
+      this.showadd = false;
+    },
+    addGiant() {
+      var _this = this;
+      axios
+        .post(_this.GLOBAL.url_giant_add, {
+          name: _this.name
+        })
+        .then(function(response) {
+          // console.log(response);
+          if (response.data.result == 0) {
+            _this.$message({
+              message: _this.name + " 添加成功！",
+              type: "success"
+            });
+            _this.init();
+          } else {
+            _this.$message.error(response.data.msg);
+            _this.init();
+          }
+        })
+        .catch(function(error) {
+          _this.$message.error(response.data.msg);
+          _this.init();
+        });
     }
   },
   watch: {

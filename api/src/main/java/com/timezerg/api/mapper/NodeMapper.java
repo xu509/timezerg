@@ -20,6 +20,12 @@ public interface NodeMapper {
     @Select("select * from t_timezerg_node where id = #{id}")
     Node selectById(String id);
 
+    @Select("select * from t_timezerg_node where title = #{title}")
+    Node selectByTitle(String title);
+
+    @Select("select * from t_timezerg_node where title like CONCAT('%',#{title},'%') limit 0,10")
+    List<Node> selectLikeByTitle(String title);
+
     @SelectProvider(type= NodeMapperProvider.class,method = "getList")
     List<HashMap> getList(@Param("cids") Object[] cids, @Param("searchtitle") String searchtitle,@Param("start") Integer start, @Param("limit") Integer limit);
 

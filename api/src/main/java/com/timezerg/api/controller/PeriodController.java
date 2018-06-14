@@ -42,7 +42,6 @@ public class PeriodController {
         return periodService.editInit(params);
     }
 
-
     @CrossOrigin
     @PostMapping("/period/edit/init/relate")
     public Object editInitRelate(@RequestBody JSONObject params) {
@@ -90,8 +89,6 @@ public class PeriodController {
     public Object editTagDelete(@RequestBody JSONObject params) {
         return periodService.editDeleteTag(params);
     }
-
-
 
     @CrossOrigin
     @PostMapping("/period/edit/save")

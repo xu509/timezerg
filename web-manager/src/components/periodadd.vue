@@ -70,7 +70,7 @@
                     v-model="form.content">
                   </el-input>
                 </el-form-item>
-                <el-form-item label="所属文明">
+                <!-- <el-form-item label="所属文明">
                     <inputboxcivilization @selectCivilization = "selectCivilization"></inputboxcivilization>
                     <el-tag type="warning" v-for="(item,index) in form.civilizations" class="tag-margin"
                       :key="item.id"
@@ -89,7 +89,7 @@
                       @close="closeNation(index)">
                       {{item.title}}
                     </el-tag>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item>
                   <el-button type="primary" @click="save" :loading="saving">创建</el-button>
                 </el-form-item>

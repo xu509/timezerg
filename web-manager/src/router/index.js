@@ -24,6 +24,9 @@ import giantAdd from '@/components/giantadd'
 import giantEdit from '@/components/giantEdit'
 import institution from '@/components/institution'
 import institutionAdd from '@/components/institutionAdd'
+import reference from '@/components/reference'
+import referenceAdd from '@/components/referenceadd'
+import referenceEdit from '@/components/referenceEdit'
 
 Vue.use(Router)
 
@@ -124,5 +127,17 @@ export default new Router({
     path: '/institution/add',
     name: 'institutionAdd',
     component: institutionAdd
-  }]
+  }, {
+    path: '/reference',
+    name: 'reference',
+    component: reference
+  }, {
+    path: '/reference/add',
+    name: 'referenceAdd',
+    component: referenceAdd
+  }, {
+    path: '/reference/edit/:id',
+    name: 'referenceEdit',
+    component: referenceEdit
+  }, ]
 })

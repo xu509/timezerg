@@ -22,10 +22,14 @@ const url_nation_edit_init = domain + "/nation/edit/init";
 const url_nation_edit_init_tag = domain + "/nation/edit/init/tag";
 const url_nation_edit_init_relate = domain + "/nation/edit/init/relate";
 const url_nation_edit_save = domain + "/nation/edit/save";
-const url_nation_edit_relate_giant_save = domain + "/nation/edit/relate/giant/save";
-const url_nation_edit_relate_institution_save = domain + "/nation/edit/relate/institution/save";
-const url_nation_edit_relate_giant_delete = domain + "/nation/edit/relate/giant/delete";
-const url_nation_edit_relate_institution_delete = domain + "/nation/edit/relate/institution/delete";
+const url_nation_edit_relate_giant_save =
+  domain + "/nation/edit/relate/giant/save";
+const url_nation_edit_relate_institution_save =
+  domain + "/nation/edit/relate/institution/save";
+const url_nation_edit_relate_giant_delete =
+  domain + "/nation/edit/relate/giant/delete";
+const url_nation_edit_relate_institution_delete =
+  domain + "/nation/edit/relate/institution/delete";
 const url_nation_tag_save = domain + "/nation/edit/tag/save";
 const url_nation_tag_delete = domain + "/nation/edit/tag/delete";
 const url_period_list = domain + "/period/list";
@@ -55,12 +59,39 @@ const url_giant_edit_init = domain + "/giant/edit/init";
 const url_giant_edit_init_relate = domain + "/giant/edit/init/relate";
 const url_giant_edit_init_tag = domain + "/giant/edit/init/tag";
 const url_giant_edit_save = domain + "/giant/edit/save";
-const url_giant_edit_relate_nation_save = domain + "/giant/edit/relate/nation/save";
-const url_giant_edit_relate_nation_delete = domain + "/giant/edit/relate/nation/delete";
+const url_giant_edit_relate_nation_save =
+  domain + "/giant/edit/relate/nation/save";
+const url_giant_edit_relate_nation_delete =
+  domain + "/giant/edit/relate/nation/delete";
 const url_giant_edit_tag_save = domain + "/giant/edit/tag/save";
 const url_giant_edit_tag_delete = domain + "/giant/edit/tag/delete";
 const url_institution_list = domain + "/institution/list";
 const url_institution_add = domain + "/institution/save";
+
+const url_reference_list = domain + "/reference/list";
+const url_reference_add = domain + "/reference/save";
+const url_reference_edit_init = domain + "/reference/edit/init";
+const url_reference_edit_save = domain + "/reference/edit/save";
+const url_reference_edit_init_relate = domain + "/reference/edit/init/relate";
+const url_reference_relate_giant_save =
+  domain + "/reference/edit/relate/giant/save";
+const url_reference_relate_giant_delete =
+  domain + "/reference/edit/relate/giant/delete";
+const url_reference_relate_node_save =
+  domain + "/reference/edit/relate/node/save";
+const url_reference_relate_node_delete =
+  domain + "/reference/edit/relate/node/delete";
+const url_reference_relate_period_save =
+  domain + "/reference/edit/relate/period/save";
+const url_reference_relate_period_delete =
+  domain + "/reference/edit/relate/period/delete";
+const url_reference_relate_nation_save =
+  domain + "/reference/edit/relate/nation/save";
+const url_reference_relate_nation_delete =
+  domain + "/reference/edit/relate/nation/delete";
+const url_reference_edit_init_tag = domain + "/reference/edit/init/tag";
+const url_reference_tag_save = domain + "/reference/edit/tag/save";
+const url_reference_tag_delete = domain + "/reference/edit/tag/delete";
 
 const url_search_nation = domain + "/nation/search";
 const url_search_giant = domain + "/giant/search";
@@ -69,6 +100,8 @@ const url_search_continent = domain + "/continent/search";
 const url_search_institution = domain + "/institution/search";
 const url_search_period = domain + "/period/search";
 const url_search_tag = domain + "/tag/search";
+const url_search_reference = domain + "/reference/search";
+const url_search_node = domain + "/node/search";
 
 export default {
   table_page_node, //
@@ -132,7 +165,25 @@ export default {
   url_institution_list,
   url_institution_add,
   url_search_institution,
-  url_search_tag
+  url_search_tag,
+  url_reference_list,
+  url_reference_add,
+  url_reference_edit_init,
+  url_reference_edit_init_relate,
+  url_reference_edit_init_tag,
+  url_reference_edit_save,
+  url_reference_relate_giant_save,
+  url_reference_relate_giant_delete,
+  url_reference_relate_node_save,
+  url_reference_relate_node_delete,
+  url_reference_relate_period_save,
+  url_reference_relate_period_delete,
+  url_reference_relate_nation_save,
+  url_reference_relate_nation_delete,
+  url_reference_tag_save,
+  url_reference_tag_delete,
+  url_search_reference,
+  url_search_node
 };
 </script>
 

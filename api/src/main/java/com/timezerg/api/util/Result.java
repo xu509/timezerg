@@ -21,6 +21,12 @@ public class Result {
         this.data = data;
     }
 
+    public Result(ResultMessage message, Class tClass) {
+        super();
+        this.result = message.getResult();
+        this.msg = message.getMsg() + " - " + tClass.getSimpleName();
+    }
+
     public String getResult() {
         return result;
     }

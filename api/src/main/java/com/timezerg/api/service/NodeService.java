@@ -8,6 +8,7 @@ import com.timezerg.api.model.*;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +46,26 @@ public class NodeService {
 
     @Autowired
     GiantMapper giantMapper;
+
+    @Transactional
+    public Object add(Node node){
+        if (node == null)
+            return new Result(ResultMessage.PARAM_ERROR,getClass());
+
+        if (StringUtils.isBlank(node.getTitle())){
+            return new Result(ResultMessage.PARAM_ERROR,getClass());
+        }
+
+        if (nodeMapper.selectByTitle(node.getTitle()) != null){
+            return new Result(ResultMessage.DUPLICATION_ERROR,getClass());
+        }
+
+        if (StringUtils.isBlank(node.getId()))
+            node.setId(Utils.generateId());
+
+        return nodeMapper.add(node);
+    }
+
 
 
     @Transactional
@@ -147,6 +168,29 @@ public class NodeService {
     public Node selectById(String id){
         return nodeMapper.selectById(id);
     }
+
+
+    public Object selectByTitle(JSONObject params){
+
+        JSONObject r = new JSONObject();
+
+        String title = params.getString("sw");
+        List<Node> nodes = nodeMapper.selectLikeByTitle(title);
+
+        JSONArray nodeAry = new JSONArray();
+        for (Node node : nodes) {
+            JSONObject nodeObj = (JSONObject) JSON.toJSON(node);
+            nodeObj.put("nid", node.getId());
+            nodeAry.add(nodeObj);
+        }
+
+        r.put("exist", nodes.size() > 0);
+        r.put("data", nodeAry);
+
+        return new Result(ResultMessage.OK, r);
+
+    }
+
 
     public Object getList(JSONObject params){
         JSONArray civilizations = params.getJSONArray("cids");

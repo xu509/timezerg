@@ -4,7 +4,7 @@
       <el-col :span="24">
         <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item :to = "{path : '/period'}">时代</el-breadcrumb-item>
+          <el-breadcrumb-item :to = "{path : '/reference'}">依据</el-breadcrumb-item>
           <el-breadcrumb-item>修改</el-breadcrumb-item>
         </el-breadcrumb>
       </el-col>
@@ -16,96 +16,104 @@
       <el-tabs tab-position="top" style="height: 100%;" v-model="activeTab">
          <el-tab-pane label="基础" :name="tabs.basic">
             <el-col :md ="12" :xs="16" :sm="16" >
-                <el-form ref="form" :model="form" label-width="120px" v-loading = "loading">
-                      <el-form-item label="标题">
+                <el-form ref="form" label-width="120px" v-loading = "form.loading">
+                    <el-form-item label="标题">
                         <el-input v-model="form.title"></el-input>
-                      </el-form-item>
-                      <el-form-item label="启">
-                        <el-row :gutter="20">
-                          <el-col :md = "4" :xs="18" :sm="18">
-                            <el-input v-model="form.year" placeholder="年"/>
-                          </el-col>
-                          <el-col :md = "3" :xs="18" :sm="18">
-                            <el-input v-model="form.month" placeholder="月"/>
-                          </el-col>
-                          <el-col :md = "3" :xs="18" :sm="18">
-                            <el-input v-model="form.day" placeholder="日"/>
-                          </el-col>
-                          <el-col :md = "3" :xs="18" :sm="18">
-                            <el-switch
-                                v-model="form.AD"
-                                active-text="AD"
-                                inactive-text="BC"
-                                :active-value= "switchc.activev"
-                                :inactive-value="switchc.inactivev">
-                              </el-switch>
-                          </el-col>
-                        </el-row>
-                      </el-form-item>
-                      <el-form-item label="终">
-                        <el-row :gutter="20">
-                          <el-col :md = "4" :xs="18" :sm="18">
-                            <el-input v-model="form.eyear" placeholder="年"/>
-                          </el-col>
-                          <el-col :md = "3" :xs="18" :sm="18">
-                            <el-input v-model="form.emonth" placeholder="月"/>
-                          </el-col>
-                          <el-col :md = "3" :xs="18" :sm="18">
-                            <el-input v-model="form.eday" placeholder="日"/>
-                          </el-col>
-                          <el-col :md = "3" :xs="18" :sm="18">
-                            <el-switch
-                                v-model="form.eAD"
-                                active-text="AD"
-                                inactive-text="BC"
-                                :active-value= "switchc.activev"
-                                :inactive-value="switchc.inactivev">
-                              </el-switch>
-                          </el-col>
-                        </el-row>
-                      </el-form-item>
-                      <el-form-item label="显示的时间">
-                        <el-input v-model="form.ddate"></el-input>
-                      </el-form-item>
-                      <el-form-item label="详细">
-                        <el-input
-                          type="textarea"
-                          :rows="4"
-                          placeholder="请输入内容"
-                          v-model="form.content">
-                        </el-input>
-                      </el-form-item>
+                    </el-form-item>
+                    <el-form-item label="详细">
+                      <el-input
+                        type="textarea"
+                        :rows="4"
+                        placeholder="请输入内容"
+                        v-model="form.content">
+                      </el-input>
+                    </el-form-item>
+
+                    <el-form-item label="类别">
+                    <el-select v-model="form.type" placeholder="请选择">
+                        <el-option
+                          v-for="item in form.options"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                    
+                    <el-form-item label="隶属于">
+                      <inputboxreference @selectReference="selectReference"></inputboxreference>
+                      <el-tag type="warning" class="tag-margin" v-if="form.preference != null"
+                          closable
+                          :disable-transitions="false"
+                          @close="closePReferenceTag(form.preference)">
+                          {{form.preference.title}}
+                        </el-tag>
+                    </el-form-item>
 
 
                       <el-form-item>
-                        <el-button type="primary" @click="save" :loading="saving">更新</el-button>
+                        <el-button type="primary" @click="save">更新</el-button>
                       </el-form-item>
                 </el-form>
             </el-col>
          </el-tab-pane>
 
-          <el-tab-pane label="相关" :name="tabs.relate" :loading = "relate.loading">
-            <el-card class="box-card">
+          <el-tab-pane label="相关" :name="tabs.relate" >
+            <el-card class="box-card" v-loading = "relate.loading">
               <el-row>
-                  <inputboxcivilization @selectCivilization = "selectCivilization"></inputboxcivilization>
+                  <inputboxgiant @selectGiant = "selectGiant"></inputboxgiant>
               </el-row>
               <el-row>
-                <template v-if="relate.civilizations == null || relate.civilizations.length == 0">
+                <template v-if="relate.giants == null || relate.giants.length == 0">
                     <p class="paragraph-content">无数据</p>
                 </template>
-                <template v-if="relate.civilizations != null && relate.civilizations.length > 0">
-                    <el-tag type="warning" v-for="item in relate.civilizations" class="tag-margin"
+                <template v-if="relate.giants != null && relate.giants.length > 0">
+                    <el-tag type="warning" v-for="item in relate.giants" class="tag-margin"
                       :key="item.id"
                       closable
                       :disable-transitions="false"
-                      @close="closeCivilizationTag(item)">
+                      @close="closeGiantTag(item)">
+                      {{item.name}}
+                    </el-tag>
+                </template>
+              </el-row>
+
+              <el-row>
+                  <inputboxnode @selectNode = "selectNode"></inputboxnode>
+              </el-row>
+              <el-row>
+                <template v-if="relate.nodes == null || relate.nodes.length == 0">
+                    <p class="paragraph-content">无数据</p>
+                </template>
+                <template v-if="relate.nodes != null && relate.nodes.length > 0">
+                    <el-tag type="warning" v-for="item in relate.nodes" class="tag-margin"
+                      :key="item.id"
+                      closable
+                      :disable-transitions="false"
+                      @close="closeNodeTag(item)">
                       {{item.title}}
                     </el-tag>
                 </template>
               </el-row>
-            </el-card>
-            <el-row></el-row>
-            <el-card class="box-card">
+
+              <el-row>
+                  <inputboxperiod @selectPeriod = "selectPeriod"></inputboxperiod>
+              </el-row>
+              <el-row>
+                <template v-if="relate.periods == null || relate.periods.length == 0">
+                    <p class="paragraph-content">无数据</p>
+                </template>
+                <template v-if="relate.periods != null && relate.periods.length > 0">
+                    <el-tag type="warning" v-for="item in relate.periods" class="tag-margin"
+                      :key="item.id"
+                      closable
+                      :disable-transitions="false"
+                      @close="closePeriodTag(item)">
+                      {{item.title}}
+                    </el-tag>
+                </template>
+              </el-row>
+
               <el-row>
                   <inputboxnation @selectNation = "selectNation"></inputboxnation>
               </el-row>
@@ -123,13 +131,17 @@
                     </el-tag>
                 </template>
               </el-row>
+
             </el-card>
+            <el-row></el-row>
+   
           </el-tab-pane>
 
-         <el-tab-pane label="贴条" :name="tabs.tag" :loading = "tag.loading"> 
-            <el-card class="box-card">
+         <el-tab-pane label="贴条" :name="tabs.tag"> 
+            <el-card class="box-card" v-loading = "tag.loading">
+
               <el-row>
-                  <inputboxtag @selectTag="selectTag"></inputboxtag>
+                  <inputboxtag @selectTag = "selectTag"></inputboxtag>
               </el-row>
               <el-row>
                 <template v-if="tag.tags == null || tag.tags.length == 0">
@@ -145,6 +157,7 @@
                     </el-tag>
                 </template>
               </el-row>
+
             </el-card>
           </el-tab-pane>
       </el-tabs>
@@ -156,10 +169,14 @@
 import axios from "axios";
 import inputboxtag from "./plugin/inputboxtag.vue";
 import inputboxcivilization from "./plugin/inputboxcivilization.vue";
+import inputboxgiant from "./plugin/inputboxgiant.vue";
 import inputboxnation from "./plugin/inputboxnation.vue";
+import inputboxreference from "./plugin/inputboxreference.vue";
+import inputboxnode from "./plugin/inputboxnode.vue";
+import inputboxperiod from "./plugin/inputboxperiod.vue";
 
 export default {
-  name: "periodedit",
+  name: "referenceedit",
   data() {
     return {
       id: "",
@@ -170,20 +187,25 @@ export default {
         relate: "2"
       },
       form: {
+        loading: true,
         title: "",
         content: "",
-        ddate: "",
-        year: null,
-        month: null,
-        day: null,
-        eyear: null,
-        emonth: null,
-        eday: null,
-        AD: 1,
-        eAD: 1
+        type: 0,
+        preference: null,
+        options: [
+          {
+            value: 0,
+            label: "文献"
+          },
+          {
+            value: 1,
+            label: "遗迹"
+          }
+        ]
       },
       relate: {
         loading: true,
+        giants: [],
         civilizations: [],
         nations: []
       },
@@ -203,7 +225,11 @@ export default {
   components: {
     inputboxtag,
     inputboxcivilization,
-    inputboxnation
+    inputboxnation,
+    inputboxreference,
+    inputboxgiant,
+    inputboxnode,
+    inputboxperiod
   },
   methods: {
     init() {
@@ -220,23 +246,15 @@ export default {
     save() {
       var _this = this;
 
-      _this.saving = true;
-      _this.loading = true;
+      _this.form.loading = true;
 
       axios
-        .post(_this.GLOBAL.url_period_edit_save, {
+        .post(_this.GLOBAL.url_reference_edit_save, {
           id: _this.id,
           title: _this.form.title,
           content: _this.form.content,
-          ddate: _this.form.ddate,
-          year: _this.form.year,
-          month: _this.form.month,
-          day: _this.form.day,
-          eyear: _this.form.eyear,
-          emonth: _this.form.emonth,
-          eday: _this.form.eday,
-          AD: _this.form.AD,
-          eAD: _this.form.eAD
+          type: _this.form.type,
+          preference: _this.form.preference
         })
         .then(function(response) {
           if (response.data.result == 0) {
@@ -244,61 +262,65 @@ export default {
               message: _this.form.title + " 更新成功！",
               type: "success"
             });
-            _this.initTabBasic();
+            _this.init();
           }
         });
     },
     initTabBasic() {
       var _this = this;
-      _this.saving = false;
-      _this.loading = true;
+      _this.form.loading = true;
 
       axios
-        .post(_this.GLOBAL.url_period_edit_init, {
+        .post(_this.GLOBAL.url_reference_edit_init, {
           id: _this.id
         })
         .then(function(response) {
           if (response.data.result == 0) {
-            var period = response.data.data;
+            var reference = response.data.data;
 
-            _this.form.title = period.title;
-            _this.form.content = period.content;
-            _this.form.ddate = period.ddate;
-            _this.form.year = period.year;
-            _this.form.month = period.month;
-            _this.form.day = period.day;
-            _this.form.eyear = period.eyear;
-            _this.form.emonth = period.emonth;
-            _this.form.eday = period.eday;
+            _this.form.title = reference.title;
+            _this.form.content = reference.content;
+            _this.form.type = reference.type;
+            _this.form.preference = reference.preference;
 
-            _this.form.AD = period.aD;
-            _this.form.eAD = period.eAD;
-
-            // console.log(period.giant);
-
-            _this.loading = false;
+            _this.form.loading = false;
           } else {
             this.$message.error(response.data.data);
           }
         })
         .catch(function(error) {});
     },
+
+    selectReference(item) {
+      this.form.preference = item;
+    },
+    closePReferenceTag() {
+      this.form.preference = null;
+    },
+
     // 基础结束
 
     //相关信息
     initTabRelate() {
+      console.log("init tab relate");
       var _this = this;
       _this.relate.loading = true;
 
       axios
-        .post(_this.GLOBAL.url_period_edit_init_relate, {
+        .post(_this.GLOBAL.url_reference_edit_init_relate, {
           id: _this.id
         })
         .then(function(response) {
+          console.log(response);
+
           if (response.data.result == 0) {
             var data = response.data.data;
-            _this.form.title = data.period.title;
-            _this.relate.civilizations = data.civilizations;
+            console.log(data);
+
+            _this.form.title = data.reference.title;
+            _this.relate.giants = data.giants;
+            _this.relate.nodes = data.nodes;
+            _this.relate.periods = data.periods;
             _this.relate.nations = data.nations;
             _this.relate.loading = false;
           } else {
@@ -308,10 +330,10 @@ export default {
         .catch(function(error) {});
     },
 
-    selectCivilization(item) {
+    selectGiant(item) {
       var _this = this;
       //提交
-      var content = "确认添加文明： " + item.title + "？";
+      var content = "确认添加人物： " + item.name + "？";
 
       this.$confirm(content, "确认", {
         confirmButtonText: "确定",
@@ -321,9 +343,9 @@ export default {
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_period_relate_civilization_save, {
-              pid: _this.id,
-              civilization: item
+            .post(_this.GLOBAL.url_reference_relate_giant_save, {
+              rid: _this.id,
+              giant: item
             })
             .then(function(response) {
               if (response.data.result == 0) {
@@ -351,10 +373,10 @@ export default {
           });
         });
     },
-    closeCivilizationTag(item) {
+    closeGiantTag(item) {
       var _this = this;
       //提交
-      var content = "确认删除文明： " + item.title + "？";
+      var content = "确认删除人物： " + item.name + "？";
 
       this.$confirm(content, "确认", {
         confirmButtonText: "确定",
@@ -364,7 +386,165 @@ export default {
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_period_relate_civilization_delete, {
+            .post(_this.GLOBAL.url_reference_relate_giant_delete, {
+              id: item.id
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    selectNode(item) {
+      var _this = this;
+      //提交
+      var content = "确认添加节点： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_reference_relate_node_save, {
+              rid: _this.id,
+              node: item
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "添加成功!"
+                });
+              } else {
+                _this.$notify.error({
+                  title: response.data.msg,
+                  message: response.data.data,
+                  duration: 0
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    closeNodeTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认删除节点： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_reference_relate_node_delete, {
+              id: item.id
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    selectPeriod(item) {
+      var _this = this;
+      //提交
+      var content = "确认添加时代： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_reference_relate_period_save, {
+              rid: _this.id,
+              period: item
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "添加成功!"
+                });
+              } else {
+                _this.$notify.error({
+                  title: response.data.msg,
+                  message: response.data.data,
+                  duration: 0
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    closePeriodTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认删除时代： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_reference_relate_period_delete, {
               id: item.id
             })
             .then(function(response) {
@@ -400,8 +580,8 @@ export default {
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_period_relate_nation_save, {
-              pid: _this.id,
+            .post(_this.GLOBAL.url_reference_relate_nation_save, {
+              rid: _this.id,
               nation: item
             })
             .then(function(response) {
@@ -443,7 +623,7 @@ export default {
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_period_relate_nation_delete, {
+            .post(_this.GLOBAL.url_reference_relate_nation_delete, {
               id: item.id
             })
             .then(function(response) {
@@ -466,21 +646,21 @@ export default {
           });
         });
     },
-
     //贴条
     initTagTab() {
       var _this = this;
       _this.tag.loading = true;
 
       axios
-        .post(_this.GLOBAL.url_period_edit_init_tag, {
+        .post(_this.GLOBAL.url_reference_edit_init_tag, {
           id: _this.id
         })
         .then(function(response) {
           if (response.data.result == 0) {
             var data = response.data.data;
-            _this.form.title = data.period.title;
+            _this.form.title = data.reference.title;
             _this.tag.tags = data.tags;
+            _this.tag.loading = false;
           } else {
             this.$message.error(response.data.data);
           }
@@ -500,8 +680,8 @@ export default {
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_period_tag_save, {
-              pid: _this.id,
+            .post(_this.GLOBAL.url_reference_tag_save, {
+              rid: _this.id,
               tag: item
             })
             .then(function(response) {
@@ -543,7 +723,7 @@ export default {
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_period_tag_delete, {
+            .post(_this.GLOBAL.url_reference_tag_delete, {
               id: item.id
             })
             .then(function(response) {

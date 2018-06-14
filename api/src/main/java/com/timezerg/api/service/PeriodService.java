@@ -9,6 +9,7 @@ import com.timezerg.api.model.*;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,6 +60,28 @@ public class PeriodService {
     PeriodTagService periodTagService;
 
     @Transactional
+    public Object add(Period period){
+        if (period == null)
+            return new Result(ResultMessage.PARAM_ERROR,getClass());
+
+        if (StringUtils.isBlank(period.getTitle())){
+            return new Result(ResultMessage.PARAM_ERROR,getClass());
+        }
+
+        if (periodMapper.selectByTitle(period.getTitle()) != null){
+            return new Result(ResultMessage.DUPLICATION_ERROR,getClass());
+        }
+
+        if (StringUtils.isBlank(period.getId()))
+            period.setId(Utils.generateId());
+
+        return periodMapper.add(period);
+    }
+
+
+
+
+    @Transactional
     public Object add(JSONObject params) {
         Period period = new Period();
         String pid = Utils.generateId();
@@ -93,11 +116,11 @@ public class PeriodService {
 
         periodMapper.add(period);
 
-        JSONArray civilizationAry = params.getJSONArray("civilizations");
-        bindCivilization(civilizationAry, pid);
-
-        JSONArray nationAry = params.getJSONArray("nations");
-        bindNation(nationAry, pid);
+//        JSONArray civilizationAry = params.getJSONArray("civilizations");
+//        bindCivilization(civilizationAry, pid);
+//
+//        JSONArray nationAry = params.getJSONArray("nations");
+//        bindNation(nationAry, pid);
 
         return new Result(ResultMessage.OK);
     }

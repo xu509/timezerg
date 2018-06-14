@@ -25,6 +25,12 @@ public class NodeController {
     }
 
     @CrossOrigin
+    @PostMapping("/node/search")
+    public Object search(@RequestBody JSONObject params) {
+        return nodeService.selectByTitle(params);
+    }
+
+    @CrossOrigin
     @PostMapping("/node/list")
     public Object list(@RequestBody JSONObject params){
         return nodeService.getList(params);
