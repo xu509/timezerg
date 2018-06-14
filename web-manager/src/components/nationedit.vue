@@ -133,6 +133,23 @@
                           </el-tag>
                       </template>
                 </el-row>
+                <el-row>
+                  <inputboxreference @selectReference = "selectReference"></inputboxreference>
+                </el-row>
+                <el-row>
+                   <template v-if="relate.references == null || relate.references.length == 0">
+                            <p class="paragraph-content">无数据</p>
+                      </template>
+                      <template v-if="relate.references != null && relate.references.length > 0">
+                          <el-tag type="warning" v-for="item in relate.references" class="tag-margin"
+                            :key="item.id"
+                            closable
+                            :disable-transitions="false"
+                            @close="closeReferenceTag(item)">
+                            {{item.title}}
+                          </el-tag>
+                      </template>
+                </el-row>
             </el-card>
          </el-tab-pane>
          <el-tab-pane label="贴条" :name="tabs.tag"> 
@@ -169,6 +186,7 @@ import inputboxnation from "./plugin/inputboxnation.vue";
 import inputboxgiant from "./plugin/inputboxgiant.vue";
 import inputboxinstitution from "./plugin/inputboxinstitution.vue";
 import inputboxtag from "./plugin/inputboxtag.vue";
+import inputboxreference from "./plugin/inputboxreference.vue";
 
 export default {
   name: "nationedit",
@@ -217,7 +235,8 @@ export default {
     inputboxnation,
     inputboxgiant,
     inputboxinstitution,
-    inputboxtag
+    inputboxtag,
+    inputboxreference
   },
   methods: {
     init() {
@@ -340,6 +359,7 @@ export default {
             _this.form.title = data.title;
             _this.relate.giants = data.giants;
             _this.relate.institutions = data.institutions;
+            _this.relate.references = data.references;
 
             // console.log(nation.giant);
 
@@ -489,6 +509,89 @@ export default {
           //提交上去
           axios
             .post(_this.GLOBAL.url_nation_edit_relate_institution_delete, {
+              id: item.id
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    selectReference(item) {
+      var _this = this;
+      //提交
+      var content = "确认添加依据： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_nation_edit_relate_reference_save, {
+              nid: _this.id,
+              reference: item
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "添加成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    closeReferenceTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认删除依据： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_nation_edit_relate_reference_delete, {
               id: item.id
             })
             .then(function(response) {

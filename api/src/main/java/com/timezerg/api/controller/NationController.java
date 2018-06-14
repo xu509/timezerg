@@ -72,6 +72,20 @@ public class NationController {
         return nationService.deleteRelateInstitution(params);
     }
 
+    @CrossOrigin
+    @PostMapping("/nation/edit/relate/reference/save")
+    public Object editRelateReferenceSave(@RequestBody JSONObject params){
+        return nationService.addRelateReference(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/nation/edit/relate/reference/delete")
+    public Object editRelateReferenceDelete(@RequestBody JSONObject params){
+        return nationService.deleteRelateReference(params);
+    }
+
+
+
 
     @CrossOrigin
     @PostMapping("/nation/edit/init/tag")

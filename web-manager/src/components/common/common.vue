@@ -24,12 +24,16 @@ const url_nation_edit_init_relate = domain + "/nation/edit/init/relate";
 const url_nation_edit_save = domain + "/nation/edit/save";
 const url_nation_edit_relate_giant_save =
   domain + "/nation/edit/relate/giant/save";
-const url_nation_edit_relate_institution_save =
-  domain + "/nation/edit/relate/institution/save";
 const url_nation_edit_relate_giant_delete =
   domain + "/nation/edit/relate/giant/delete";
+const url_nation_edit_relate_institution_save =
+  domain + "/nation/edit/relate/institution/save";
 const url_nation_edit_relate_institution_delete =
   domain + "/nation/edit/relate/institution/delete";
+const url_nation_edit_relate_reference_save =
+  domain + "/nation/edit/relate/reference/save";
+const url_nation_edit_relate_reference_delete =
+  domain + "/nation/edit/relate/reference/delete";
 const url_nation_tag_save = domain + "/nation/edit/tag/save";
 const url_nation_tag_delete = domain + "/nation/edit/tag/delete";
 const url_period_list = domain + "/period/list";
@@ -48,6 +52,10 @@ const url_period_relate_nation_save =
   domain + "/period/edit/relate/nation/save";
 const url_period_relate_nation_delete =
   domain + "/period/edit/relate/nation/delete";
+const url_period_relate_reference_save =
+  domain + "/period/edit/relate/reference/save";
+const url_period_relate_reference_delete =
+  domain + "/period/edit/relate/reference/delete";
 const url_continent_add = domain + "/continent/save";
 const url_index = domain + "/civilization/index";
 const url_civilization_index_list = domain + "/civilizationindex/list";
@@ -63,11 +71,18 @@ const url_giant_edit_relate_nation_save =
   domain + "/giant/edit/relate/nation/save";
 const url_giant_edit_relate_nation_delete =
   domain + "/giant/edit/relate/nation/delete";
+const url_giant_edit_relate_reference_save =
+  domain + "/giant/edit/relate/reference/save";
+const url_giant_edit_relate_reference_delete =
+  domain + "/giant/edit/relate/reference/delete";
+const url_giant_edit_relate_node_save =
+  domain + "/giant/edit/relate/node/save";
+const url_giant_edit_relate_node_delete =
+  domain + "/giant/edit/relate/node/delete";
 const url_giant_edit_tag_save = domain + "/giant/edit/tag/save";
 const url_giant_edit_tag_delete = domain + "/giant/edit/tag/delete";
 const url_institution_list = domain + "/institution/list";
 const url_institution_add = domain + "/institution/save";
-
 const url_reference_list = domain + "/reference/list";
 const url_reference_add = domain + "/reference/save";
 const url_reference_edit_init = domain + "/reference/edit/init";
@@ -130,6 +145,8 @@ export default {
   url_nation_edit_relate_giant_delete,
   url_nation_edit_relate_institution_save,
   url_nation_edit_relate_institution_delete,
+  url_nation_edit_relate_reference_save,
+  url_nation_edit_relate_reference_delete,
   url_nation_tag_save,
   url_nation_tag_delete,
   url_period_list,
@@ -144,6 +161,8 @@ export default {
   url_period_relate_civilization_delete,
   url_period_relate_nation_save,
   url_period_relate_nation_delete,
+  url_period_relate_reference_save,
+  url_period_relate_reference_delete,
   url_search_nation,
   url_search_period,
   url_search_civilization,
@@ -160,6 +179,10 @@ export default {
   url_giant_edit_save,
   url_giant_edit_relate_nation_save,
   url_giant_edit_relate_nation_delete,
+  url_giant_edit_relate_reference_save,
+  url_giant_edit_relate_reference_delete,
+  url_giant_edit_relate_node_save,
+  url_giant_edit_relate_node_delete,
   url_giant_edit_tag_save,
   url_giant_edit_tag_delete,
   url_institution_list,

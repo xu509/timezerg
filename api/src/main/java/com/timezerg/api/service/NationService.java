@@ -58,6 +58,15 @@ public class NationService {
     @Autowired
     TagMapper tagMapper;
 
+    @Autowired
+    ReferenceService referenceService;
+
+    @Autowired
+    NationReferenceService nationReferenceService;
+
+    @Autowired
+    NationReferenceMapper nationReferenceMapper;
+
     @Transactional
     public Object add(JSONObject params) {
         Nation nation = new Nation();
@@ -243,6 +252,10 @@ public class NationService {
         //制度
         List<HashMap> institution = nationInstitutionMapper.selectByNid(id);
         r.put("institutions",institution);
+
+        //依据
+        r.put("references",nationReferenceMapper.selectByNid(id));
+
 
         return new Result(ResultMessage.OK,r);
     }
@@ -489,5 +502,32 @@ public class NationService {
         return nationInstitutionService.delete(params.getString("id"));
     }
 
+    @Transactional
+    public Object addRelateReference(JSONObject params){
+        JSONObject referenceObj = params.getJSONObject("reference");
+        String nid = params.getString("nid");
+        String rid = referenceObj.getString("rid");
 
+        Boolean isNew = referenceObj.getBoolean("isnew");
+        if (isNew != null && isNew){
+            String title = referenceObj.getString("title");
+            Reference r = new Reference();
+            rid = Utils.generateId();
+            r.setId(rid);
+            r.setTitle(title);
+            referenceService.add(r);
+        }
+
+        NationReference nationReference = new NationReference();
+        nationReference.setId(Utils.generateId());
+        nationReference.setNid(nid);
+        nationReference.setRid(rid);
+
+        return nationReferenceService.add(nationReference);
+    }
+
+    @Transactional
+    public Object deleteRelateReference(JSONObject params){
+        return nationReferenceService.delete(params.getString("id"));
+    }
 }

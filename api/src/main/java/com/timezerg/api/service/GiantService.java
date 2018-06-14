@@ -50,6 +50,25 @@ public class GiantService {
     @Autowired
     TagService tagService;
 
+    @Autowired
+    GiantReferenceService giantReferenceService;
+
+    @Autowired
+    GiantReferenceMapper giantReferenceMapper;
+
+    @Autowired
+    NodeGiantMapper nodeGiantMapper;
+
+    @Autowired
+    NodeGiantService nodeGiantService;
+
+    @Autowired
+    ReferenceService referenceService;
+
+    @Autowired
+    NodeService nodeService;
+
+
 
     @Transactional
     public Object add(JSONObject params) {
@@ -184,6 +203,9 @@ public class GiantService {
 
         JSONObject obj = (JSONObject) JSON.toJSON(giant);
         obj.put("nations",giantNationMapper.selectByGid(id));
+        obj.put("references",giantReferenceMapper.selectByGid(id));
+        obj.put("nodes",nodeGiantMapper.selectByGid(id));
+
         return new Result(ResultMessage.OK,obj);
     }
 
@@ -255,13 +277,93 @@ public class GiantService {
     }
 
     /*
-     *   删除nation
+     *   删除 reference
      * */
     @Transactional
     public Object editDeleteNation(JSONObject params){
         String id = params.getString("id");
         return giantNationService.delete(id);
     }
+
+    /*
+     *   增加 reference
+     * */
+    @Transactional
+    public Object editAddReference(JSONObject params){
+        String gid = params.getString("gid");
+        JSONObject referenceObj = params.getJSONObject("reference");
+        Giant giant = giantMapper.selectById(gid);
+        if (giant == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        String rid = referenceObj.getString("rid");
+        Boolean isnew = referenceObj.getBoolean("isnew");
+        if (isnew != null && isnew){
+            Reference reference = new Reference();
+            rid = Utils.generateId();
+            reference.setId(rid);
+            reference.setTitle(referenceObj.getString("title"));
+            referenceService.add(reference);
+        }
+
+        GiantReference giantReference = new GiantReference();
+        giantReference.setId(Utils.generateId());
+        giantReference.setRid(rid);
+        giantReference.setGid(gid);
+        giantReferenceService.add(giantReference);
+
+        return new Result(ResultMessage.OK,giantReference);
+    }
+
+    /*
+     *   删除 reference
+     * */
+    @Transactional
+    public Object editDeleteReference(JSONObject params){
+        String id = params.getString("id");
+        return giantReferenceService.delete(id);
+    }
+
+
+    /*
+     *   增加 node
+     * */
+    @Transactional
+    public Object editAddNode(JSONObject params){
+        String gid = params.getString("gid");
+        JSONObject nodeObj = params.getJSONObject("node");
+        Giant giant = giantMapper.selectById(gid);
+        if (giant == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        String nid = nodeObj.getString("nid");
+        Boolean isnew = nodeObj.getBoolean("isnew");
+        if (isnew != null && isnew){
+            Node node = new Node();
+            nid = Utils.generateId();
+            node.setId(nid);
+            node.setTitle(nodeObj.getString("title"));
+            nodeService.add(node);
+        }
+
+        NodeGiant nodeGiant = new NodeGiant();
+        nodeGiant.setId(Utils.generateId());
+        nodeGiant.setNid(nid);
+        nodeGiant.setGid(gid);
+        nodeGiantService.add(nodeGiant);
+
+        return new Result(ResultMessage.OK,nodeGiant);
+    }
+
+    /*
+     *   删除 node
+     * */
+    @Transactional
+    public Object editDeleteNode(JSONObject params){
+        String id = params.getString("id");
+        return nodeGiantService.delete(id);
+    }
+
 
 
     /**

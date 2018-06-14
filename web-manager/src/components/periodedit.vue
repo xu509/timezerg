@@ -84,8 +84,8 @@
             </el-col>
          </el-tab-pane>
 
-          <el-tab-pane label="相关" :name="tabs.relate" :loading = "relate.loading">
-            <el-card class="box-card">
+          <el-tab-pane label="相关" :name="tabs.relate" >
+            <el-card class="box-card" v-loading = "relate.loading">
               <el-row>
                   <inputboxcivilization @selectCivilization = "selectCivilization"></inputboxcivilization>
               </el-row>
@@ -103,9 +103,7 @@
                     </el-tag>
                 </template>
               </el-row>
-            </el-card>
             <el-row></el-row>
-            <el-card class="box-card">
               <el-row>
                   <inputboxnation @selectNation = "selectNation"></inputboxnation>
               </el-row>
@@ -123,6 +121,27 @@
                     </el-tag>
                 </template>
               </el-row>
+
+              <el-row></el-row>
+              <el-row>
+                  <inputboxreference @selectReference = "selectReference"></inputboxreference>
+              </el-row>
+              <el-row>
+                <template v-if="relate.references == null || relate.references.length == 0">
+                    <p class="paragraph-content">无数据</p>
+                </template>
+                <template v-if="relate.references != null && relate.references.length > 0">
+                    <el-tag type="warning" v-for="item in relate.references" class="tag-margin"
+                      :key="item.id"
+                      closable
+                      :disable-transitions="false"
+                      @close="closeReferenceTag(item)">
+                      {{item.title}}
+                    </el-tag>
+                </template>
+              </el-row>
+
+
             </el-card>
           </el-tab-pane>
 
@@ -157,6 +176,7 @@ import axios from "axios";
 import inputboxtag from "./plugin/inputboxtag.vue";
 import inputboxcivilization from "./plugin/inputboxcivilization.vue";
 import inputboxnation from "./plugin/inputboxnation.vue";
+import inputboxreference from "./plugin/inputboxreference.vue";
 
 export default {
   name: "periodedit",
@@ -185,7 +205,8 @@ export default {
       relate: {
         loading: true,
         civilizations: [],
-        nations: []
+        nations: [],
+        references:[]
       },
       tag: {
         loading: true,
@@ -203,7 +224,8 @@ export default {
   components: {
     inputboxtag,
     inputboxcivilization,
-    inputboxnation
+    inputboxnation,
+    inputboxreference
   },
   methods: {
     init() {
@@ -300,6 +322,7 @@ export default {
             _this.form.title = data.period.title;
             _this.relate.civilizations = data.civilizations;
             _this.relate.nations = data.nations;
+            _this.relate.references = data.references;
             _this.relate.loading = false;
           } else {
             this.$message.error(response.data.data);
@@ -444,6 +467,85 @@ export default {
           //提交上去
           axios
             .post(_this.GLOBAL.url_period_relate_nation_delete, {
+              id: item.id
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    selectReference(item) {
+      var _this = this;
+      //提交
+      var content = "确认添加依据： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_period_relate_reference_save, {
+              pid: _this.id,
+              reference: item
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "添加成功!"
+                });
+              } else {
+                _this.$notify.error({
+                  title: response.data.msg,
+                  message: response.data.data,
+                  duration: 0
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    closeReferenceTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认删除依据： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_period_relate_reference_delete, {
               id: item.id
             })
             .then(function(response) {

@@ -68,6 +68,30 @@ public class GiantController {
     }
 
     @CrossOrigin
+    @PostMapping("/giant/edit/relate/reference/save")
+    public Object editAddReference(@RequestBody JSONObject params){
+        return giantService.editAddReference(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/giant/edit/relate/reference/delete")
+    public Object editDeleteReference(@RequestBody JSONObject params){
+        return giantService.editDeleteReference(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/giant/edit/relate/node/save")
+    public Object editAddNode(@RequestBody JSONObject params){
+        return giantService.editAddNode(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/giant/edit/relate/node/delete")
+    public Object editDeleteNode(@RequestBody JSONObject params){
+        return giantService.editDeleteNode(params);
+    }
+
+    @CrossOrigin
     @PostMapping("/giant/edit/init/tag")
     public Object editInitTag(@RequestBody JSONObject params){
         return giantService.editInitTag(params);

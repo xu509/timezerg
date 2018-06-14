@@ -59,6 +59,15 @@ public class PeriodService {
     @Autowired
     PeriodTagService periodTagService;
 
+    @Autowired
+    ReferenceService referenceService;
+
+    @Autowired
+    PeriodReferenceService periodReferenceService;
+
+    @Autowired
+    PeriodReferenceMapper periodReferenceMapper;
+
     @Transactional
     public Object add(Period period){
         if (period == null)
@@ -219,6 +228,7 @@ public class PeriodService {
         data.put("period", period);
         data.put("civilizations", civilizationPeriodMapper.selectCivilizationByPid(id));
         data.put("nations", nationPeriodMapper.selectNationByPid(id));
+        data.put("references", periodReferenceMapper.selectByPid(id));
 
         return new Result(ResultMessage.OK, data);
     }
@@ -250,6 +260,39 @@ public class PeriodService {
         String id = params.getString("id");
         return nationPeriodService.delete(id);
     }
+
+    // 添加参照
+    public Object editAddRelateReference(JSONObject params) {
+        String pid = params.getString("pid");
+        JSONObject referenceObj = params.getJSONObject("reference");
+        String rid = referenceObj.getString("rid");
+
+        Boolean isNew = referenceObj.getBoolean("isnew");
+        if (isNew != null && isNew){
+            String title = referenceObj.getString("title");
+            Reference r = new Reference();
+            rid = Utils.generateId();
+            r.setId(rid);
+            r.setTitle(title);
+            Result r2 = (Result) referenceService.add(r);
+            if (!Result.isOk(r2)){
+                return r2;
+            }
+        }
+
+        PeriodReference periodReference = new PeriodReference();
+        periodReference.setId(Utils.generateId());
+        periodReference.setPid(pid);
+        periodReference.setRid(rid);
+        return periodReferenceService.add(periodReference);
+    }
+
+    // 删除参照
+    public Object editDeleteRelateReference(JSONObject params) {
+        String id = params.getString("id");
+        return periodReferenceService.delete(id);
+    }
+
 
 
 

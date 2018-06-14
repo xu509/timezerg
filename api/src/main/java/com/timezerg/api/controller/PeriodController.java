@@ -73,6 +73,18 @@ public class PeriodController {
     }
 
     @CrossOrigin
+    @PostMapping("/period/edit/relate/reference/save")
+    public Object editReferenceAdd(@RequestBody JSONObject params) {
+        return periodService.editAddRelateReference(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/period/edit/relate/reference/delete")
+    public Object editReferenceDelete(@RequestBody JSONObject params) {
+        return periodService.editDeleteRelateReference(params);
+    }
+
+    @CrossOrigin
     @PostMapping("/period/edit/init/tag")
     public Object editInitTag(@RequestBody JSONObject params) {
         return periodService.editInitTags(params);

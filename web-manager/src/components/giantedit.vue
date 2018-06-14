@@ -66,6 +66,42 @@
                           </el-tag>
                       </template>
                     </el-row>
+
+                    <el-row>
+                        <inputboxreference @selectReference = "selectReference"></inputboxreference>
+                    </el-row>
+                    <el-row>
+                      <template v-if="relate.references == null || relate.references.length == 0">
+                           <p class="paragraph-content">无数据</p>
+                      </template>
+                      <template v-if="relate.references != null && relate.references.length > 0">
+                          <el-tag type="warning" v-for="item in relate.references" class="tag-margin"
+                            :key="item.id"
+                            closable
+                            :disable-transitions="false"
+                            @close="closeReferenceTag(item)">
+                            {{item.title}}
+                          </el-tag>
+                      </template>
+                    </el-row>
+
+                    <el-row>
+                        <inputboxnode @selectNode = "selectNode"></inputboxnode>
+                    </el-row>
+                    <el-row>
+                      <template v-if="relate.nodes == null || relate.nodes.length == 0">
+                           <p class="paragraph-content">无数据</p>
+                      </template>
+                      <template v-if="relate.nodes != null && relate.nodes.length > 0">
+                          <el-tag type="warning" v-for="item in relate.nodes" class="tag-margin"
+                            :key="item.id"
+                            closable
+                            :disable-transitions="false"
+                            @close="closeNodeTag(item)">
+                            {{item.title}}
+                          </el-tag>
+                      </template>
+                    </el-row>
                 </el-card>
             </el-tab-pane>
 
@@ -103,6 +139,8 @@ import axios from "axios";
 import inputboxnation from "./plugin/inputboxnation.vue";
 import inputboxtag from "./plugin/inputboxtag.vue";
 import inputboxgiant from "./plugin/inputboxgiant.vue";
+import inputboxreference from "./plugin/inputboxreference.vue";
+import inputboxnode from "./plugin/inputboxnode.vue";
 
 export default {
   name: "giantedit",
@@ -119,7 +157,9 @@ export default {
       },
       relate: {
         loading: true,
-        nations: []
+        nations: [],
+        references:[],
+        nodes:[]
       },
       tag: {
         loading: true,
@@ -130,7 +170,9 @@ export default {
   components: {
     inputboxnation,
     inputboxtag,
-    inputboxgiant
+    inputboxgiant,
+    inputboxreference,
+    inputboxnode
   },
   methods: {
     init() {
@@ -218,6 +260,8 @@ export default {
             var data = response.data.data;
             _this.form.name = data.name;
             _this.relate.nations = data.nations;
+            _this.relate.nodes = data.nodes;
+            _this.relate.references = data.references;
             // _this.form.pgiant = giant.pgiant;
             _this.relate.loading = false;
           } else {
@@ -284,6 +328,172 @@ export default {
           //提交上去
           axios
             .post(_this.GLOBAL.url_giant_edit_relate_nation_delete, {
+              id: item.id
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    selectReference(item) {
+      var _this = this;
+      //提交
+      var content = "确认添加参照： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_giant_edit_relate_reference_save, {
+              gid: _this.id,
+              reference: item
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "添加成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    closeReferenceTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认删除参照： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_giant_edit_relate_reference_delete, {
+              id: item.id
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    selectNode(item) {
+      var _this = this;
+      //提交
+      var content = "确认添加节点： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_giant_edit_relate_node_save, {
+              gid: _this.id,
+              node: item
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "添加成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    closeNodeTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认删除节点： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_giant_edit_relate_node_delete, {
               id: item.id
             })
             .then(function(response) {
