@@ -68,6 +68,19 @@ public class NodeService {
     @Autowired
     NodeGiantMapper nodeGiantMapper;
 
+    @Autowired
+    TagService tagService;
+
+    @Autowired
+    NodeTagMapper nodeGiant;
+
+    @Autowired
+    NodeTagService nodeTagService;
+
+    @Autowired
+    NodeTagMapper nodeTagMapper;
+
+
     @Transactional
     public Object add(Node node){
         if (node == null)
@@ -432,7 +445,6 @@ public class NodeService {
         return nodeReferenceService.delete(params.getString("id"));
     }
 
-
     @Transactional
     public Object addRelateNation(JSONObject params){
         JSONObject nationObj = params.getJSONObject("nation");
@@ -490,5 +502,48 @@ public class NodeService {
     public Object deleteRelateGiant(JSONObject params){
         return nodeGiantService.delete(params.getString("id"));
     }
+
+    /*edit init*/
+    public Object initTag(JSONObject params){
+        String id = params.getString("id");
+        Node node = nodeMapper.selectById(id);
+
+        if (node == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        JSONObject result = (JSONObject) JSONObject.toJSON(node);
+
+        result.put("tags",nodeTagMapper.selectByNid(id));
+        return new Result(ResultMessage.OK,result);
+    }
+
+    @Transactional
+    public Object addTag(JSONObject params){
+        JSONObject tagObj = params.getJSONObject("tag");
+        String nid = params.getString("nid");
+        String tagId = tagObj.getString("tid");
+
+        Boolean isNew = tagObj.getBoolean("isnew");
+        if (isNew != null && isNew){
+            String title = tagObj.getString("title");
+            Tag t = new Tag();
+            tagId = Utils.generateId();
+            t.setId(tagId);
+            t.setTitle(title);
+            tagService.add(t);
+        }
+
+        NodeTag nodeTag = new NodeTag();
+        nodeTag.setId(Utils.generateId());
+        nodeTag.setTid(tagId);
+        nodeTag.setNid(nid);
+        return nodeTagService.add(nodeTag);
+    }
+
+    @Transactional
+    public Object deleteTag(JSONObject params){
+        return nodeTagService.delete(params.getString("id"));
+    }
+
 
 }

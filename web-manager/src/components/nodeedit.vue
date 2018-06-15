@@ -120,20 +120,34 @@
                         closable
                         :disable-transitions="false"
                         @close="closeReferenceTag(item)">
-                        {{item.name}}
+                        {{item.title}}
                       </el-tag>
                   </template>
                 </el-row>
                 <el-row></el-row>
-
-
-
               </el-card>
           </el-tab-pane>
           <el-tab-pane label="贴条" :name="tabs.tag" v-loading = "tag.loading">
-
+              <el-card class="box-card" v-loading = "tag.loading">
+                  <el-row>
+                    <inputboxtag @selectTag = "selectTag"></inputboxtag>
+                </el-row>
+                <el-row>
+                  <template v-if="relate.tags == null || relate.tags.length == 0">
+                      <p class="paragraph-content">无数据</p>
+                  </template>
+                  <template v-if="relate.tags != null && relate.tags.length > 0">
+                      <el-tag type="warning" v-for="item in relate.tags" class="tag-margin"
+                        :key="item.id"
+                        closable
+                        :disable-transitions="false"
+                        @close="closeTagTag(item)">
+                        {{item.title}}
+                      </el-tag>
+                  </template>
+                </el-row>
+              </el-card>
           </el-tab-pane>
-
         </el-tabs>
     </el-row>
   </div>
@@ -145,6 +159,7 @@ import inputboxnation from "./plugin/inputboxnation.vue";
 import inputboxcivilization from "./plugin/inputboxcivilization.vue";
 import inputboxgiant from "./plugin/inputboxgiant.vue";
 import inputboxreference from "./plugin/inputboxreference.vue";
+import inputboxtag from "./plugin/inputboxtag.vue";
 
 export default {
   name: "nodeedit",
@@ -176,7 +191,8 @@ export default {
         nations: [],
         civilizations: [],
         giants: [],
-        references: []
+        references: [],
+        tags: []
       },
       tag: {
         loading: false,
@@ -214,7 +230,8 @@ export default {
     inputboxnation,
     inputboxcivilization,
     inputboxgiant,
-    inputboxreference
+    inputboxreference,
+    inputboxtag
   },
   methods: {
     init() {
@@ -531,7 +548,6 @@ export default {
           });
         });
     },
-
     selectCivilization(item) {
       this.form.civilizations.push(item);
     },
@@ -550,17 +566,114 @@ export default {
           if (response.data.result == 0) {
             var data = response.data.data;
             _this.form.title = data.title;
-            _this.relate.giants = data.giants;
             _this.relate.nations = data.nations;
+            _this.relate.giants = data.giants;
             _this.relate.references = data.references;
-
-            console.log(data);
 
             _this.relate.loading = false;
           }
         });
     },
-    initTagTab() {}
+
+    initTagTab() {
+      var _this = this;
+      _this.tag.loading = true;
+
+      axios
+        .post(_this.GLOBAL.url_node_edit_init_tag, {
+          id: _this.id
+        })
+        .then(function(response) {
+          console.log(response);
+
+          if (response.data.result == 0) {
+            var data = response.data.data;
+            _this.form.title = data.title;
+            _this.tag.tags = data.tags;
+
+            _this.tag.loading = false;
+          }
+        });
+    },
+    selectTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认添加贴条： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_node_tag_save, {
+              node: _this.id,
+              tag: item
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "添加成功!"
+                });
+              } else {
+                _this.$notify.error({
+                  title: response.data.msg,
+                  message: response.data.data,
+                  duration: 0
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    closeTagTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认删除贴条： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_node_tag_delete, {
+              id: item.id
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    }
   },
   mounted: function() {
     this.id = this.$route.params.id;

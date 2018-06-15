@@ -96,7 +96,23 @@ public class NodeController {
         return nodeService.deleteRelateReference(params);
     }
 
+    @CrossOrigin
+    @PostMapping("/node/edit/init/tag")
+    public Object editInitTag(@RequestBody JSONObject params){
+        return nodeService.initTag(params);
+    }
 
+    @CrossOrigin
+    @PostMapping("/node/edit/tag/save")
+    public Object editTagSave(@RequestBody JSONObject params){
+        return nodeService.addTag(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/node/edit/tag/delete")
+    public Object editTagDelete(@RequestBody JSONObject params){
+        return nodeService.deleteTag(params);
+    }
 
 
 
