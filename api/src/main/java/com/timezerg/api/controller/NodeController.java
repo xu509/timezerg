@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
  * Created by xnx on 2018/5/10.
  */
 
-
 @RestController
 public class NodeController {
 
@@ -114,8 +113,6 @@ public class NodeController {
         return nodeService.deleteTag(params);
     }
 
-
-
     @CrossOrigin
     @GetMapping("/node/test")
     public Object test(@RequestBody JSONObject params) {
@@ -123,5 +120,4 @@ public class NodeController {
         return new Result(ResultMessage.OK);
 //        return nodeService.add(params);
     }
-
 }
