@@ -55,6 +55,52 @@ public class NodeController {
     }
 
     @CrossOrigin
+    @PostMapping("/node/edit/init/relate")
+    public Object editInitRelate(@RequestBody JSONObject params){
+        return nodeService.initRelate(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/node/edit/relate/giant/save")
+    public Object editRelateGiantSave(@RequestBody JSONObject params){
+        return nodeService.addRelateGiant(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/node/edit/relate/giant/delete")
+    public Object editRelateGiantDelete(@RequestBody JSONObject params){
+        return nodeService.deleteRelateGiant(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/node/edit/relate/nation/save")
+    public Object editRelateNationSave(@RequestBody JSONObject params){
+        return nodeService.addRelateNation(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/node/edit/relate/nation/delete")
+    public Object editRelateNationDelete(@RequestBody JSONObject params){
+        return nodeService.deleteRelateNation(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/node/edit/relate/reference/save")
+    public Object editRelateReferenceSave(@RequestBody JSONObject params){
+        return nodeService.addRelateReference(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/node/edit/relate/reference/delete")
+    public Object editRelateReferenceDelete(@RequestBody JSONObject params){
+        return nodeService.deleteRelateReference(params);
+    }
+
+
+
+
+
+    @CrossOrigin
     @GetMapping("/node/test")
     public Object test(@RequestBody JSONObject params) {
         System.out.println("!11");

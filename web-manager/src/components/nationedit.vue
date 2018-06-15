@@ -150,6 +150,23 @@
                           </el-tag>
                       </template>
                 </el-row>
+                <el-row>
+                  <inputboxperiod @selectPeriod = "selectPeriod"></inputboxperiod>
+                </el-row>
+                <el-row>
+                   <template v-if="relate.periods == null || relate.periods.length == 0">
+                            <p class="paragraph-content">无数据</p>
+                      </template>
+                      <template v-if="relate.periods != null && relate.periods.length > 0">
+                          <el-tag type="warning" v-for="item in relate.periods" class="tag-margin"
+                            :key="item.id"
+                            closable
+                            :disable-transitions="false"
+                            @close="closePeriodTag(item)">
+                            {{item.title}}
+                          </el-tag>
+                      </template>
+                </el-row>
             </el-card>
          </el-tab-pane>
          <el-tab-pane label="贴条" :name="tabs.tag"> 
@@ -187,6 +204,7 @@ import inputboxgiant from "./plugin/inputboxgiant.vue";
 import inputboxinstitution from "./plugin/inputboxinstitution.vue";
 import inputboxtag from "./plugin/inputboxtag.vue";
 import inputboxreference from "./plugin/inputboxreference.vue";
+import inputboxperiod from "./plugin/inputboxperiod.vue";
 
 export default {
   name: "nationedit",
@@ -196,11 +214,11 @@ export default {
       activeTab: "1",
       tabs: {
         basic: "1",
-        relate : "2",
+        relate: "2",
         tag: "3"
       },
       form: {
-        loading:false,
+        loading: false,
         title: "",
         ddate: "",
         year: null,
@@ -216,14 +234,15 @@ export default {
         AD: 1,
         eAD: 1
       },
-      tag :{
-        loading :false,
-        tags:[]
+      tag: {
+        loading: false,
+        tags: []
       },
-      relate:{
-        loading : false,
-        giants:[],
-        institutions:[]
+      relate: {
+        loading: false,
+        giants: [],
+        institutions: [],
+        periods: []
       },
       switchc: {
         activev: 1,
@@ -236,15 +255,16 @@ export default {
     inputboxgiant,
     inputboxinstitution,
     inputboxtag,
-    inputboxreference
+    inputboxreference,
+    inputboxperiod
   },
   methods: {
     init() {
       if (this.activeTab == "1") {
         this.initTabBasic();
-      } else if(this.activeTab == "2"){
+      } else if (this.activeTab == "2") {
         this.initTabRelate();
-      }else{
+      } else {
         this.initTagTab();
       }
     },
@@ -360,6 +380,7 @@ export default {
             _this.relate.giants = data.giants;
             _this.relate.institutions = data.institutions;
             _this.relate.references = data.references;
+            _this.relate.periods = data.periods;
 
             // console.log(nation.giant);
 
@@ -619,7 +640,90 @@ export default {
           });
         });
     },
-    // 
+    selectPeriod(item) {
+      var _this = this;
+      //提交
+      var content = "确认添加时代： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_nation_edit_relate_period_save, {
+              nid: _this.id,
+              period: item
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "添加成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    closePeriodTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认删除时代： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_nation_edit_relate_period_delete, {
+              id: item.id
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    //
 
     //贴条
     initTagTab() {

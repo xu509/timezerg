@@ -67,6 +67,15 @@ public class NationService {
     @Autowired
     NationReferenceMapper nationReferenceMapper;
 
+    @Autowired
+    PeriodService periodService;
+
+    @Autowired
+    NationPeriodService nationPeriodService;
+
+    @Autowired
+    NationPeriodMapper nationPeriodMapper;
+
     @Transactional
     public Object add(JSONObject params) {
         Nation nation = new Nation();
@@ -256,6 +265,8 @@ public class NationService {
         //依据
         r.put("references",nationReferenceMapper.selectByNid(id));
 
+        //时期
+        r.put("periods",nationPeriodMapper.selectByNid(id));
 
         return new Result(ResultMessage.OK,r);
     }
@@ -529,5 +540,34 @@ public class NationService {
     @Transactional
     public Object deleteRelateReference(JSONObject params){
         return nationReferenceService.delete(params.getString("id"));
+    }
+
+    @Transactional
+    public Object addRelatePeriod(JSONObject params){
+        JSONObject periodObj = params.getJSONObject("period");
+        String nid = params.getString("nid");
+        String pid = periodObj.getString("pid");
+
+        Boolean isNew = periodObj.getBoolean("isnew");
+        if (isNew != null && isNew){
+            String title = periodObj.getString("title");
+            Period r = new Period();
+            pid = Utils.generateId();
+            r.setId(pid);
+            r.setTitle(title);
+            periodService.add(r);
+        }
+
+        NationPeriod nationPeriod = new NationPeriod();
+        nationPeriod.setId(Utils.generateId());
+        nationPeriod.setNid(nid);
+        nationPeriod.setPid(pid);
+
+        return nationPeriodService.add(nationPeriod);
+    }
+
+    @Transactional
+    public Object deleteRelatePeriod(JSONObject params){
+        return nationPeriodService.delete(params.getString("id"));
     }
 }

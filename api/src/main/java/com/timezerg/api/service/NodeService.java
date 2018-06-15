@@ -30,9 +30,6 @@ public class NodeService {
     NodeMapper nodeMapper;
 
     @Autowired
-    NodeNationMapper nodeNationMapper;
-
-    @Autowired
     NodeCivilizationMapper nodeCivilizationMapper;
 
     @Autowired
@@ -42,10 +39,34 @@ public class NodeService {
     CivilizationMapper civilizationMapper;
 
     @Autowired
-    NodeGiantMapper nodeGiantMapper;
+    GiantMapper giantMapper;
 
     @Autowired
-    GiantMapper giantMapper;
+    ReferenceService referenceService;
+
+    @Autowired
+    NodeReferenceMapper nodeReferenceMapper;
+
+    @Autowired
+    NodeReferenceService nodeReferenceService;
+
+    @Autowired
+    NationService nationService;
+
+    @Autowired
+    NodeNationMapper nodeNationMapper;
+
+    @Autowired
+    NodeNationService nodeNationService;
+
+    @Autowired
+    GiantService giantService;
+
+    @Autowired
+    NodeGiantService nodeGiantService;
+
+    @Autowired
+    NodeGiantMapper nodeGiantMapper;
 
     @Transactional
     public Object add(Node node){
@@ -65,6 +86,33 @@ public class NodeService {
 
         return nodeMapper.add(node);
     }
+
+    @Transactional
+    public Object update(Node node){
+        if (node == null)
+            return new Result(ResultMessage.PARAM_ERROR,getClass());
+
+        if (StringUtils.isBlank(node.getTitle())){
+            return new Result(ResultMessage.PARAM_ERROR,getClass());
+        }
+
+        Node old = nodeMapper.selectById(node.getId());
+
+        if (old == null){
+            return new Result(ResultMessage.PARAM_ERROR);
+        }
+
+        if (!old.getTitle().equals(node.getTitle())){
+            if (nodeMapper.selectByTitle(node.getTitle()) != null){
+                return new Result(ResultMessage.DUPLICATION_ERROR,getClass());
+            }
+        }
+
+        nodeMapper.update(node);
+
+        return new Result(ResultMessage.OK,node);
+    }
+
 
 
 
@@ -140,27 +188,27 @@ public class NodeService {
         }
         result.put("AD",node.getAD());
 
-        //绑定的相关国家
-        List<HashMap> nationMaps = nodeNationMapper.selectByNodeId(id);
-        for (HashMap nationMap : nationMaps){
-            nationMap.put("id",nationMap.get("nationid"));
-        }
-        result.put("nations",JSON.toJSON(nationMaps));
-
-        //绑定的文明
-        List<HashMap> civilizationMaps = nodeCivilizationMapper.selectByNodeId(id);
-        for (HashMap civilizationMap : civilizationMaps){
-            civilizationMap.put("id",civilizationMap.get("cid"));
-        }
-        result.put("civilizations",JSON.toJSON(civilizationMaps));
-
-
-        //绑定的人物
-        List<HashMap> giantMaps = nodeGiantMapper.selectByNodeId(id);
-        for (HashMap giantMap : giantMaps){
-            giantMap.put("id",giantMap.get("gid"));
-        }
-        result.put("giants",JSON.toJSON(giantMaps));
+//        //绑定的相关国家
+//        List<HashMap> nationMaps = nodeNationMapper.selectByNodeId(id);
+//        for (HashMap nationMap : nationMaps){
+//            nationMap.put("id",nationMap.get("nationid"));
+//        }
+//        result.put("nations",JSON.toJSON(nationMaps));
+//
+//        //绑定的文明
+//        List<HashMap> civilizationMaps = nodeCivilizationMapper.selectByNodeId(id);
+//        for (HashMap civilizationMap : civilizationMaps){
+//            civilizationMap.put("id",civilizationMap.get("cid"));
+//        }
+//        result.put("civilizations",JSON.toJSON(civilizationMaps));
+//
+//
+//        //绑定的人物
+//        List<HashMap> giantMaps = nodeGiantMapper.selectByNodeId(id);
+//        for (HashMap giantMap : giantMaps){
+//            giantMap.put("id",giantMap.get("gid"));
+//        }
+//        result.put("giants",JSON.toJSON(giantMaps));
 
         return new Result(ResultMessage.OK,result);
     }
@@ -239,22 +287,8 @@ public class NodeService {
         calendar.set(Calendar.MINUTE,minute == null? 1:minute);
         calendar.set(Calendar.SECOND,second == null? 1:second);
         node.setCdate(calendar.getTime());
-        nodeMapper.update(node);
 
-        // 修改 node 的相关国家
-        JSONArray nations = params.getJSONArray("nations");
-        bindNation(nations,id);
-
-        // 修改 node 的相关文明
-        JSONArray civilizations = params.getJSONArray("civilizations");
-        bindCivilization(civilizations,id);
-
-        //修改 node 当相关人物
-        JSONArray giants = params.getJSONArray("giants");
-        bindGiant(giants,id);
-
-
-        return new Result(ResultMessage.OK,node);
+        return update(node);
     }
 
     @Transactional
@@ -351,6 +385,110 @@ public class NodeService {
             nodeGiantMapper.add(nodeGiant);
 
         }
+    }
+
+    /*edit init*/
+    public Object initRelate(JSONObject params){
+        String id = params.getString("id");
+        Node node = nodeMapper.selectById(id);
+
+        if (node == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        JSONObject result = (JSONObject) JSONObject.toJSON(node);
+
+        result.put("nations",nodeNationMapper.selectByNodeId(id));
+        result.put("giants",nodeGiantMapper.selectByNodeId(id));
+        result.put("references",nodeReferenceMapper.selectByNid(id));
+        return new Result(ResultMessage.OK,result);
+    }
+
+    @Transactional
+    public Object addRelateReference(JSONObject params){
+        JSONObject referenceObj = params.getJSONObject("reference");
+        String nid = params.getString("nid");
+        String rid = referenceObj.getString("rid");
+
+        Boolean isNew = referenceObj.getBoolean("isnew");
+        if (isNew != null && isNew){
+            String title = referenceObj.getString("title");
+            Reference r = new Reference();
+            rid = Utils.generateId();
+            r.setId(rid);
+            r.setTitle(title);
+            referenceService.add(r);
+        }
+
+        NodeReference nodeReference = new NodeReference();
+        nodeReference.setId(Utils.generateId());
+        nodeReference.setNid(nid);
+        nodeReference.setRid(rid);
+
+        return nodeReferenceService.add(nodeReference);
+    }
+
+    @Transactional
+    public Object deleteRelateReference(JSONObject params){
+        return nodeReferenceService.delete(params.getString("id"));
+    }
+
+
+    @Transactional
+    public Object addRelateNation(JSONObject params){
+        JSONObject nationObj = params.getJSONObject("nation");
+        String nid = params.getString("nid");
+        String nationdId = nationObj.getString("nid");
+
+        Boolean isNew = nationObj.getBoolean("isnew");
+        if (isNew != null && isNew){
+            String title = nationObj.getString("title");
+            Nation n = new Nation();
+            nationdId = Utils.generateId();
+            n.setId(nationdId);
+            n.setTitle(title);
+            nationService.add(n);
+        }
+
+        NodeNation nodeNation = new NodeNation();
+        nodeNation.setId(Utils.generateId());
+        nodeNation.setNationid(nationdId);
+        nodeNation.setNationid(nid);
+
+        return nodeNationService.add(nodeNation);
+    }
+
+    @Transactional
+    public Object deleteRelateNation(JSONObject params){
+        return nodeNationService.delete(params.getString("id"));
+    }
+
+    @Transactional
+    public Object addRelateGiant(JSONObject params){
+        JSONObject giantObj = params.getJSONObject("giant");
+        String nid = params.getString("nid");
+        String giantdId = giantObj.getString("gid");
+
+        Boolean isNew = giantObj.getBoolean("isnew");
+        if (isNew != null && isNew){
+            String name = giantObj.getString("name");
+            Giant g = new Giant();
+            giantdId = Utils.generateId();
+            g.setId(giantdId);
+            g.setName(name);
+            giantService.add(g);
+        }
+
+        NodeGiant nodeGiant = new NodeGiant();
+        nodeGiant.setId(Utils.generateId());
+        nodeGiant.setGid(giantdId);
+        nodeGiant.setNid(nid);
+
+        return nodeGiantService.add(nodeGiant);
+    }
+
+    @Transactional
+    public Object deleteRelateGiant(JSONObject params){
+        return nodeGiantService.delete(params.getString("id"));
     }
 
 }
