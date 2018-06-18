@@ -27,6 +27,7 @@ import institutionAdd from '@/components/institutionAdd'
 import reference from '@/components/reference'
 import referenceAdd from '@/components/referenceadd'
 import referenceEdit from '@/components/referenceEdit'
+import yearbook from '@/components/yearbook'
 
 Vue.use(Router)
 
@@ -139,5 +140,9 @@ export default new Router({
     path: '/reference/edit/:id',
     name: 'referenceEdit',
     component: referenceEdit
-  }, ]
+  },{
+    path: '/yearbook',
+    name: 'yearbook',
+    component : yearbook
+  } ]
 })

@@ -1,16 +1,17 @@
 {
-  "pages":[
+  "pages": [
+    "pages/test/test",
     "pages/index/index",
     "pages/node/node",
     "pages/civilization/civilization",
     "pages/logs/logs"
   ],
-  "window":{
-    "backgroundTextStyle":"light",
+  "window": {
+    "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "时间虫子",
-    "navigationBarTextStyle":"black",
-    "backgroundColor":"F0F0F0"
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "F0F0F0"
   },
   "networkTimeout": {
     "request": 10000,
