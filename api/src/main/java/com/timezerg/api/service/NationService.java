@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.timezerg.api.mapper.*;
 import com.timezerg.api.model.*;
+import com.timezerg.api.util.ControllerUtil;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
@@ -337,29 +338,8 @@ public class NationService {
         nation.setDdate(params.getString("ddate"));
         nation.setPid(params.getString("pid"));
 
-        Integer year = params.getInteger("year");
-        Integer month = params.getInteger("month");
-        Integer day = params.getInteger("day");
-        Calendar calendar = Calendar.getInstance();
-        calendar.clear();
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month == null ? 0 : month);
-        calendar.set(Calendar.DAY_OF_MONTH, day == null ? 1 : day);
-        nation.setCdate(calendar.getTime());
-
-        Integer eyear = params.getInteger("eyear");
-        Integer emonth = params.getInteger("emonth");
-        Integer eday = params.getInteger("eday");
-
-        if (eyear == null)
-            nation.setEdate(null);
-        else {
-            calendar.clear();
-            calendar.set(Calendar.YEAR, eyear);
-            calendar.set(Calendar.MONTH, emonth == null ? 0 : emonth);
-            calendar.set(Calendar.DAY_OF_MONTH, eday == null ? 1 : eday);
-            nation.setEdate(calendar.getTime());
-        }
+        nation.setCdate(ControllerUtil.getDate(params.getInteger("year"),params.getInteger("month"),params.getInteger("day")));
+        nation.setEdate(ControllerUtil.getDate(params.getInteger("eyear"),params.getInteger("emonth"),params.getInteger("eday")));
 
         nation.setAD(params.getInteger("AD"));
         nation.seteAD(params.getInteger("eAD"));

@@ -108,4 +108,22 @@ public class GiantController {
     public Object editDeleteTag(@RequestBody JSONObject params){
         return giantService.editDeleteTag(params);
     }
+
+    @CrossOrigin
+    @PostMapping("/giant/edit/init/relation")
+    public Object editRelationTag(@RequestBody JSONObject params){
+        return giantService.editRelationTag(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/giant/relation/save")
+    public Object saveGiantRelation(@RequestBody JSONObject params){
+        return giantService.saveGiantRelation(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/giant/relation/delete")
+    public Object deleteGiantRelation(@RequestBody JSONObject params){
+        return giantService.deleteGiantRelation(params);
+    }
 }

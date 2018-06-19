@@ -56,6 +56,7 @@
                   <el-menu-item index="6-1" route = "/continent/add">大洲</el-menu-item>
                   <el-menu-item index="6-2" route = "/institution">制度</el-menu-item>
                   <el-menu-item index="6-3" route = "/reference">依据</el-menu-item>
+                  <el-menu-item index="6-4" route = "/relation">关系</el-menu-item>
                 </el-submenu>
               </el-menu>
 
@@ -113,7 +114,8 @@
                   <el-menu-item index="6-1" route = "/continent/add">大洲</el-menu-item>
                   <el-menu-item index="6-2" route = "/institution">制度</el-menu-item>
                   <el-menu-item index="6-3" route = "/reference">依据</el-menu-item>
-                  <el-menu-item index="6-4" route = "/yearbook">yearbook</el-menu-item>
+                  <el-menu-item index="6-4" route = "/relation">关系</el-menu-item>
+                  <!-- <el-menu-item index="6-4" route = "/yearbook">yearbook</el-menu-item> -->
                 </el-submenu>
               </el-menu>
             </el-col>

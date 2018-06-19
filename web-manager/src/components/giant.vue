@@ -14,11 +14,23 @@
     </el-row>
 
     <el-row>
-       <el-col :span="8">
+       <el-col :span="24">
             <inputboxgiant @selectGiant = "selectGiant"></inputboxgiant>
+            <inputboxperiod @selectPeriod = "selectPeriod"></inputboxperiod>
+            <inputboxnation @selectNation = "selectNation"></inputboxnation>
             <el-tag type="success" v-if="name != null" closable  @close="closeSearchName()">
-                  {{sname}}
+                {{sname}}
             </el-tag>
+            <template v-for="(item,index) in periods">
+                <el-tag type="success" closable  @close="closeSearchPeriod(index)" :key = "item.id">
+                      {{item.title}}
+                </el-tag>
+            </template>
+            <template v-for="(item,index) in nations">
+                <el-tag type="success" closable  @close="closeSearchNation(index)" :key = "item.id">
+                      {{item.title}}
+                </el-tag>
+            </template>
             <el-button size="small" type="primary" round v-if="showadd" @click="addGiant">增加</el-button>
        </el-col>
     </el-row>
@@ -75,6 +87,8 @@
 <script>
 import axios from "axios";
 import inputboxgiant from "./plugin/inputboxgiant.vue";
+import inputboxperiod from "./plugin/inputboxperiod.vue";
+import inputboxnation from "./plugin/inputboxnation.vue";
 
 export default {
   name: "giant",
@@ -83,6 +97,8 @@ export default {
       loading_table: true,
       sname: null,
       name: null,
+      periods: [],
+      nations: [],
       showadd: false,
       datas: [],
       page_size: 10, //page大小
@@ -91,7 +107,9 @@ export default {
     };
   },
   components: {
-    inputboxgiant
+    inputboxgiant,
+    inputboxperiod,
+    inputboxnation
   },
   methods: {
     init() {
@@ -108,6 +126,8 @@ export default {
       axios
         .post(_this.GLOBAL.url_giant_list, {
           name: _this.name,
+          periods: _this.periods,
+          nations: _this.nations,
           start: start,
           size: _this.page_size
         })
@@ -174,6 +194,22 @@ export default {
           _this.$message.error(response.data.msg);
           _this.init();
         });
+    },
+    selectPeriod(item) {
+      var _this = this;
+      _this.periods.push(item);
+    },
+    closeSearchPeriod(index) {
+      var _this = this;
+      _this.periods.splice(index, 1);
+    },
+    selectNation(item) {
+      var _this = this;
+      _this.nations.push(item);
+    },
+    closeSearchNation(index) {
+      var _this = this;
+      _this.nations.splice(index, 1);
     }
   },
   watch: {
@@ -184,6 +220,18 @@ export default {
       this.initTable();
     },
     name: function(name) {
+      // this.periods = [];
+      // this.nations = [];
+      this.initTable();
+    },
+    periods: function(periods) {
+      // this.name = null;
+      // this.nations = [];
+      this.initTable();
+    },
+    nations: function(nations) {
+      // this.name = null;
+      // this.periods = [];
       this.initTable();
     }
   },

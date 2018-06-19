@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.timezerg.api.mapper.*;
 import com.timezerg.api.model.*;
+import com.timezerg.api.util.ControllerUtil;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -67,6 +70,18 @@ public class GiantService {
 
     @Autowired
     NodeService nodeService;
+
+    @Autowired
+    RelationMapper relationMapper;
+
+    @Autowired
+    RelationService relationService;
+
+    @Autowired
+    GiantRelationMapper giantRelationMapper;
+
+    @Autowired
+    GiantRelationService giantRelationService;
 
 
 
@@ -156,7 +171,41 @@ public class GiantService {
 
     public Object getList(JSONObject params) {
 //        Object[] p = {params.getString("name"),params.getInteger("start"), params.getInteger("size")};
-        List<HashMap> list = giantMapper.getList(params.getString("name"),params.getInteger("start"),params.getInteger("size"));
+
+        List<HashMap> list;
+        Long total;
+
+        JSONArray periods = params.getJSONArray("periods");
+        JSONArray nations = params.getJSONArray("nations");
+        if (periods != null && periods.size() > 0){
+            System.out.println("search by period");
+
+            Object[] pidsAry = new Object[periods.size()];
+            for (int i = 0;i<periods.size();i++){
+                JSONObject o = periods.getJSONObject(i);
+                pidsAry[i] = o.getString("pid");
+            }
+
+            list = giantMapper.getListByPeriod(pidsAry,params.getInteger("start"),params.getInteger("size"));
+            total = giantMapper.getListTotalByPeriod(pidsAry);
+        }else if (nations != null && nations.size() > 0){
+            System.out.println("search by nation");
+
+            Object[] nidsAry = new Object[nations.size()];
+            for (int i = 0;i<nations.size();i++){
+                JSONObject o = nations.getJSONObject(i);
+                nidsAry[i] = o.getString("nid");
+            }
+
+            list = giantMapper.getListByNation(nidsAry,params.getInteger("start"),params.getInteger("size"));
+            total = giantMapper.getListTotalByNation(nidsAry);
+
+        }else {
+            System.out.println("search by name");
+
+            list = giantMapper.getList(params.getString("name"),params.getInteger("start"),params.getInteger("size"));
+            total = giantMapper.getListTotal(params.getString("name"));
+        }
 
         for (HashMap row : list){
             String gid = (String) row.get("id");
@@ -173,7 +222,7 @@ public class GiantService {
 
         JSONObject r = new JSONObject();
         r.put("data", list);
-        r.put("total", giantMapper.getListTotal(params.getString("name")));
+        r.put("total", total);
         return new Result(ResultMessage.OK, r);
     }
 
@@ -189,6 +238,34 @@ public class GiantService {
 
         if (pgiant != null){
             obj.put("pgiant",pgiant);
+        }
+
+        //年月日
+        Date cdate = giant.getCdate();
+        int year =  1,month = 0,day = 0;
+        if (cdate != null){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(cdate);
+            year = calendar.get(Calendar.YEAR);
+            month = calendar.get(Calendar.MONTH);
+            day = calendar.get(Calendar.DAY_OF_MONTH);
+        }
+        obj.put("year", year);
+        obj.put("month", month);
+        obj.put("day", day);
+
+
+        Date edate = giant.getEdate();
+        int eyear,emonth,eday;
+        if (edate != null){
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(edate);
+            eyear = calendar.get(Calendar.YEAR);
+            emonth = calendar.get(Calendar.MONTH);
+            eday = calendar.get(Calendar.DAY_OF_MONTH);
+            obj.put("eyear", eyear);
+            obj.put("emonth", emonth);
+            obj.put("eday", eday);
         }
 
         return new Result(ResultMessage.OK,obj);
@@ -211,6 +288,7 @@ public class GiantService {
 
     @Transactional
     public Object editSave(JSONObject params){
+        System.out.println(params.toJSONString());
         String id = params.getString("id");
         Giant giant = giantMapper.selectById(id);
         if (giant == null)
@@ -226,21 +304,29 @@ public class GiantService {
         giant.setName(params.getString("name"));
 
         JSONObject pgiantObj = params.getJSONObject("pgiant");
-        Boolean isnew = pgiantObj.getBoolean("isnew");
-        String pid = pgiantObj.getString("gid");
-        if (isnew != null && isnew){
-            Giant pGiant = new Giant();
-            pid = Utils.generateId();
-            pGiant.setId(pid);
-            pGiant.setName(pgiantObj.getString("name"));
-            giantMapper.add(pGiant);
-        }
-        if (!StringUtils.isBlank(pid)){
-            while (!StringUtils.isBlank(giantMapper.selectById(pid).getPid())){
-                pid = giantMapper.selectById(pid).getPid();
+        if (pgiantObj != null){
+            Boolean isnew = pgiantObj.getBoolean("isnew");
+            String pid = pgiantObj.getString("gid");
+            if (isnew != null && isnew){
+                Giant pGiant = new Giant();
+                pid = Utils.generateId();
+                pGiant.setId(pid);
+                pGiant.setName(pgiantObj.getString("name"));
+                giantMapper.add(pGiant);
             }
-            giant.setPid(pid);
+            if (!StringUtils.isBlank(pid)){
+                while (!StringUtils.isBlank(giantMapper.selectById(pid).getPid())){
+                    pid = giantMapper.selectById(pid).getPid();
+                }
+                giant.setPid(pid);
+            }
         }
+
+        giant.setCdate(ControllerUtil.getDate(params.getInteger("year"),params.getInteger("month"),params.getInteger("day")));
+        giant.setEdate(ControllerUtil.getDate(params.getInteger("eyear"),params.getInteger("emonth"),params.getInteger("eday")));
+        giant.setAD(params.getInteger("AD"));
+        giant.seteAD(params.getInteger("eAD"));
+
         giantMapper.update(giant);
 
         return new Result(ResultMessage.OK,giant);
@@ -484,5 +570,63 @@ public class GiantService {
                 giantNationMapper.add(giantNation);
             }
         }
+    }
+
+    /**
+     *  初始化关系
+     */
+    @Transactional
+    public Object editRelationTag(JSONObject params){
+        String id = params.getString("id");
+        Giant giant = giantMapper.selectById(id);
+        if (giant == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        JSONObject obj = (JSONObject) JSON.toJSON(giant);
+        obj.put("giantrelations",giantRelationMapper.selectByFId(id));
+        obj.put("relations",relationMapper.selectAll());
+        return new Result(ResultMessage.OK,obj);
+    }
+
+    @Transactional
+    public Object saveGiantRelation(JSONObject params){
+        System.out.println(params.toJSONString());
+
+        String fid = params.getString("fid");
+        JSONObject tgiant = params.getJSONObject("tgiant");
+        String relation = params.getString("relation");
+        String rid = relation;
+
+        if (relation.length() != 18){
+            //增加relation
+            Relation r = new Relation();
+            rid = Utils.generateId();
+            r.setId(rid);
+            r.setTitle(relation);
+            relationService.add(r);
+        }
+
+        Boolean b = tgiant.getBoolean("isnew");
+        String tid = tgiant.getString("gid");
+        if (b != null && b){
+            //增加giant
+            Giant tg = new Giant();
+            tid = Utils.generateId();
+            tg.setId(tid);
+            tg.setName(tgiant.getString("name"));
+            add(tg);
+        }
+
+        GiantRelation giantRelation = new GiantRelation();
+        giantRelation.setId(Utils.generateId());
+        giantRelation.setFid(fid);
+        giantRelation.setTid(tid);
+        giantRelation.setRid(rid);
+        return giantRelationService.add(giantRelation);
+    }
+
+    @Transactional
+    public Object deleteGiantRelation(JSONObject params){
+        return giantRelationService.deleteById(params.getString("id"));
     }
 }

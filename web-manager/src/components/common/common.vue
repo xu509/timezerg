@@ -1,8 +1,9 @@
 <script>
 const table_page_node = 1;
 const table_size_node = 10;
-// const domain = "http://127.0.0.1:8081";
-const domain = "http://api.timezerg.com";
+const domain = "http://127.0.0.1:8081";
+// const domain = "http://api.timezerg.com";
+const domain_yearbook = "https://yearbook.timezerg.com";
 const doamin_image = "http://xu-1253743633.file.myqcloud.com";
 
 const url_node_list = domain + "/node/list";
@@ -87,6 +88,7 @@ const url_giant_add = domain + "/giant/save";
 const url_giant_edit_init = domain + "/giant/edit/init";
 const url_giant_edit_init_relate = domain + "/giant/edit/init/relate";
 const url_giant_edit_init_tag = domain + "/giant/edit/init/tag";
+const url_giant_edit_init_relation = domain + "/giant/edit/init/relation";
 const url_giant_edit_save = domain + "/giant/edit/save";
 const url_giant_edit_relate_nation_save =
   domain + "/giant/edit/relate/nation/save";
@@ -101,6 +103,8 @@ const url_giant_edit_relate_node_delete =
   domain + "/giant/edit/relate/node/delete";
 const url_giant_edit_tag_save = domain + "/giant/edit/tag/save";
 const url_giant_edit_tag_delete = domain + "/giant/edit/tag/delete";
+const url_giant_relation_save = domain + "/giant/relation/save";
+const url_giant_relation_delete = domain + "/giant/relation/delete";
 const url_institution_list = domain + "/institution/list";
 const url_institution_add = domain + "/institution/save";
 const url_reference_list = domain + "/reference/list";
@@ -128,6 +132,10 @@ const url_reference_edit_init_tag = domain + "/reference/edit/init/tag";
 const url_reference_tag_save = domain + "/reference/edit/tag/save";
 const url_reference_tag_delete = domain + "/reference/edit/tag/delete";
 
+const url_relation_list = domain + "/relation/list";
+const url_relation_edit_init = domain + "/relation/edit/init";
+const url_relation_edit_save = domain + "/relation/edit/save";
+
 const url_search_nation = domain + "/nation/search";
 const url_search_giant = domain + "/giant/search";
 const url_search_civilization = domain + "/civilization/search";
@@ -137,6 +145,8 @@ const url_search_period = domain + "/period/search";
 const url_search_tag = domain + "/tag/search";
 const url_search_reference = domain + "/reference/search";
 const url_search_node = domain + "/node/search";
+
+//yearbook
 
 export default {
   table_page_node, //
@@ -208,6 +218,7 @@ export default {
   url_giant_edit_init,
   url_giant_edit_init_relate,
   url_giant_edit_init_tag,
+  url_giant_edit_init_relation,
   url_giant_edit_save,
   url_giant_edit_relate_nation_save,
   url_giant_edit_relate_nation_delete,
@@ -217,6 +228,8 @@ export default {
   url_giant_edit_relate_node_delete,
   url_giant_edit_tag_save,
   url_giant_edit_tag_delete,
+  url_giant_relation_save,
+  url_giant_relation_delete,
   url_institution_list,
   url_institution_add,
   url_search_institution,
@@ -238,7 +251,10 @@ export default {
   url_reference_tag_save,
   url_reference_tag_delete,
   url_search_reference,
-  url_search_node
+  url_search_node,
+  url_relation_list,
+  url_relation_edit_init,
+  url_relation_edit_save
 };
 </script>
 
