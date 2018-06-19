@@ -133,11 +133,11 @@
                     <inputboxtag @selectTag = "selectTag"></inputboxtag>
                 </el-row>
                 <el-row>
-                  <template v-if="relate.tags == null || relate.tags.length == 0">
+                  <template v-if="tag.tags == null || tag.tags.length == 0">
                       <p class="paragraph-content">无数据</p>
                   </template>
-                  <template v-if="relate.tags != null && relate.tags.length > 0">
-                      <el-tag type="warning" v-for="item in relate.tags" class="tag-margin"
+                  <template v-if="tag.tags != null && tag.tags.length > 0">
+                      <el-tag type="warning" v-for="item in tag.tags" class="tag-margin"
                         :key="item.id"
                         closable
                         :disable-transitions="false"
@@ -608,8 +608,8 @@ export default {
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_node_tag_save, {
-              node: _this.id,
+            .post(_this.GLOBAL.url_node_edit_tag_save, {
+              nid: _this.id,
               tag: item
             })
             .then(function(response) {
@@ -651,7 +651,7 @@ export default {
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_node_tag_delete, {
+            .post(_this.GLOBAL.url_node_edit_tag_delete, {
               id: item.id
             })
             .then(function(response) {

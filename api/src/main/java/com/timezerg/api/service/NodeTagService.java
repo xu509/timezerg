@@ -28,15 +28,15 @@ public class NodeTagService {
 
     public Object add(NodeTag nodeTag){
         if (nodeTag == null){
-            return new Result(ResultMessage.PARAM_ERROR,this.getClass());
+            return new Result(ResultMessage.PARAM_ERROR,"nodeTag null");
         }
 
         if (tagMapper.selectById(nodeTag.getTid()) == null){
-            return new Result(ResultMessage.PARAM_ERROR,this.getClass());
+            return new Result(ResultMessage.PARAM_ERROR,"nodeTag tid");
         }
 
         if (nodeMapper.selectById(nodeTag.getNid()) == null){
-            return new Result(ResultMessage.PARAM_ERROR,this.getClass());
+            return new Result(ResultMessage.PARAM_ERROR,"nodeTag nid");
         }
 
         if (nodeTagMapper.selectByNidAndTid(nodeTag) != null){
