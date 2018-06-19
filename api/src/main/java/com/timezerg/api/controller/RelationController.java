@@ -29,10 +29,14 @@ public class RelationController {
 
     @CrossOrigin
     @PostMapping("/relation/edit/init")
-    public Object search(@RequestBody JSONObject params){
-        return new Result(ResultMessage.OK);
-//        return institutionService.selectByTitle(params);
+    public Object editInit(@RequestBody JSONObject params){
+        return relationService.editInit(params);
     }
 
+    @CrossOrigin
+    @PostMapping("/relation/edit/save")
+    public Object editSave(@RequestBody JSONObject params){
+        return relationService.editSave(params);
+    }
 
 }

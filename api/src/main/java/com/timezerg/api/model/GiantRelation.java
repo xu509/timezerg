@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 /**
  * Created by xnx on 2018/5/4.
+ *
+ * 此处关系为： fid 是 tid 都 rid（关系）
  */
 public class GiantRelation implements Serializable {
 

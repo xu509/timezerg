@@ -165,6 +165,8 @@ public class GiantService {
         r.put("same",same);
         r.put("data", jsonArray);
 
+//        System.out.println(r.toJSONString());
+
         return new Result(ResultMessage.OK, r);
     }
 
@@ -201,7 +203,6 @@ public class GiantService {
             total = giantMapper.getListTotalByNation(nidsAry);
 
         }else {
-            System.out.println("search by name");
 
             list = giantMapper.getList(params.getString("name"),params.getInteger("start"),params.getInteger("size"));
             total = giantMapper.getListTotal(params.getString("name"));
@@ -616,6 +617,7 @@ public class GiantService {
             tg.setName(tgiant.getString("name"));
             add(tg);
         }
+
 
         GiantRelation giantRelation = new GiantRelation();
         giantRelation.setId(Utils.generateId());

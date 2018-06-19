@@ -179,7 +179,7 @@
                       <el-col :md ="4" :xs="24" :sm="24" >
                         <inputboxgiant @selectGiant = "selectRelationGiant"></inputboxgiant>
                       </el-col>
-                      <el-col :md ="2" :xs="24" :sm="24" >
+                      <el-col :md ="3" :xs="24" :sm="24" >
                         <template v-if="relation.tgiant == null">
                               <p class="paragraph-content">无数据</p>
                         </template>
@@ -213,10 +213,10 @@
                     <template v-for="item in relation.giantrelations">
                       <el-row :key="item.id">
                           <el-col :md ="4" :xs="12" :sm="12" >
-                            <p class="paragraph-content"><i class = "el-icon-delete" @click = "deleteRelation(item)"></i>&nbsp;{{item.name}}</p>
+                            <i class = "el-icon-delete" @click = "deleteRelation(item)"></i>&nbsp;<i class = "el-icon-view" @click = "gorel(item.tid)"></i>&nbsp;<el-tag>{{item.name}}</el-tag>
                           </el-col>
                           <el-col :md ="4" :xs="12" :sm="12" >
-                            <p class="paragraph-content">{{item.title}}</p>
+                            <el-tag type="warning">{{item.title}}</el-tag>
                           </el-col>
                       </el-row> 
                     </template>
@@ -779,7 +779,7 @@ export default {
         .then(function(response) {
           if (response.data.result == 0) {
             var data = response.data.data;
-            _this.name = data.name;
+            _this.form.name = data.name;
             _this.relation.relations = data.relations;
             _this.relation.giantrelations = data.giantrelations;
 
@@ -797,8 +797,17 @@ export default {
         });
     },
     selectRelationGiant(item) {
+      // console.log(item);
+
+      console.log("pid:" + item.pid);
+
+      if(item.pid != null){
+        item.gid = item.pid;
+        item.name = item.sname;
+      }
+      // item.gid = item.pid;
+
       var _this = this;
-      console.log(item);
       _this.relation.tgiant = item;
     },
     closeRelationGiantTag() {
@@ -868,6 +877,13 @@ export default {
             message: "已取消删除"
           });
         });
+    },
+    gorel(id){
+       this.$router.push({
+        path: "/giant/edit/" + id
+      });
+      this.id = id;
+      this.init()
     }
   },
   watch: {

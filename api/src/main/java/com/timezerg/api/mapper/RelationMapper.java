@@ -4,6 +4,7 @@ import com.timezerg.api.model.Relation;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 @Mapper
 public interface RelationMapper {
 
-    @Insert("insert into t_timezerg_relation values (#{id},#{title})")
+    @Insert("insert into t_timezerg_relation values (#{id},#{title},#{tid})")
     int add(Relation relation);
 
     @Select("select * from t_timezerg_relation order by id desc")
@@ -31,5 +32,8 @@ public interface RelationMapper {
 
     @Select("select count(*) from t_timezerg_relation")
     Long getTotal();
+
+    @Update("update t_timezerg_relation set title = #{title},tid = #{tid} where id = #{id}")
+    void update(Relation relation);
 
 }

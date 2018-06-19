@@ -16,7 +16,7 @@ import java.util.List;
 @Mapper
 public interface GiantRelationMapper {
 
-    @Insert("insert into t_timezerg_giant_relation values (#{id},#{fid},#{tid},#{rid})")
+    @Insert("insert into t_timezerg_giant_relation values (#{id},#{fid},#{tid},#{rid},#{detail})")
     int add(GiantRelation giantRelation);
 
     @Select("select gr.*,g.name,r.title from t_timezerg_giant_relation gr left join t_timezerg_giant g on gr.tid = g.id left join t_timezerg_relation r on gr.rid = r.id where gr.fid = #{fid}")
@@ -26,6 +26,13 @@ public interface GiantRelationMapper {
     GiantRelation selectById(String id);
 
     @Delete("delete from t_timezerg_giant_relation where id = #{id}")
-    void  deleteById(String id);
+    void deleteById(String id);
+
+    @Select("select * from t_timezerg_giant_relation where fid = #{fid} and tid = #{tid}")
+    GiantRelation selectByFidAndTid(GiantRelation giantRelation);
+
+    @Select("select * from t_timezerg_giant_relation where fid = #{fid} and tid = #{tid} and rid = #{rid}")
+    GiantRelation selectByFidTidAndRid(GiantRelation giantRelation);
+
 
 }
