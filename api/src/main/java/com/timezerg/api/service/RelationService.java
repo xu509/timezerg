@@ -65,6 +65,7 @@ public class RelationService {
             return new Result(ResultMessage.PARAM_ERROR,this.getClass());
 
         Relation oRelation = relationMapper.selectById(relation.getId());
+
         if (!oRelation.getTitle().equals(relation.getTitle())){
             if (relationMapper.selectByTitle(relation.getTitle()) != null){
                 return new Result(ResultMessage.DUPLICATION_ERROR);
@@ -133,10 +134,8 @@ public class RelationService {
     @Transactional
     public Object editSave(JSONObject params){
         String id = params.getString("id");
-        Relation relation = relationMapper.selectById(id);
-        if (relation == null)
-            return new Result(ResultMessage.PARAM_ERROR);
-
+        Relation relation = new Relation();
+        relation.setId(id);
         relation.setTitle(params.getString("title"));
 
         String tid = params.getString("tid");

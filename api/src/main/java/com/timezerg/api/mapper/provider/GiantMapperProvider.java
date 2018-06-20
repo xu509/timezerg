@@ -62,6 +62,7 @@ public class GiantMapperProvider {
             sql.deleteCharAt(i);
             sql.append(")");
         }
+        sql.append(" and g.pid is null");
         sql.append(" ORDER BY g.cdate ASC ");
         sql.append(" LIMIT #{start},#{limit}");
         return sql.toString();

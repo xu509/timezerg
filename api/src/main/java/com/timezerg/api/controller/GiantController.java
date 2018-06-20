@@ -126,4 +126,11 @@ public class GiantController {
     public Object deleteGiantRelation(@RequestBody JSONObject params){
         return giantService.deleteGiantRelation(params);
     }
+
+    @CrossOrigin
+    @PostMapping("/giant/relation/detail/save")
+    public Object saveGiantRelationDetail(@RequestBody JSONObject params){
+        return giantService.saveGiantRelationDetail(params);
+    }
+
 }

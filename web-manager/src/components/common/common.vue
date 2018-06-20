@@ -23,7 +23,6 @@ const url_node_edit_relate_reference_save =
   domain + "/node/edit/relate/reference/save";
 const url_node_edit_relate_reference_delete =
   domain + "/node/edit/relate/reference/delete";
-
 const url_node_edit_tag_save = domain + "/node/edit/tag/save";
 const url_node_edit_tag_delete = domain + "/node/edit/tag/delete";
 
@@ -105,6 +104,9 @@ const url_giant_edit_tag_save = domain + "/giant/edit/tag/save";
 const url_giant_edit_tag_delete = domain + "/giant/edit/tag/delete";
 const url_giant_relation_save = domain + "/giant/relation/save";
 const url_giant_relation_delete = domain + "/giant/relation/delete";
+
+const url_giant_relation_detail_save = domain + "/giant/relation/detail/save";
+
 const url_institution_list = domain + "/institution/list";
 const url_institution_add = domain + "/institution/save";
 const url_reference_list = domain + "/reference/list";
@@ -230,6 +232,7 @@ export default {
   url_giant_edit_tag_delete,
   url_giant_relation_save,
   url_giant_relation_delete,
+  url_giant_relation_detail_save,
   url_institution_list,
   url_institution_add,
   url_search_institution,

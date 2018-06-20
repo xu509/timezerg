@@ -165,7 +165,7 @@ public class GiantService {
         r.put("same",same);
         r.put("data", jsonArray);
 
-//        System.out.println(r.toJSONString());
+        System.out.println(r.toJSONString());
 
         return new Result(ResultMessage.OK, r);
     }
@@ -180,7 +180,6 @@ public class GiantService {
         JSONArray periods = params.getJSONArray("periods");
         JSONArray nations = params.getJSONArray("nations");
         if (periods != null && periods.size() > 0){
-            System.out.println("search by period");
 
             Object[] pidsAry = new Object[periods.size()];
             for (int i = 0;i<periods.size();i++){
@@ -191,7 +190,6 @@ public class GiantService {
             list = giantMapper.getListByPeriod(pidsAry,params.getInteger("start"),params.getInteger("size"));
             total = giantMapper.getListTotalByPeriod(pidsAry);
         }else if (nations != null && nations.size() > 0){
-            System.out.println("search by nation");
 
             Object[] nidsAry = new Object[nations.size()];
             for (int i = 0;i<nations.size();i++){
@@ -584,7 +582,13 @@ public class GiantService {
             return new Result(ResultMessage.PARAM_ERROR);
 
         JSONObject obj = (JSONObject) JSON.toJSON(giant);
-        obj.put("giantrelations",giantRelationMapper.selectByFId(id));
+
+        List<HashMap> giantRelations = giantRelationMapper.selectByFId(id);
+        for (HashMap giantRelation : giantRelations){
+            giantRelation.put("edit",false);
+        }
+
+        obj.put("giantrelations",giantRelations);
         obj.put("relations",relationMapper.selectAll());
         return new Result(ResultMessage.OK,obj);
     }
@@ -630,5 +634,13 @@ public class GiantService {
     @Transactional
     public Object deleteGiantRelation(JSONObject params){
         return giantRelationService.deleteById(params.getString("id"));
+    }
+
+    @Transactional
+    public Object saveGiantRelationDetail(JSONObject params){
+        String id = params.getString("id");
+        String detail = params.getString("detail");
+
+        return giantRelationService.updateDetail(id,detail);
     }
 }

@@ -324,8 +324,8 @@ export default {
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_node_relate_nation_save, {
-              node: _this.id,
+            .post(_this.GLOBAL.url_node_edit_relate_nation_save, {
+              nid: _this.id,
               nation: item
             })
             .then(function(response) {
@@ -367,7 +367,7 @@ export default {
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_node_relate_nation_delete, {
+            .post(_this.GLOBAL.url_node_edit_relate_nation_delete, {
               id: item.id
             })
             .then(function(response) {
@@ -392,8 +392,16 @@ export default {
     },
     selectGiant(item) {
       var _this = this;
+
+      var name = item.name;
+      var id;
+      if (item.pid != null) {
+        name = item.sname;
+        item.gid = item.pid;
+      }
+
       //提交
-      var content = "确认添加人物： " + item.name + "？";
+      var content = "确认添加人物： " + name + "？";
 
       this.$confirm(content, "确认", {
         confirmButtonText: "确定",
@@ -403,8 +411,8 @@ export default {
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_node_relate_giant_save, {
-              node: _this.id,
+            .post(_this.GLOBAL.url_node_edit_relate_giant_save, {
+              nid: _this.id,
               giant: item
             })
             .then(function(response) {
@@ -446,7 +454,7 @@ export default {
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_node_relate_giant_delete, {
+            .post(_this.GLOBAL.url_node_edit_relate_giant_delete, {
               id: item.id
             })
             .then(function(response) {
@@ -482,8 +490,8 @@ export default {
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_node_relate_reference_save, {
-              node: _this.id,
+            .post(_this.GLOBAL.url_node_edit_relate_reference_save, {
+              nid: _this.id,
               reference: item
             })
             .then(function(response) {
@@ -525,7 +533,7 @@ export default {
         .then(() => {
           //提交上去
           axios
-            .post(_this.GLOBAL.url_node_relate_reference_delete, {
+            .post(_this.GLOBAL.url_node_edit_relate_reference_delete, {
               id: item.id
             })
             .then(function(response) {

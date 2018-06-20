@@ -2,10 +2,7 @@ package com.timezerg.api.mapper;
 
 import com.timezerg.api.model.Giant;
 import com.timezerg.api.model.GiantRelation;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +21,9 @@ public interface GiantRelationMapper {
 
     @Select("select * from t_timezerg_giant_relation where id = #{id}")
     GiantRelation selectById(String id);
+
+    @Update("update t_timezerg_giant_relation set detail = #{detail} where id = #{id}")
+    void updateDetailById(GiantRelation giantRelation);
 
     @Delete("delete from t_timezerg_giant_relation where id = #{id}")
     void deleteById(String id);

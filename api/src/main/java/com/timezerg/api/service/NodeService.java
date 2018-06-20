@@ -464,7 +464,7 @@ public class NodeService {
         NodeNation nodeNation = new NodeNation();
         nodeNation.setId(Utils.generateId());
         nodeNation.setNationid(nationdId);
-        nodeNation.setNationid(nid);
+        nodeNation.setNodeid(nid);
 
         return nodeNationService.add(nodeNation);
     }

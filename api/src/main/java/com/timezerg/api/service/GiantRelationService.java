@@ -6,6 +6,7 @@ import com.timezerg.api.mapper.GiantMapper;
 import com.timezerg.api.mapper.GiantRelationMapper;
 import com.timezerg.api.mapper.RelationMapper;
 import com.timezerg.api.model.Continent;
+import com.timezerg.api.model.Giant;
 import com.timezerg.api.model.GiantRelation;
 import com.timezerg.api.model.Relation;
 import com.timezerg.api.util.Result;
@@ -101,5 +102,42 @@ public class GiantRelationService {
             giantRelationMapper.deleteById(tGiantRelation.getId());
 
         return new Result(ResultMessage.OK);
+    }
+
+//    public Object update(GiantRelation giantRelation){
+//        if (giantRelation == null)
+//            return new Result(ResultMessage.PARAM_ERROR,getClass(),"参数为空");
+//
+//        Giant fGiant = giantMapper.selectById(giantRelation.getFid());
+//        if (fGiant == null)
+//            return new Result(ResultMessage.PARAM_ERROR,getClass(),"fid错误");
+//
+//        Giant tGiant = giantMapper.selectById(giantRelation.getTid());
+//        if (tGiant == null)
+//            return new Result(ResultMessage.PARAM_ERROR,getClass(),"tid错误");
+//
+//        if (giantRelation.getFid().equals(giantRelation.getTid()))
+//            return new Result(ResultMessage.DUPLICATION_ERROR,getClass(),"不能与自己建立关系");
+//
+//        GiantRelation oGiantRelation = giantRelationMapper.selectById(giantRelation.getId());
+//        if (oGiantRelation == null)
+//            return new Result(ResultMessage.PARAM_ERROR,getClass(),"ID错误");
+//
+//        //
+//
+//        Relation relation = relationMapper.selectById(giantRelation.getRid());
+//
+//    }
+
+
+    public Object updateDetail(String id,String detail){
+        GiantRelation giantRelation = giantRelationMapper.selectById(id);
+        if (giantRelation == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        giantRelation.setDetail(detail);
+
+        giantRelationMapper.updateDetailById(giantRelation);
+        return new Result(ResultMessage.OK,giantRelation);
     }
 }

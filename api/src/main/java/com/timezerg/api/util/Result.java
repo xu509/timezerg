@@ -27,6 +27,12 @@ public class Result {
         this.msg = message.getMsg() + " - " + tClass.getSimpleName();
     }
 
+    public Result(ResultMessage message, Class tClass,String custommsg) {
+        super();
+        this.result = message.getResult();
+        this.msg = tClass.getSimpleName() + " " + message.getMsg() + " - " + custommsg;
+    }
+
     public String getResult() {
         return result;
     }

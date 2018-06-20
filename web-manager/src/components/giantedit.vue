@@ -211,12 +211,17 @@
                     </el-row>
 
                     <template v-for="item in relation.giantrelations">
-                      <el-row :key="item.id">
+                      <el-row :key="item.id" class = "row-item-align-center">
                           <el-col :md ="4" :xs="12" :sm="12" >
                             <i class = "el-icon-delete" @click = "deleteRelation(item)"></i>&nbsp;<i class = "el-icon-view" @click = "gorel(item.tid)"></i>&nbsp;<el-tag>{{item.name}}</el-tag>
                           </el-col>
                           <el-col :md ="4" :xs="12" :sm="12" >
                             <el-tag type="warning">{{item.title}}</el-tag>
+                          </el-col>
+                          <el-col :md ="4" :xs="12" :sm="12" >
+                            <p class="paragraph-content-small" v-if="item.detail != null"><i class = "el-icon-edit" @click = "clickEditIcon(item)"></i>&nbsp;{{item.detail}}</p>
+                            <p class="paragraph-content-small" v-if="item.detail == null"><i class = "el-icon-edit" @click = "clickEditIcon(item)"></i>&nbsp;无备注</p>
+                            <el-input placeholder="请输入备注" v-if="item.edit" v-model="item.editdetail"><el-button type="primary" slot="append" icon="el-icon-check" size="small" v-if="item.editdetail != null" @click="saveRelationDetail(item)"></el-button></el-input>
                           </el-col>
                       </el-row> 
                     </template>
@@ -769,6 +774,7 @@ export default {
         });
     },
 
+    //关系
     initTabRelation() {
       var _this = this;
       _this.relation.loading = true;
@@ -781,6 +787,12 @@ export default {
             var data = response.data.data;
             _this.form.name = data.name;
             _this.relation.relations = data.relations;
+
+            for (var i = 0; i < data.giantrelations.length; i++) {
+              data.giantrelations[i].edit = false;
+              data.giantrelations[i].editdetail = null;
+            }
+
             _this.relation.giantrelations = data.giantrelations;
 
             _this.relation.loading = false;
@@ -797,11 +809,7 @@ export default {
         });
     },
     selectRelationGiant(item) {
-      // console.log(item);
-
-      console.log("pid:" + item.pid);
-
-      if(item.pid != null){
+      if (item.pid != null) {
         item.gid = item.pid;
         item.name = item.sname;
       }
@@ -844,7 +852,6 @@ export default {
     },
     deleteRelation(item) {
       var _this = this;
-      console.log("delete relation" + item.id);
       _this
         .$confirm("确认删除?", "提示", {
           confirmButtonText: "确定",
@@ -878,12 +885,41 @@ export default {
           });
         });
     },
-    gorel(id){
-       this.$router.push({
+    clickEditIcon(item) {
+      item.edit = !item.edit;
+      if (item.edit) {
+        item.editdetail = item.detail;
+      }
+    },
+    saveRelationDetail(item) {
+      var _this = this;
+      axios
+        .post(_this.GLOBAL.url_giant_relation_detail_save, {
+          id: item.id,
+          detail: item.editdetail
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            _this.init();
+            _this.$message({
+              type: "success",
+              message: "更新成功!"
+            });
+          } else {
+            this.$message.error(response.data.data);
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+
+    gorel(id) {
+      this.$router.push({
         path: "/giant/edit/" + id
       });
       this.id = id;
-      this.init()
+      this.init();
     }
   },
   watch: {
@@ -900,7 +936,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.el-icon-delete {
+.el-icon-delete,
+.el-icon-edit {
   cursor: pointer;
 }
 </style>
