@@ -778,6 +778,9 @@ export default {
     initTabRelation() {
       var _this = this;
       _this.relation.loading = true;
+      _this.relation.relation = null;
+      _this.relation.tgiant = null;
+
       axios
         .post(_this.GLOBAL.url_giant_edit_init_relation, {
           id: _this.id
