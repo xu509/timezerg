@@ -269,7 +269,7 @@ public class CivilizationService {
             apiBean.setCid(cid);
             apiBean.setCname(ctitle);
 
-            System.out.println(ctitle + " " + cid);
+//            System.out.println(ctitle + " " + cid);
 
             List<HashMap> rows = civilizationMapper.selectTimeLine(cid,level,0,50);
 

@@ -165,7 +165,7 @@ public class GiantService {
         r.put("same",same);
         r.put("data", jsonArray);
 
-        System.out.println(r.toJSONString());
+//        System.out.println(r.toJSONString());
 
         return new Result(ResultMessage.OK, r);
     }
