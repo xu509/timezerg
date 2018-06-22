@@ -335,17 +335,28 @@ public class NationService {
             return new Result(ResultMessage.PARAM_ERROR);
 
         nation.setTitle(params.getString("title"));
-        nation.setDdate(params.getString("ddate"));
         nation.setPid(params.getString("pid"));
 
-        nation.setCdate(ControllerUtil.getDate(params.getInteger("year"),params.getInteger("month"),params.getInteger("day")));
-        nation.setEdate(ControllerUtil.getDate(params.getInteger("eyear"),params.getInteger("emonth"),params.getInteger("eday")));
+        Date cdate = ControllerUtil.getDate(params.getInteger("year"),params.getInteger("month"),params.getInteger("day"));
+        nation.setCdate(cdate);
 
-        nation.setAD(params.getInteger("AD"));
-        nation.seteAD(params.getInteger("eAD"));
+        Date edate = ControllerUtil.getDate(params.getInteger("eyear"),params.getInteger("emonth"),params.getInteger("eday"));
+        nation.setEdate(edate);
+
+        Integer AD = params.getInteger("AD");
+        Integer eAD = params.getInteger("eAD");
+
+        nation.setAD(AD);
+        nation.seteAD(eAD);
 
         nation.setPid(params.getString("pid"));
         nation.setFid(params.getString("fid"));
+
+
+        String ddate = params.getString("ddate");
+        if (StringUtils.isBlank(ddate))
+            ddate = ControllerUtil.getDisplayDateStr(cdate,AD,edate,eAD,false);
+        nation.setDdate(ddate);
 
         nation.setInvent(params.getString("invent"));
 

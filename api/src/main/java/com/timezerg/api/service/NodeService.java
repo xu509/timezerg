@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.timezerg.api.mapper.*;
 import com.timezerg.api.model.*;
+import com.timezerg.api.util.ControllerUtil;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
@@ -137,7 +138,6 @@ public class NodeService {
         node.setTitle(params.getString("title"));
         node.setContent(params.getString("content"));
         node.setAD(params.getInteger("AD"));
-        node.setDdate(params.getString("ddate"));
         node.setLevel(params.getInteger("level"));
 //        node.setCover();
         Integer year = params.getInteger("year");
@@ -158,6 +158,13 @@ public class NodeService {
         Date date = calendar.getTime();
 
         node.setCdate(date);
+
+        String ddate = params.getString("ddate");
+        if (StringUtils.isBlank(ddate))
+            ddate = ControllerUtil.getDisplayDateStr(date,params.getInteger("AD"),null,null,false);
+        node.setDdate(ddate);
+
+
 
         //相关国家
         nodeMapper.add(node);
