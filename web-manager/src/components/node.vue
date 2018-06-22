@@ -220,6 +220,7 @@ export default {
       this.initTable();
     },
     search_title: function(st) {
+      this.current_page = 1;
       this.initTable();
     }
   },

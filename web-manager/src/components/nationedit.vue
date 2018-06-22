@@ -107,13 +107,17 @@
                             <p class="paragraph-content">无数据</p>
                       </template>
                       <template v-if="relate.giants != null && relate.giants.length > 0">
-                          <el-tag type="warning" v-for="item in relate.giants" class="tag-margin"
-                            :key="item.id"
-                            closable
-                            :disable-transitions="false"
-                            @close="closeGiantTag(item)">
-                            {{item.name}}
-                          </el-tag>
+                        <template  v-for="item in relate.giants" >
+                            <a @click="clickGiantTag(item)" :key="item.id"> 
+                              <el-tag type="warning" class="tag-margin"
+                                closable
+                                :disable-transitions="false"
+                                @close="closeGiantTag(item)">
+                                {{item.name}}
+                              </el-tag>
+                            </a>
+                        </template>
+                        
                       </template>
                 </el-row>
                 <el-row>
@@ -124,13 +128,16 @@
                             <p class="paragraph-content">无数据</p>
                       </template>
                       <template v-if="relate.institutions != null && relate.institutions.length > 0">
-                          <el-tag type="warning" v-for="item in relate.institutions" class="tag-margin"
-                            :key="item.id"
-                            closable
-                            :disable-transitions="false"
-                            @close="closeInstitutionTag(item)">
-                            {{item.title}}
-                          </el-tag>
+                          <template v-for="item in relate.institutions">
+                            <a :key="item.id" @click="clickInstitutionTag(item)">
+                              <el-tag type="warning" class="tag-margin"
+                                closable
+                                :disable-transitions="false"
+                                @close="closeInstitutionTag(item)">
+                                {{item.title}}
+                              </el-tag>
+                            </a>
+                          </template>
                       </template>
                 </el-row>
                 <el-row>
@@ -141,13 +148,16 @@
                             <p class="paragraph-content">无数据</p>
                       </template>
                       <template v-if="relate.references != null && relate.references.length > 0">
-                          <el-tag type="warning" v-for="item in relate.references" class="tag-margin"
-                            :key="item.id"
-                            closable
-                            :disable-transitions="false"
-                            @close="closeReferenceTag(item)">
-                            {{item.title}}
-                          </el-tag>
+                        <template v-for="item in relate.references">
+                            <a :key="item.id" @click="clickReferenceTag(item)">
+                              <el-tag type="warning" class="tag-margin"
+                                closable
+                                :disable-transitions="false"
+                                @close="closeReferenceTag(item)">
+                                {{item.title}}
+                              </el-tag>
+                            </a>
+                          </template>
                       </template>
                 </el-row>
                 <el-row>
@@ -158,13 +168,16 @@
                             <p class="paragraph-content">无数据</p>
                       </template>
                       <template v-if="relate.periods != null && relate.periods.length > 0">
-                          <el-tag type="warning" v-for="item in relate.periods" class="tag-margin"
-                            :key="item.id"
-                            closable
-                            :disable-transitions="false"
-                            @close="closePeriodTag(item)">
-                            {{item.title}}
-                          </el-tag>
+                        <template v-for="item in relate.periods">
+                          <a :key="item.id" @click="clickPeriodTag(item)">
+                            <el-tag type="warning" class="tag-margin"
+                              closable
+                              :disable-transitions="false"
+                              @close="closePeriodTag(item)">
+                              {{item.title}}
+                            </el-tag>
+                          </a>
+                        </template>
                       </template>
                 </el-row>
             </el-card>
@@ -374,7 +387,6 @@ export default {
         .then(function(response) {
           if (response.data.result == 0) {
             var data = response.data.data;
-            console.log(data);
 
             _this.form.title = data.title;
             _this.relate.giants = data.giants;
@@ -722,6 +734,30 @@ export default {
             message: "已取消"
           });
         });
+    },
+    clickGiantTag(item){
+      var gid = item.gid;
+       this.$router.push({
+        path: "/giant/edit/" + gid
+      });
+    },
+    clickInstitutionTag(item){
+      var id = item.iid;
+       this.$router.push({
+        path: "/institution/edit/" + id
+      });
+    },
+    clickPeriodTag(item){
+      var id = item.pid;
+       this.$router.push({
+        path: "/period/edit/" + id
+      });
+    },
+    clickReferenceTag(item){
+      var id = item.rid;
+       this.$router.push({
+        path: "/reference/edit/" + id
+      });
     },
     //
 

@@ -123,6 +123,7 @@ export default {
       this.initTable();
     },
     tt: function(tt) {
+      this.current_page = 1;
       this.initTable();
     },
     search_title: function(st) {
