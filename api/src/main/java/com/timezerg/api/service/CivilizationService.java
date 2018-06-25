@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.timezerg.api.config.AppConfig;
-import com.timezerg.api.mapper.CivilizationContinentMapper;
-import com.timezerg.api.mapper.CivilizationIndexMapper;
-import com.timezerg.api.mapper.CivilizationMapper;
-import com.timezerg.api.mapper.NodeMapper;
+import com.timezerg.api.mapper.*;
 import com.timezerg.api.model.*;
 import com.timezerg.api.model.api.TimeApiBean;
 import com.timezerg.api.util.DateUtil;
@@ -39,6 +36,9 @@ public class CivilizationService {
 
     @Autowired
     CivilizationIndexMapper civilizationIndexMapper;
+
+    @Autowired
+    NodeCivilizationMapper nodeCivilizationMapper;
 
 
     public Object add(JSONObject params){
@@ -114,7 +114,6 @@ public class CivilizationService {
     public Object editInit(JSONObject params){
         JSONObject r;
         String id = params.getString("id");
-
         Civilization civilization = civilizationMapper.selectById(id);
 
         if (civilization == null)
@@ -128,10 +127,8 @@ public class CivilizationService {
             r.put("pname",p.getTitle());
         }
 
-
         //获取绑定大洲
         r.put("continents",civilizationContinentMapper.selectByCivilizationId(id));
-
         return new Result(ResultMessage.OK,r);
     }
 
@@ -368,19 +365,48 @@ public class CivilizationService {
 
         }
 
-
-
         result.put("timelines",JSON.toJSON(timelines));
         result.put("times",JSON.toJSON(timeApiBeanList));
 
-
         //所有时间
-
         return new Result(ResultMessage.OK,result);
+    }
+
+    public Object editInitNodes(JSONObject params){
+        JSONObject r = new JSONObject();
+        String id = params.getString("id");
+        Integer level = params.getInteger("level");
+        Civilization civilization = civilizationMapper.selectById(id);
+
+        if (civilization == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        r.put("civilization",civilization);
+
+        //nodes
+        Integer start = params.getInteger("start");
+        Integer size = params.getInteger("size");
+
+        r.put("nodes",nodeCivilizationMapper.selectNodesByCid(id,level,start,size));
+
+        return new Result(ResultMessage.OK,r);
     }
 
 
 
+    /**
+     *  API
+     */
+
+    @Transactional
+    public Object getApiList(JSONObject params){
+        Integer start = 0;
+        Integer size = 15;
+
+        List<HashMap> civilizationMaps = civilizationMapper.getList(new Object[]{start,size});
+
+        return new Result(ResultMessage.OK,civilizationMaps);
+    }
 
 
 

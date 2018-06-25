@@ -12,6 +12,7 @@ public class NodeCivilization implements Serializable {
     private String id;
     private String nid;
     private String cid;
+    private Integer level;
 
     public String getId() {
         return id;
@@ -35,5 +36,13 @@ public class NodeCivilization implements Serializable {
 
     public void setCid(String cid) {
         this.cid = cid;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 }

@@ -25,10 +25,11 @@ const url_node_edit_relate_reference_delete =
   domain + "/node/edit/relate/reference/delete";
 const url_node_edit_tag_save = domain + "/node/edit/tag/save";
 const url_node_edit_tag_delete = domain + "/node/edit/tag/delete";
-
 const url_civilization_list = domain + "/civilization/list";
 const url_civilization_add = domain + "/civilization/save";
 const url_civilization_edit_init = domain + "/civilization/edit/init";
+const url_civilization_edit_init_nodes =
+  domain + "/civilization/edit/init/nodes";
 const url_civilization_edit_save = domain + "/civilization/edit/save";
 const url_civilization_upload = domain + "/civilization/upload";
 const url_civilization_first = domain + "/civilization/first";
@@ -104,9 +105,7 @@ const url_giant_edit_tag_save = domain + "/giant/edit/tag/save";
 const url_giant_edit_tag_delete = domain + "/giant/edit/tag/delete";
 const url_giant_relation_save = domain + "/giant/relation/save";
 const url_giant_relation_delete = domain + "/giant/relation/delete";
-
 const url_giant_relation_detail_save = domain + "/giant/relation/detail/save";
-
 const url_institution_list = domain + "/institution/list";
 const url_institution_add = domain + "/institution/save";
 const url_reference_list = domain + "/reference/list";
@@ -133,7 +132,6 @@ const url_reference_relate_nation_delete =
 const url_reference_edit_init_tag = domain + "/reference/edit/init/tag";
 const url_reference_tag_save = domain + "/reference/edit/tag/save";
 const url_reference_tag_delete = domain + "/reference/edit/tag/delete";
-
 const url_relation_list = domain + "/relation/list";
 const url_relation_edit_init = domain + "/relation/edit/init";
 const url_relation_edit_save = domain + "/relation/edit/save";
@@ -147,6 +145,9 @@ const url_search_period = domain + "/period/search";
 const url_search_tag = domain + "/tag/search";
 const url_search_reference = domain + "/reference/search";
 const url_search_node = domain + "/node/search";
+
+const url_api_civilization_list = domain + "/api/civilization/list";
+const url_api_period_list = domain + "/api/period/list";
 
 //yearbook
 
@@ -173,6 +174,7 @@ export default {
   url_civilization_list,
   url_civilization_add,
   url_civilization_edit_init,
+  url_civilization_edit_init_nodes,
   url_civilization_upload,
   url_civilization_edit_save,
   url_civilization_first,
@@ -257,7 +259,9 @@ export default {
   url_search_node,
   url_relation_list,
   url_relation_edit_init,
-  url_relation_edit_save
+  url_relation_edit_save,
+  url_api_civilization_list,
+  url_api_period_list
 };
 </script>
 

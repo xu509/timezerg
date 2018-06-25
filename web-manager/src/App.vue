@@ -23,23 +23,27 @@
                   <i class="el-icon-star-on"></i>
                   <span slot="title">时间线</span>
                 </el-menu-item>
-                <el-menu-item index="3" route = "/node">
+                <el-menu-item index="3" route = "/demo">
+                  <i class="el-icon-star-on"></i>
+                  <span slot="title">demo</span>
+                </el-menu-item>
+                <el-menu-item index="4" route = "/node">
                   <i class="el-icon-menu"></i>
                   <span slot="title">节点</span>
                 </el-menu-item>
-                <el-menu-item index="4" route = "/civilization">
+                <el-menu-item index="5" route = "/civilization">
                   <i class="el-icon-menu"></i>
                   <span slot="title">文明</span>
                 </el-menu-item>
-                <el-menu-item index="5" route = "/nation">
+                <el-menu-item index="6" route = "/nation">
                   <i class="el-icon-menu"></i>
                   <span slot="title">国家</span>
                 </el-menu-item>
-                <el-menu-item index="6" route = "/period">
+                <el-menu-item index="7" route = "/period">
                   <i class="el-icon-menu"></i>
                   <span slot="title">时代</span>
                 </el-menu-item>
-                <el-menu-item index="7" route = "/giant">
+                <el-menu-item index="8" route = "/giant">
                   <i class="el-icon-menu"></i>
                   <span slot="title">人物</span>
                 </el-menu-item>
@@ -48,15 +52,15 @@
                   <span slot="title">朝代</span>
                 </el-menu-item> -->
 
-                <el-submenu index="6">
+                <el-submenu index="9">
                   <template slot="title">
                     <i class="el-icon-location"></i>
                     <span>设置</span>
                   </template>
-                  <el-menu-item index="6-1" route = "/continent/add">大洲</el-menu-item>
-                  <el-menu-item index="6-2" route = "/institution">制度</el-menu-item>
-                  <el-menu-item index="6-3" route = "/reference">依据</el-menu-item>
-                  <el-menu-item index="6-4" route = "/relation">关系</el-menu-item>
+                  <el-menu-item index="9-1" route = "/continent/add">大洲</el-menu-item>
+                  <el-menu-item index="9-2" route = "/institution">制度</el-menu-item>
+                  <el-menu-item index="9-3" route = "/reference">依据</el-menu-item>
+                  <el-menu-item index="9-4" route = "/relation">关系</el-menu-item>
                 </el-submenu>
               </el-menu>
 
@@ -81,23 +85,27 @@
                   <i class="el-icon-star-on"></i>
                   <span slot="title">时间线</span>
                 </el-menu-item>
-                <el-menu-item index="3" route = "/node">
+                <el-menu-item index="3" route = "/demo">
+                  <i class="el-icon-star-on"></i>
+                  <span slot="title">demo</span>
+                </el-menu-item>
+                <el-menu-item index="4" route = "/node">
                   <i class="el-icon-menu"></i>
                   <span slot="title">节点</span>
                 </el-menu-item>
-                <el-menu-item index="4" route = "/civilization">
+                <el-menu-item index="5" route = "/civilization">
                   <i class="el-icon-menu"></i>
                   <span slot="title">文明</span>
                 </el-menu-item>
-                <el-menu-item index="5" route = "/nation">
+                <el-menu-item index="6" route = "/nation">
                   <i class="el-icon-menu"></i>
                   <span slot="title">国家</span>
                 </el-menu-item>
-                <el-menu-item index="6" route = "/period">
+                <el-menu-item index="7" route = "/period">
                   <i class="el-icon-menu"></i>
                   <span slot="title">时代</span>
                 </el-menu-item>
-                <el-menu-item index="7" route = "/giant">
+                <el-menu-item index="8" route = "/giant">
                   <i class="el-icon-menu"></i>
                   <span slot="title">人物</span>
                 </el-menu-item>
@@ -106,15 +114,15 @@
                   <span slot="title">朝代</span>
                 </el-menu-item> -->
 
-                <el-submenu index="6">
+                <el-submenu index="9">
                   <template slot="title">
                     <i class="el-icon-location"></i>
                     <span>设置</span>
                   </template>
-                  <el-menu-item index="6-1" route = "/continent/add">大洲</el-menu-item>
-                  <el-menu-item index="6-2" route = "/institution">制度</el-menu-item>
-                  <el-menu-item index="6-3" route = "/reference">依据</el-menu-item>
-                  <el-menu-item index="6-4" route = "/relation">关系</el-menu-item>
+                  <el-menu-item index="9-1" route = "/continent/add">大洲</el-menu-item>
+                  <el-menu-item index="9-2" route = "/institution">制度</el-menu-item>
+                  <el-menu-item index="9-3" route = "/reference">依据</el-menu-item>
+                  <el-menu-item index="9-4" route = "/relation">关系</el-menu-item>
                   <!-- <el-menu-item index="6-4" route = "/yearbook">yearbook</el-menu-item> -->
                 </el-submenu>
               </el-menu>

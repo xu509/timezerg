@@ -127,8 +127,6 @@ export default {
             var cnum = _this.civilizations.length;
 
             _this.width = 24 / (cnum + 1);
-
-            console.log("width : " + _this.width);
           }
           // console.log(response.data.data[0].id);
         });
@@ -143,8 +141,6 @@ export default {
             var times = response.data.data.times;
             var timelines = response.data.data.timelines;
 
-            console.log("timelines.length : " + timelines.length);
-
             _this.times = times;
             _this.timelines = timelines;
             // console.log(times);
@@ -153,7 +149,7 @@ export default {
           }
         })
         .catch(function(error) {
-          console.log(111);
+          // console.log(111);
           console.log(error);
         });
     },
@@ -205,7 +201,6 @@ export default {
           }
         })
         .catch(function(error) {
-          console.log(111);
           console.log(error);
         });
     },
@@ -226,7 +221,6 @@ export default {
           }
         })
         .catch(function(error) {
-          console.log(111);
           console.log(error);
         });
     },

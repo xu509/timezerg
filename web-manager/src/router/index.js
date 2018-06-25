@@ -29,6 +29,8 @@ import referenceAdd from '@/components/referenceadd'
 import referenceEdit from '@/components/referenceEdit'
 import relation from '@/components/relation'
 import relationEdit from '@/components/relationEdit'
+import demo from '@/components/demo/demoindex'
+import demoPeriods from '@/components/demo/periods'
 // import yearbook from '@/components/yearbook'
 
 Vue.use(Router)
@@ -150,6 +152,14 @@ export default new Router({
       path: '/relation/edit/:id',
       name: 'relationEdit',
       component: relationEdit
+    }, {
+      path: '/demo',
+      name: 'demo',
+      component: demo
+    }, {
+      path: '/demo/civilization/:id/periods',
+      name: 'demoPeriods',
+      component: demoPeriods
     }
     // ,{
     //   path: '/yearbook',

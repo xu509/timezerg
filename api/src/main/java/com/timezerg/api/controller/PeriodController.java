@@ -109,4 +109,16 @@ public class PeriodController {
     }
 
 
+    /* API */
+
+    /**
+     *  根据文明 ID 获取时代
+     *  必要param ： cid
+     */
+    @CrossOrigin
+    @PostMapping("/api/period/list")
+    public Object getApiList(@RequestBody JSONObject params) {
+        return periodService.getApiList(params);
+    }
+
 }

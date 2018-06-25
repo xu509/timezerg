@@ -83,6 +83,20 @@ public class CivilizationController {
         return civilizationService.index(params);
     }
 
+    @PostMapping("/civilization/edit/init/nodes")
+    public Object editInitRelate(@RequestBody JSONObject params){
+        return civilizationService.editInitNodes(params);
+    }
+
+    /**
+     *  api
+     */
+    @PostMapping("/api/civilization/list")
+    public Object apiGetList(@RequestBody JSONObject params){
+        return civilizationService.getApiList(params);
+    }
+
+
 
 
 }

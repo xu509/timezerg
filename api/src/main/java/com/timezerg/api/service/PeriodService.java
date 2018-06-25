@@ -490,5 +490,19 @@ public class PeriodService {
         }
     }
 
+    /* API*/
+    @Transactional
+    public Object getApiList(JSONObject params){
+        String cid = params.getString("cid");
+        Civilization civilization = civilizationMapper.selectById(cid);
+        if (civilization == null)
+            return new Result(ResultMessage.PARAM_ERROR,"参数错误");
+
+        List<HashMap> periods = civilizationPeriodMapper.selectPeriodsByCid(cid);
+        JSONObject data = new JSONObject();
+        data.put("periods",periods);
+        data.put("civilization",civilization);
+        return new Result(ResultMessage.OK,data);
+    }
 
 }

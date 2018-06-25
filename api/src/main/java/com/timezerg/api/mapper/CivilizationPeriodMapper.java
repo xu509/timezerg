@@ -28,6 +28,9 @@ public interface CivilizationPeriodMapper {
     @Select("SELECT cp.*,c.title FROM t_timezerg_civilization_period cp LEFT JOIN t_timezerg_civilization c ON cp.cid = c.id WHERE cp.pid = #{pid}")
     List<HashMap> selectCivilizationByPid(String pid);
 
+    @Select("SELECT p.* FROM t_timezerg_civilization_period cp LEFT JOIN t_timezerg_period p on cp.pid = p.id WHERE cp.cid = #{cid} ORDER BY p.id ASC")
+    List<HashMap> selectPeriodsByCid(String cid);
+
     @Delete("DELETE FROM t_timezerg_civilization_period WHERE cid = #{cid}")
     int deleteByCid(String cid);
 
