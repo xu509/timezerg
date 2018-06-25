@@ -40,6 +40,9 @@ public class CivilizationService {
     @Autowired
     NodeCivilizationMapper nodeCivilizationMapper;
 
+    @Autowired
+    NodeCivilizationService nodeCivilizationService;
+
 
     public Object add(JSONObject params){
         Civilization civil = new Civilization();
@@ -386,12 +389,27 @@ public class CivilizationService {
         //nodes
         Integer start = params.getInteger("start");
         Integer size = params.getInteger("size");
+        String title = params.getString("title");
 
-        r.put("nodes",nodeCivilizationMapper.selectNodesByCid(id,level,start,size));
+        List<HashMap> nodeMaps = nodeCivilizationMapper.selectNodesByCid(id,level,title,start,size);
+        for (HashMap nodeMap : nodeMaps){
+            Integer levelInt  = (Integer) nodeMap.get("l");
+            nodeMap.put("levelstr",Utils.getLevelStr(levelInt));
+        }
+
+        r.put("nodes",nodeMaps);
+        r.put("nodestotal",nodeCivilizationMapper.selectNodesTotalByCid(id,level,title));
+
 
         return new Result(ResultMessage.OK,r);
     }
 
+
+    public Object updateNodeLevel(JSONObject params){
+        Integer level = params.getInteger("level");
+        String id = params.getString("id");
+        return nodeCivilizationService.updateLevel(id,level);
+    }
 
 
     /**

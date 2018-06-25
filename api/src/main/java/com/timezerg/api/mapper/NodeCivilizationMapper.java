@@ -29,10 +29,15 @@ public interface NodeCivilizationMapper {
     int deleteByNodeId(String nid);
 
     @SelectProvider(type= NodeCivilizationMapperProvider.class,method = "getNodes")
-    List<HashMap> selectNodesByCid(@Param("cid") String cid ,@Param("level") Integer level,@Param("start") Integer start, @Param("limit") Integer limit);
+    List<HashMap> selectNodesByCid(@Param("cid") String cid ,@Param("level") Integer level,@Param("title") String title,@Param("start") Integer start, @Param("limit") Integer limit);
 
     @SelectProvider(type= NodeCivilizationMapperProvider.class,method = "getNodesTotal")
-    Long selectNodesTotalByCid(@Param("cid") String cid ,@Param("level") Integer level);
+    Long selectNodesTotalByCid(@Param("cid") String cid ,@Param("level") Integer level,@Param("title") String title);
 
+    @Update("UPDATE t_timezerg_node_civilization SET level = #{level} WHERE id = #{id}")
+    void updateLevel(NodeCivilization nodeCivilization);
+
+    @Select("SELECT * FROM t_timezerg_node_civilization WHERE id = #{id}")
+    NodeCivilization selectById(String id);
 
 }

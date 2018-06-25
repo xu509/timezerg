@@ -11,23 +11,30 @@ public class NodeCivilizationMapperProvider {
 
     public static String getNodes(final Map<String,Object> map){
         Integer level = (Integer) map.get("level");
+        String title = (String) map.get("title");
 
         StringBuffer sql = new StringBuffer("SELECT t.* FROM (");
-        sql.append("(SELECT n.* FROM t_timezerg_node_civilization nc " +
+        sql.append("(SELECT n.*,nc.id as ncid,nc.level as l FROM t_timezerg_node_civilization nc " +
                 "LEFT JOIN t_timezerg_node n ON nc.nid = n.id ");
         sql.append("WHERE nc.cid = #{cid} ");
-        if (level != null){
+        if (level != null && level != 0){
             sql.append("and nc.level = #{level} ");
+        }
+        if (!StringUtils.isBlank(title)){
+            sql.append(" AND n.title like CONCAT('%',#{title},'%') ");
         }
         sql.append("AND n.ad = 0 ORDER BY n.cdate DESC LIMIT 0,9999) ");
         sql.append("UNION ALL ");
-        sql.append("(SELECT n.* FROM t_timezerg_node_civilization nc " +
+        sql.append("(SELECT n.*,nc.id as ncid,nc.level as l FROM t_timezerg_node_civilization nc " +
                 "LEFT JOIN t_timezerg_node n ON nc.nid = n.id " +
                 "WHERE nc.cid = #{cid} ");
-        if (level != null){
+        if (level != null && level != 0){
             sql.append("and nc.level = #{level} ");
         }
-         sql.append("AND n.ad = 1 ORDER BY n.cdate ASC LIMIT 0,9999) " +
+        if (!StringUtils.isBlank(title)){
+            sql.append(" AND n.title like CONCAT('%',#{title},'%') ");
+        }
+        sql.append("AND n.ad = 1 ORDER BY n.cdate ASC LIMIT 0,9999) " +
                 ") t");
         sql.append(" LIMIT #{start},#{limit}");
         return sql.toString();
@@ -35,14 +42,20 @@ public class NodeCivilizationMapperProvider {
 
     public static String getNodesTotal(final Map<String,Object> map){
         Integer level = (Integer) map.get("level");
+        String title = (String) map.get("title");
 
-        StringBuffer sql = new StringBuffer("SELECT COUNT(*) FROM t_timezerg_node_civilization WHERE 1=1 ");
+        StringBuffer sql = new StringBuffer("SELECT COUNT(*) FROM t_timezerg_node_civilization nc " +
+                "LEFT JOIN t_timezerg_node n ON nc.nid = n.id " +
+                "WHERE 1=1 ");
 
-        if (level != null){
-            sql.append("and level = #{level} ");
+        if (level != null && level != 0){
+            sql.append("and nc.level = #{level} ");
+        }
+        if (!StringUtils.isBlank(title)){
+            sql.append(" AND n.title like CONCAT('%',#{title},'%') ");
         }
 
-        sql.append("and cid = #{cid}");
+        sql.append("and nc.cid = #{cid}");
         return sql.toString();
     }
 

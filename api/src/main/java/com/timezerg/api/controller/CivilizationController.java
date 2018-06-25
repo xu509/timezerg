@@ -88,6 +88,12 @@ public class CivilizationController {
         return civilizationService.editInitNodes(params);
     }
 
+
+    @PostMapping("/civilization/edit/nodes/updatelevel")
+    public Object updateNodeLevel(@RequestBody JSONObject params){
+        return civilizationService.updateNodeLevel(params);
+    }
+
     /**
      *  api
      */

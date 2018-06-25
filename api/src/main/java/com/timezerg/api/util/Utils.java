@@ -1,5 +1,6 @@
 package com.timezerg.api.util;
 
+import com.timezerg.api.config.AppConfig;
 import com.timezerg.api.model.Node;
 
 import java.util.Date;
@@ -62,6 +63,18 @@ public class Utils {
 
     }
 
+
+    public static String getLevelStr(Integer level){
+        String str;
+        if (level == null){
+            str = "未归类";
+        } else if (level.equals(AppConfig.KEY_VALUE.Level_Very_Important)){
+            str = "非常重要";
+        } else {
+            str = "其他";
+        }
+        return str;
+    }
 
 
 }

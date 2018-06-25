@@ -17,6 +17,13 @@ public interface AppConfig {
         String CIVILIZATION = "/civilization/";
     }
 
+    interface KEY_VALUE{
+        Integer Level_Very_Important = 1;
+        Integer Level_Important = 2;
+        Integer Level_Normal = 3;
+        Integer Level_Detail = 4;
+    }
+
 
 
 }
