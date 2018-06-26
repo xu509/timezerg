@@ -75,6 +75,11 @@
                           v-model="form.content">
                         </el-input>
                       </el-form-item>
+                      <el-form-item label="父时代">
+                        <inputboxperiod @selectPeriod = "selectBasicPeriod"></inputboxperiod>
+                        <el-tag v-if="form.pperiod != null" closable @close = "closeBasicPeriodTag">{{form.pperiod.title}}</el-tag>
+                      </el-form-item>
+
 
 
                       <el-form-item>
@@ -177,6 +182,7 @@ import inputboxtag from "./plugin/inputboxtag.vue";
 import inputboxcivilization from "./plugin/inputboxcivilization.vue";
 import inputboxnation from "./plugin/inputboxnation.vue";
 import inputboxreference from "./plugin/inputboxreference.vue";
+import inputboxperiod from "./plugin/inputboxperiod.vue";
 
 export default {
   name: "periodedit",
@@ -200,13 +206,14 @@ export default {
         emonth: null,
         eday: null,
         AD: 1,
-        eAD: 1
+        eAD: 1,
+        pperiod: null
       },
       relate: {
         loading: true,
         civilizations: [],
         nations: [],
-        references:[]
+        references: []
       },
       tag: {
         loading: true,
@@ -225,7 +232,8 @@ export default {
     inputboxtag,
     inputboxcivilization,
     inputboxnation,
-    inputboxreference
+    inputboxreference,
+    inputboxperiod
   },
   methods: {
     init() {
@@ -258,7 +266,8 @@ export default {
           emonth: _this.form.emonth,
           eday: _this.form.eday,
           AD: _this.form.AD,
-          eAD: _this.form.eAD
+          eAD: _this.form.eAD,
+          pperiod: _this.form.pperiod
         })
         .then(function(response) {
           if (response.data.result == 0) {
@@ -295,6 +304,7 @@ export default {
 
             _this.form.AD = period.aD;
             _this.form.eAD = period.eAD;
+            _this.form.pperiod = period.pperiod;
 
             // console.log(period.giant);
 
@@ -305,6 +315,15 @@ export default {
         })
         .catch(function(error) {});
     },
+    selectBasicPeriod(item) {
+      var _this = this;
+      _this.form.pperiod = item;
+    },
+    closeBasicPeriodTag() {
+      var _this = this;
+      _this.form.pperiod = null;
+    },
+
     // 基础结束
 
     //相关信息

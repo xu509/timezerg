@@ -5,6 +5,11 @@ _this.$notify.error({
                   duration: 0
 });
 
+ _this.$message({
+              message: _this.form.title + " 修改成功！",
+              type: "success"
+            });
+
 {
   "exist": true,
   "same": true,

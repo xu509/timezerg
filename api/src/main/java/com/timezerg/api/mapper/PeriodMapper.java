@@ -15,7 +15,7 @@ import java.util.List;
 @Mapper
 public interface PeriodMapper {
 
-    @Insert("insert into t_timezerg_period values (#{id},#{title},#{content},#{cover},#{cdate},#{edate},#{ddate},#{AD},#{eAD})")
+    @Insert("insert into t_timezerg_period values (#{id},#{pid},#{title},#{content},#{cover},#{cdate},#{edate},#{ddate},#{AD},#{eAD})")
     int add(Period period);
 
     @SelectProvider(type= PeriodMapperProvider.class,method = "getList")
@@ -33,7 +33,7 @@ public interface PeriodMapper {
     @Select("select * from t_timezerg_period where title = #{title}")
     Period selectByTitle(String title);
 
-    @Update("update t_timezerg_period set title = #{title},content = #{content},cover = #{cover},cdate = #{cdate},edate = #{edate},ddate = #{ddate},AD = #{AD},eAD = #{eAD}" +
+    @Update("update t_timezerg_period set title = #{title},pid = #{pid},content = #{content},cover = #{cover},cdate = #{cdate},edate = #{edate},ddate = #{ddate},AD = #{AD},eAD = #{eAD}" +
             " where id = #{id}")
     int update(Period period);
 

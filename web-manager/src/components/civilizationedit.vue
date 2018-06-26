@@ -73,7 +73,36 @@
                   </el-col>
          </el-tab-pane>
 
-         <el-tab-pane label="节点" name="2">
+        <el-tab-pane label="相关" name="2">
+          <el-row v-loading = "relate.loading">
+              <el-col :md="16">
+                <el-card class="box-card">
+                  <div slot="header" class="clearfix">
+                      <span>相关时代</span>
+                  </div>
+                  <el-row>
+                    <el-button type="primary" @click="updatePeriodSync">更新索引</el-button>
+                    <inputboxperiod @selectPeriod="selectPeriod"></inputboxperiod>
+                  </el-row>
+
+                  <div class="periodsBox">
+                    <template v-for="(item,index) in relate.periods">
+                        <div class="item-period" :key="item.id">
+                          <el-tag>{{item.title}}</el-tag>
+                          <i class="el-icon-arrow-left" v-if="index != 0" @click="upPeriod(item,index)"></i>
+                          <i class="el-icon-arrow-right" v-if="index != relate.periods.length - 1" @click="downPeriod(item,index)"></i>
+                          <i class="el-icon-close" @click="deletePeriod(item)"></i>
+                        </div>
+                    </template>
+                  </div>
+                 
+                </el-card>
+              </el-col>
+          </el-row>
+
+        </el-tab-pane>
+
+         <el-tab-pane label="节点" name="3">
            <el-row>
               <el-col :md="2">
                   <el-button type="primary">同步</el-button>
@@ -122,6 +151,7 @@
 <script>
 import axios from "axios";
 import selectboxlevel from "./plugin/selectboxlevel.vue";
+import inputboxperiod from "./plugin/inputboxperiod.vue";
 
 export default {
   name: "CivilizationEdit",
@@ -142,11 +172,15 @@ export default {
         nodes: [],
         total: null
       },
+      relate: {
+        loading: true,
+        periods: []
+      },
       // 需要 watch 的
-      current_page:1,
-      page_size:20,
-      level:0,
-      searchContentNode:null,
+      current_page: 1,
+      page_size: 20,
+      level: 0,
+      searchContentNode: null,
 
       fileLimit: 1,
       uploadUrl: this.GLOBAL.url_civilization_upload,
@@ -160,6 +194,8 @@ export default {
       if (this.activeTab == "1") {
         this.initBasic();
       } else if (this.activeTab == "2") {
+        this.initTabRelate();
+      } else if (this.activeTab == "3") {
         this.initTabNodes();
       }
     },
@@ -301,20 +337,218 @@ export default {
       _this.form.covers = null;
     },
 
+    // tab relate
+    initTabRelate() {
+      var _this = this;
+      _this.relate.loading = true;
+
+      axios
+        .post(_this.GLOBAL.url_civilization_edit_init_relate, {
+          id: _this.form.id
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            var data = response.data.data;
+
+            _this.form.title = data.civilization.title;
+            _this.relate.periods = data.periods;
+
+            _this.relate.loading = false;
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    updatePeriodSync() {
+      var _this = this;
+      _this.relate.loading = true;
+
+      axios
+        .post(_this.GLOBAL.url_civilization_relate_period_sync, {
+          id: _this.form.id
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            _this.$message({
+              message: "同步成功！",
+              type: "success"
+            });
+            _this.init();
+          } else {
+            _this.$notify.error({
+              title: response.data.msg,
+              message: response.data.data,
+              duration: 0
+            });
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    selectPeriod(item) {
+      var _this = this;
+      _this.relate.loading = true;
+      //提交
+      var content = "确认添加时代： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_civilization_relate_period_save, {
+              id: _this.form.id,
+              period: item
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.updatePeriodSync();
+                _this.$message({
+                  type: "success",
+                  message: "添加成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+
+    deletePeriod(item) {
+      var _this = this;
+      _this.relate.loading = true;
+      //提交
+      var content = "确认删除时代： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_civilization_relate_period_delete, {
+              id: item.cpid
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.updatePeriodSync();
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              } else {
+                _this.$message({
+                  type: "error",
+                  message: response.data.msg + " - " + response.data.data
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+
+    upPeriod(item, index) {
+      var _this = this;
+      _this.relate.loading = true;
+      //提交
+      var nid = item.cpid;
+      var oid = _this.relate.periods[index - 1].cpid;
+
+      axios
+        .post(_this.GLOBAL.url_civilization_relate_period_exchange, {
+          oldid: oid,
+          newid: nid
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            _this.updatePeriodSync();
+            _this.$message({
+              type: "success",
+              message: "成功!"
+            });
+          } else {
+            _this.$message({
+              type: "error",
+              message: response.data.msg + " - " + response.data.data
+            });
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    downPeriod(item, index) {
+      var _this = this;
+      _this.relate.loading = true;
+      //提交
+      var nid = item.cpid;
+      var oid = _this.relate.periods[index + 1].cpid;
+
+      axios
+        .post(_this.GLOBAL.url_civilization_relate_period_exchange, {
+          oldid: oid,
+          newid: nid
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            _this.updatePeriodSync();
+            _this.$message({
+              type: "success",
+              message: "成功!"
+            });
+          } else {
+            _this.$message({
+              type: "error",
+              message: response.data.msg + " - " + response.data.data
+            });
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+
     // tab nodes
     initTabNodes() {
       var _this = this;
       _this.nodes.loading = true;
 
-      var start = (_this.current_page - 1 ) * _this.page_size;
+      var start = (_this.current_page - 1) * _this.page_size;
       var size = _this.page_size;
 
       axios
         .post(_this.GLOBAL.url_civilization_edit_init_nodes, {
           id: _this.form.id,
-          level:_this.level,
-          title:_this.searchContentNode,
-          start:start,
+          level: _this.level,
+          title: _this.searchContentNode,
+          start: start,
           size: size
         })
         .then(function(response) {
@@ -332,16 +566,16 @@ export default {
           console.log(error);
         });
     },
-    selectLevel(value){
+    selectLevel(value) {
       this.level = value;
     },
 
-    selectRowLevel(value,id){
+    selectRowLevel(value, id) {
       console.log("value : " + value);
       console.log("id : " + id);
     },
 
-    updateLevel(id,level){
+    updateLevel(id, level) {
       console.log("id :" + id);
       var _this = this;
       _this.nodes.loading = true;
@@ -349,65 +583,60 @@ export default {
       axios
         .post(_this.GLOBAL.url_civilization_edit_nodes_updatelevel, {
           id: id,
-          level : level
+          level: level
         })
         .then(function(response) {
           if (response.data.result == 0) {
             var data = response.data.data;
             _this.$message({
-                type: "success",
-                message: "修改成功!"
+              type: "success",
+              message: "修改成功!"
             });
             _this.init();
-          }else{
+          } else {
             _this.$notify.error({
-                  title: response.data.msg,
-                  message: response.data.data,
-                  duration: 0
+              title: response.data.msg,
+              message: response.data.data,
+              duration: 0
             });
           }
         })
         .catch(function(error) {
           console.log(error);
         });
-
     },
 
-    handleSizeChange(size){
+    handleSizeChange(size) {
       this.page_size = size;
     },
-    handleCurrentChange(currentPage){
+    handleCurrentChange(currentPage) {
       this.current_page = currentPage;
-
     }
   },
   mounted: function() {
     this.form.id = this.$route.params.id;
     this.init();
   },
-  watch:{
-    activeTab(at){
+  watch: {
+    activeTab(at) {
       this.init();
     },
-    current_page(cp){
+    current_page(cp) {
       this.init();
     },
-    page_size(ps){
+    page_size(ps) {
       this.init();
     },
-    level(l){
-      this.current_page = 1,
-      this.page_size = 20,
-      this.init();
+    level(l) {
+      (this.current_page = 1), (this.page_size = 20), this.init();
     },
-    searchContentNode(scn){
-      this.current_page = 1,
-      this.page_size = 20,
-      this.init();
+    searchContentNode(scn) {
+      (this.current_page = 1), (this.page_size = 20), this.init();
     }
   },
-  components:{
-    selectboxlevel
+  components: {
+    selectboxlevel,
+    inputboxperiod
   }
 };
 </script>
@@ -417,5 +646,25 @@ export default {
 .cover {
   width: 600px;
   height: 200px;
+}
+
+.item-period {
+  border: 1px solid #eaeefb;
+  border-radius: 4px;
+  padding-left: 20px;
+  /* padding-right: 20px; */
+  width: 16%;
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.item-period i {
+  cursor: pointer;
+}
+
+.periodsBox {
+  display: flex;
+  flex-wrap: wrap;
 }
 </style>

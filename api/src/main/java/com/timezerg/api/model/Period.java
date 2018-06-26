@@ -11,6 +11,7 @@ public class Period implements Serializable {
 
     private static final long serialVersionUID = 5036166082138215739L;
     private String id;
+    private String pid; //父时代
     private String title;
     private String content;
     private String cover;
@@ -90,5 +91,13 @@ public class Period implements Serializable {
 
     public void seteAD(int eAD) {
         this.eAD = eAD;
+    }
+
+    public String getPid() {
+        return pid;
+    }
+
+    public void setPid(String pid) {
+        this.pid = pid;
     }
 }

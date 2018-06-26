@@ -2,10 +2,7 @@ package com.timezerg.api.mapper;
 
 import com.timezerg.api.model.CivilizationPeriod;
 import com.timezerg.api.model.NationPeriod;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +13,7 @@ import java.util.List;
 @Mapper
 public interface CivilizationPeriodMapper {
 
-    @Insert("insert into t_timezerg_civilization_period values (#{id},#{cid},#{pid})")
+    @Insert("insert into t_timezerg_civilization_period values (#{id},#{cid},#{pid},#{sort})")
     int add(CivilizationPeriod civilizationPeriod);
 
     @Select("select * from t_timezerg_civilization_period where cid = #{cid} and pid = #{pid}")
@@ -28,8 +25,14 @@ public interface CivilizationPeriodMapper {
     @Select("SELECT cp.*,c.title FROM t_timezerg_civilization_period cp LEFT JOIN t_timezerg_civilization c ON cp.cid = c.id WHERE cp.pid = #{pid}")
     List<HashMap> selectCivilizationByPid(String pid);
 
-    @Select("SELECT p.* FROM t_timezerg_civilization_period cp LEFT JOIN t_timezerg_period p on cp.pid = p.id WHERE cp.cid = #{cid} ORDER BY p.id ASC")
+    @Select("SELECT p.*,cp.id as cpid FROM t_timezerg_civilization_period cp LEFT JOIN t_timezerg_period p on cp.pid = p.id WHERE cp.cid = #{cid} AND p.pid IS NULL ORDER BY cp.sort ASC")
     List<HashMap> selectPeriodsByCid(String cid);
+
+    @Select("SELECT * FROM t_timezerg_civilization_period ORDER BY sort ASC,id DESC")
+    List<CivilizationPeriod> selectByCid(String cid);
+
+    @Update("UPDATE t_timezerg_civilization_period SET sort = #{sort} WHERE id = #{id}")
+    void updateSort(CivilizationPeriod c);
 
     @Delete("DELETE FROM t_timezerg_civilization_period WHERE cid = #{cid}")
     int deleteByCid(String cid);

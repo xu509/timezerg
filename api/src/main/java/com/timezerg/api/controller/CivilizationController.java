@@ -84,7 +84,7 @@ public class CivilizationController {
     }
 
     @PostMapping("/civilization/edit/init/nodes")
-    public Object editInitRelate(@RequestBody JSONObject params){
+    public Object editInitNodes(@RequestBody JSONObject params){
         return civilizationService.editInitNodes(params);
     }
 
@@ -93,6 +93,45 @@ public class CivilizationController {
     public Object updateNodeLevel(@RequestBody JSONObject params){
         return civilizationService.updateNodeLevel(params);
     }
+
+    @PostMapping("/civilization/edit/init/relate")
+    public Object editInitRelate(@RequestBody JSONObject params){
+        return civilizationService.editInitRelate(params);
+    }
+
+    /**
+     *  同步索引
+     */
+    @PostMapping("/civilization/relate/period/sync")
+    public Object syncSort(@RequestBody JSONObject params){
+        return civilizationService.syncCivilizationPeriod(params);
+    }
+
+    /**
+     *  交换位置
+     */
+    @PostMapping("/civilization/relate/period/exchange")
+    public Object exchange(@RequestBody JSONObject params){
+        return civilizationService.exchangePeriod(params);
+    }
+
+    /**
+     *  添加
+     */
+    @PostMapping("/civilization/relate/period/save")
+    public Object relatePeriodSave(@RequestBody JSONObject params){
+        return civilizationService.savePeriod(params);
+    }
+
+    /**
+     *  删除
+     */
+    @PostMapping("/civilization/relate/period/delete")
+    public Object relatePeriodDelete(@RequestBody JSONObject params){
+        return civilizationService.deletePeriod(params);
+    }
+
+
 
     /**
      *  api

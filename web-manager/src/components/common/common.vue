@@ -30,8 +30,18 @@ const url_civilization_add = domain + "/civilization/save";
 const url_civilization_edit_init = domain + "/civilization/edit/init";
 const url_civilization_edit_init_nodes =
   domain + "/civilization/edit/init/nodes";
+const url_civilization_edit_init_relate =
+  domain + "/civilization/edit/init/relate";
 const url_civilization_edit_nodes_updatelevel =
   domain + "/civilization/edit/nodes/updatelevel";
+const url_civilization_relate_period_sync =
+  domain + "/civilization/relate/period/sync";
+const url_civilization_relate_period_save =
+  domain + "/civilization/relate/period/save";
+const url_civilization_relate_period_delete =
+  domain + "/civilization/relate/period/delete";
+const url_civilization_relate_period_exchange =
+  domain + "/civilization/relate/period/exchange";
 const url_civilization_edit_save = domain + "/civilization/edit/save";
 const url_civilization_upload = domain + "/civilization/upload";
 const url_civilization_first = domain + "/civilization/first";
@@ -177,7 +187,12 @@ export default {
   url_civilization_add,
   url_civilization_edit_init,
   url_civilization_edit_init_nodes,
+  url_civilization_edit_init_relate,
   url_civilization_edit_nodes_updatelevel,
+  url_civilization_relate_period_sync,
+  url_civilization_relate_period_save,
+  url_civilization_relate_period_delete,
+  url_civilization_relate_period_exchange,
   url_civilization_upload,
   url_civilization_edit_save,
   url_civilization_first,

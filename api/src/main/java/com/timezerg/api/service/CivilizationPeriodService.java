@@ -50,6 +50,9 @@ public class CivilizationPeriodService {
             return new Result(ResultMessage.DUPLICATION_ERROR,"文明与时代链接失败");
         }
 
+        if (StringUtils.isBlank(civilizationPeriod.getId()))
+            civilizationPeriod.setId(Utils.generateId());
+
         civilizationPeriodMapper.add(civilizationPeriod);
         return new Result(ResultMessage.OK,civilizationPeriod);
     }

@@ -31,9 +31,14 @@
         <el-table :data = "datas">
             <el-table-column fixed prop = "ddate" label = "日期"  ></el-table-column>
             <el-table-column prop = "title" label = "标题"></el-table-column>
+            <el-table-column label="所属时代">
+              <template slot-scope="scope">
+                  <el-tag v-for="item in scope.row.periods" :key="item.id">{{item.title}}</el-tag>
+              </template>
+            </el-table-column>
              <el-table-column fixed="right" label="操作">
                 <template slot-scope="scope">
-                    <el-button type="text" size="small" @click = "go('nationEdit', scope.row.id )">编辑</el-button>
+                    <el-button type="text" size="small" @click = "open(scope.row.id )" >编辑</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -102,12 +107,22 @@ export default {
     add() {
       this.$router.push("nation/add");
     },
-    go(name, params) {
+    go(params) {
       const id = params;
       this.$router.push({
         path: "/nation/edit/" + id
       });
     },
+    open(params) {
+      const id = params;
+
+      const { href } = this.$router.resolve({
+        path: "/nation/edit/" + id
+      });
+
+      window.open(href, "_blank");
+    },
+
     handleSizeChange(size) {
       this.page_size = size;
     },

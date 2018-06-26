@@ -43,6 +43,15 @@ public class CivilizationService {
     @Autowired
     NodeCivilizationService nodeCivilizationService;
 
+    @Autowired
+    CivilizationPeriodMapper civilizationPeriodMapper;
+
+    @Autowired
+    CivilizationPeriodService civilizationPeriodService;
+
+    @Autowired
+    PeriodService periodService;
+
 
     public Object add(JSONObject params){
         Civilization civil = new Civilization();
@@ -410,6 +419,114 @@ public class CivilizationService {
         String id = params.getString("id");
         return nodeCivilizationService.updateLevel(id,level);
     }
+
+
+    /* --- 初始化相关 --- */
+    public Object editInitRelate(JSONObject params){
+        JSONObject r = new JSONObject();
+        String id = params.getString("id");
+        Civilization civilization = civilizationMapper.selectById(id);
+        if (civilization == null)
+            return new Result(ResultMessage.PARAM_ERROR,"ID is null");
+
+        // relate
+        List<HashMap> periods = civilizationPeriodMapper.selectPeriodsByCid(id);
+        r.put("civilization",civilization);
+        r.put("periods",periods);
+
+        return new Result(ResultMessage.OK,r);
+    }
+
+    /**
+     *  同步索引
+     */
+    public  Object syncCivilizationPeriod(JSONObject params){
+        String id = params.getString("id");
+        if (civilizationMapper.selectById(id) == null)
+            return new Result(ResultMessage.PARAM_ERROR,"id is wrong");
+
+        List<CivilizationPeriod> civilizationPeriods = civilizationPeriodMapper.selectByCid(id);
+        int sort = 0;
+        for (CivilizationPeriod civilizationPeriod : civilizationPeriods){
+            civilizationPeriod.setSort(sort);
+            civilizationPeriodMapper.updateSort(civilizationPeriod);
+            sort++;
+        }
+        return new Result(ResultMessage.OK);
+    }
+
+    /**
+     *  添加时代
+     */
+    @Transactional
+    public Object savePeriod(JSONObject params){
+        String cid = params.getString("id");
+
+        if (civilizationMapper.selectById(cid) == null){
+            return new Result(ResultMessage.PARAM_ERROR,"id 错误");
+        }
+
+        JSONObject period = params.getJSONObject("period");
+        String pid = period.getString("pid");
+
+        Boolean isnew = period.getBoolean("isnew");
+        if (isnew != null && isnew){
+            // 先添加 period
+            pid = Utils.generateId();
+            Period period1 = new Period();
+            period1.setId(pid);
+            period1.setTitle(period.getString("title"));
+            Result r = (Result) periodService.add(period1);
+            if (!Result.isOk(r)){
+                return r;
+            }
+        }
+
+        // 添加联系
+        CivilizationPeriod civilizationPeriod = new CivilizationPeriod();
+        civilizationPeriod.setPid(pid);
+        civilizationPeriod.setCid(cid);
+
+        return civilizationPeriodService.add(civilizationPeriod);
+    }
+
+    /**
+     *  删除时代
+     */
+    @Transactional
+    public Object deletePeriod(JSONObject params){
+        String id = params.getString("id");
+        return civilizationPeriodService.delete(id);
+    }
+
+    /**
+     *  删除时代
+     */
+    @Transactional
+    public Object exchangePeriod(JSONObject params){
+        String oldId = params.getString("oldid");
+        String newId = params.getString("newid");
+
+        CivilizationPeriod o = civilizationPeriodMapper.selectById(oldId);
+        if (o == null)
+            return new Result(ResultMessage.PARAM_ERROR,"old id is wrong");
+
+        CivilizationPeriod n = civilizationPeriodMapper.selectById(newId);
+        if (n == null)
+            return new Result(ResultMessage.PARAM_ERROR,"new id is wrong");
+
+        Integer oldsort = o.getSort();
+        Integer newsort = n.getSort();
+
+        o.setSort(newsort);
+        n.setSort(oldsort);
+
+        civilizationPeriodMapper.updateSort(o);
+        civilizationPeriodMapper.updateSort(n);
+
+        return new Result(ResultMessage.OK);
+    }
+
 
 
     /**

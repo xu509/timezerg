@@ -30,6 +30,9 @@ public class PeriodService {
     PeriodMapper periodMapper;
 
     @Autowired
+    PeriodService periodService;
+
+    @Autowired
     NationMapper nationMapper;
 
     @Autowired
@@ -68,6 +71,7 @@ public class PeriodService {
     @Autowired
     PeriodReferenceMapper periodReferenceMapper;
 
+    /* ----  主干方法  ----*/
     @Transactional
     public Object add(Period period){
         if (period == null)
@@ -84,8 +88,44 @@ public class PeriodService {
         if (StringUtils.isBlank(period.getId()))
             period.setId(Utils.generateId());
 
-        return periodMapper.add(period);
+        periodMapper.add(period);
+
+        return new Result(ResultMessage.OK,period);
     }
+
+    @Transactional
+    public Object update(Period period){
+        if (period == null)
+            return new Result(ResultMessage.PARAM_ERROR,"update 参数为空");
+
+        Period oldPeriod = periodMapper.selectById(period.getId());
+        if (oldPeriod == null){
+            return new Result(ResultMessage.PARAM_ERROR,"update id wrong");
+        }
+
+        if (StringUtils.isBlank(period.getTitle())){
+            return new Result(ResultMessage.PARAM_ERROR,"update title wrong");
+        }
+
+        if (!oldPeriod.getTitle().equals(period.getTitle()) && (periodMapper.selectByTitle(period.getTitle()) != null)){
+            return new Result(ResultMessage.DUPLICATION_ERROR,"重复错误");
+        }
+
+        if (!StringUtils.isBlank(period.getPid())){
+            if (period.getPid().equals(period.getId())){
+                return new Result(ResultMessage.DUPLICATION_ERROR,"update pid 重复");
+            }
+
+            Period pperiod = periodMapper.selectById(period.getPid());
+            if (pperiod == null)
+                return new Result(ResultMessage.PARAM_ERROR,"update pid wrong");
+        }
+
+        periodMapper.update(period);
+
+        return new Result(ResultMessage.OK,period);
+    }
+    /* ----  主干方法 结束 ----*/
 
 
 
@@ -204,13 +244,11 @@ public class PeriodService {
             r.put("eday", eday);
         }
 
-        //nations
-        List<HashMap> nations = nationPeriodMapper.selectNationByPid(id);
-        r.put("nations", JSONObject.toJSON(nations));
-
-        //civilizations
-        List<HashMap> civilizations = civilizationPeriodMapper.selectCivilizationByPid(id);
-        r.put("civilizations", JSONObject.toJSON(civilizations));
+        // 父文明
+        Period pPeriod = periodMapper.selectById(period.getPid());
+        if (pPeriod != null){
+            r.put("pperiod",pPeriod);
+        }
 
         return new Result(ResultMessage.OK, r);
     }
@@ -360,13 +398,31 @@ public class PeriodService {
 
         period.setAD(params.getInteger("AD"));
         period.seteAD(params.getInteger("eAD"));
-
-
         period.setContent(params.getString("content"));
 
-        periodMapper.update(period);
 
-        return new Result(ResultMessage.OK, period);
+        //period
+        JSONObject pperiod = params.getJSONObject("pperiod");
+        String pid;
+        if (pperiod == null){
+            pid = null;
+        }else {
+            Boolean isnew = pperiod.getBoolean("isnew");
+            pid = pperiod.getString("pid");
+            if (isnew !=null && isnew){
+                pid = Utils.generateId();
+                Period period1 = new Period();
+                period1.setId(pid);
+                period1.setTitle(pperiod.getString("title"));
+                Result r = (Result) periodService.add(period1);
+                if (!Result.isOk(r))
+                    return r;
+            }
+        }
+
+
+        period.setPid(pid);
+        return update(period);
     }
 
 

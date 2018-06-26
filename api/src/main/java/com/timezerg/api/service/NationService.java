@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by xnx on 2018/5/4.
@@ -145,24 +142,34 @@ public class NationService {
         Integer start = params.getInteger("start");
         Integer size = params.getInteger("size");
 
+
+        List<HashMap> list = new ArrayList<>();
+
         if (type == 1){
             //默认
-            List<HashMap> list = nationMapper.getList(title,start,size);
-            r.put("data", list);
+           list = nationMapper.getList(title,start,size);
             r.put("total", nationMapper.getListTotal(title));
         }else if (type == 2){
             //顶级
             Object[] p = {start, size};
-            List<HashMap> list = nationMapper.getTopList(p);
-            r.put("data", list);
+            list = nationMapper.getTopList(p);
             r.put("total", nationMapper.getTopListTotal(p));
         }else if (type == 3){
             //未完善
             Object[] p = {start, size};
-            List<HashMap> list = nationMapper.getUncheckList(p);
-            r.put("data", list);
+            list = nationMapper.getUncheckList(p);
             r.put("total", nationMapper.getUncheckListTotal(p));
         }
+
+        for (HashMap nationMap : list){
+            String id = (String) nationMap.get("id");
+
+            //填写时代
+            nationMap.put("periods",nationPeriodMapper.selectByNid(id));
+        }
+
+        r.put("data", list);
+
         return new Result(ResultMessage.OK, r);
     }
 

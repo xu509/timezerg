@@ -12,6 +12,7 @@ public class CivilizationPeriod implements Serializable {
     private String id;
     private String cid;
     private String pid;
+    private Integer sort;
 
     public String getId() {
         return id;
@@ -35,5 +36,13 @@ public class CivilizationPeriod implements Serializable {
 
     public void setPid(String pid) {
         this.pid = pid;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
     }
 }
