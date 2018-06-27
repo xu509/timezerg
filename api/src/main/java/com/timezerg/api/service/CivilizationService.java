@@ -527,6 +527,26 @@ public class CivilizationService {
         return new Result(ResultMessage.OK);
     }
 
+    /**
+     *  同步节点
+     */
+    public Object syncNode(JSONObject params){
+        String id = params.getString("id");
+        Civilization civilization = civilizationMapper.selectById(id);
+        if (civilization == null)
+            return new Result(ResultMessage.PARAM_ERROR,"ID 错误");
+
+        //查找文明下的所有时代（包括子时代）
+        List<Period> periods = civilizationPeriodService.getAllPeriods(id);
+
+        //查找时代下的所有国家
+
+
+        return new Result(ResultMessage.OK);
+    }
+
+
+
 
 
     /**

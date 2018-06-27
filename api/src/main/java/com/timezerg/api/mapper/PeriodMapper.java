@@ -33,6 +33,9 @@ public interface PeriodMapper {
     @Select("select * from t_timezerg_period where title = #{title}")
     Period selectByTitle(String title);
 
+    @SelectProvider(type= PeriodMapperProvider.class,method = "selectListByPid")
+    List<Period> selectListByPid(@Param("pids") Object[] pids);
+
     @Update("update t_timezerg_period set title = #{title},pid = #{pid},content = #{content},cover = #{cover},cdate = #{cdate},edate = #{edate},ddate = #{ddate},AD = #{AD},eAD = #{eAD}" +
             " where id = #{id}")
     int update(Period period);

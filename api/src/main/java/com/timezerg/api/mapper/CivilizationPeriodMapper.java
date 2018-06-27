@@ -2,6 +2,7 @@ package com.timezerg.api.mapper;
 
 import com.timezerg.api.model.CivilizationPeriod;
 import com.timezerg.api.model.NationPeriod;
+import com.timezerg.api.model.Period;
 import org.apache.ibatis.annotations.*;
 
 import java.util.HashMap;
@@ -30,6 +31,12 @@ public interface CivilizationPeriodMapper {
 
     @Select("SELECT * FROM t_timezerg_civilization_period ORDER BY sort ASC,id DESC")
     List<CivilizationPeriod> selectByCid(String cid);
+
+    @Select("SELECT p.* FROM t_timezerg_civilization c " +
+            "LEFT JOIN t_timezerg_civilization_period cp ON c.id = cp.cid " +
+            "LEFT JOIN t_timezerg_period p ON cp.pid = p.id " +
+            "WHERE c.id = #{cid} ")
+    List<Period> selectPeriodByCid(String cid);
 
     @Update("UPDATE t_timezerg_civilization_period SET sort = #{sort} WHERE id = #{id}")
     void updateSort(CivilizationPeriod c);

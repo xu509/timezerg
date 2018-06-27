@@ -2,11 +2,14 @@ package com.timezerg.api.service;
 
 import com.timezerg.api.mapper.*;
 import com.timezerg.api.model.CivilizationPeriod;
+import com.timezerg.api.model.Nation;
 import com.timezerg.api.model.NationPeriod;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by xnx on 2018/5/4.
@@ -53,6 +56,37 @@ public class NationPeriodService {
         }
     }
 
+    /* 获取所有国家 */
+    public List<Nation> getAllNation(String pid){
 
+        List<Nation> nations = nationPeriodMapper.selectNationBeanByPid(pid);
+
+        Object[] nids = new Object[nations.size()];
+        int index = 0;
+        for (Nation nation : nations){
+            nids[index] = nation.getId();
+            index++;
+        }
+
+        List<Period> childPeriods = periodMapper.selectListByPid(pids);
+
+        while (childPeriods.size() > 0){
+            periods.addAll(childPeriods);
+
+            Object[] cids = new Object[childPeriods.size()];
+            int i = 0;
+            for (Period period : childPeriods){
+                pids[i] = period.getId();
+                i++;
+            }
+
+            childPeriods = periodMapper.selectListByPid(cids);
+        }
+
+        HashSet h = new HashSet(periods);
+        periods.clear();
+        periods.addAll(h);
+        return periods;
+    }
 
 }

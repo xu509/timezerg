@@ -40,4 +40,26 @@ public class PeriodMapperProvider {
         return sql.toString();
     }
 
+    public static String selectListByPid(final Map<String,Object> map){
+        StringBuffer sql = new StringBuffer("SELECT * FROM t_timezerg_period ");
+
+        Object[] pids = (Object[]) map.get("pids");
+
+        if (pids != null && pids.length >0){
+
+            sql.append("WHERE pid IN (");
+
+            for (int x = 0 ; x < pids.length ; x++){
+                sql.append(pids[x]);
+                sql.append(",");
+            }
+            Integer i = sql.lastIndexOf(",");
+            sql.deleteCharAt(i);
+            sql.append(") ");
+        }
+
+        return sql.toString();
+    }
+
+
 }
