@@ -95,7 +95,7 @@
                         </div>
                     </template>
                   </div>
-                 
+
                 </el-card>
               </el-col>
           </el-row>
@@ -108,7 +108,7 @@
                   <el-button type="primary">同步</el-button>
               </el-col>
               <el-col :md="6">
-                <selectboxlevel @selectLevel = "selectLevel"></selectboxlevel>  
+                <selectboxlevel @selectLevel = "selectLevel"></selectboxlevel>
               </el-col>
               <el-col :md="6">
                 <el-input v-model="searchContentNode" placeholder="搜索标题"></el-input>
@@ -142,7 +142,7 @@
               </el-row>
 
 
-         </el-tab-pane> 
+         </el-tab-pane>
       </el-tabs>
     </el-row>
   </div>
