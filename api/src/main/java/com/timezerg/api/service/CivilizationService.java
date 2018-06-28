@@ -3,6 +3,7 @@ package com.timezerg.api.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.corba.se.impl.oa.toa.TOA;
 import com.timezerg.api.config.AppConfig;
 import com.timezerg.api.mapper.*;
 import com.timezerg.api.model.*;
@@ -51,6 +52,12 @@ public class CivilizationService {
 
     @Autowired
     PeriodService periodService;
+
+    @Autowired
+    NationPeriodService nationPeriodService;
+
+    @Autowired
+    NodeNationService nodeNationService;
 
 
     public Object add(JSONObject params){
@@ -527,6 +534,59 @@ public class CivilizationService {
         return new Result(ResultMessage.OK);
     }
 
+    /**
+     *  同步节点
+     */
+    @Transactional
+    public Object syncNode(JSONObject params){
+        String id = params.getString("id");
+        Civilization civilization = civilizationMapper.selectById(id);
+        if (civilization == null)
+            return new Result(ResultMessage.PARAM_ERROR,"ID 错误");
+
+        //查找文明下的所有时代（包括子时代）
+        List<Period> periods = civilizationPeriodService.getAllPeriods(id);
+
+        //查找时代下的所有国家
+        List<Nation> nationList = new ArrayList<>();
+        for (Period period : periods){
+            List<Nation> nations = nationPeriodService.getAllNation(period.getId());
+            if (nations != null)
+                nationList.addAll(nations);
+        }
+
+        HashSet hashSet = new HashSet(nationList);
+        nationList.clear();
+        nationList.addAll(hashSet);
+
+        //查找国家下的所有节点
+        String[] nationids = new String[nationList.size()];
+        int index_x = 0;
+        for (Nation nation : nationList){
+            nationids[index_x] = nation.getId();
+            index_x ++;
+        }
+
+        List<Node> nodes = nodeNationService.selectNodesByNationIds(nationids);
+
+        int n = 0;
+        //文明绑定节点
+        for (Node node : nodes){
+            NodeCivilization nodeCivilization = new NodeCivilization();
+            nodeCivilization.setId(Utils.generateId());
+            nodeCivilization.setCid(id);
+            nodeCivilization.setNid(node.getId());
+            Result r = (Result) nodeCivilizationService.add(nodeCivilization);
+            if (Result.isOk(r)){
+                n++;
+            }
+        }
+
+        return new Result(ResultMessage.OK,n);
+    }
+
+
+
 
 
     /**
@@ -543,6 +603,21 @@ public class CivilizationService {
         return new Result(ResultMessage.OK,civilizationMaps);
     }
 
+
+    @Transactional
+    public Object getApiTimeLine(JSONObject params){
+        String id = params.getString("id");
+        if (civilizationMapper.selectById(id) == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        //获取 timeline
+        Long total = nodeCivilizationMapper.selectNodesTotalByCid(id,AppConfig.KEY_VALUE.Level_Very_Important,null);
+
+        List<HashMap> nodesMap = nodeCivilizationMapper.selectNodesByCid(id,AppConfig.KEY_VALUE.Level_Very_Important,null,0, total.intValue());
+
+        return new Result(ResultMessage.OK,nodesMap);
+
+    }
 
 
 

@@ -27,7 +27,7 @@
                                             <template slot-scope="props">
                                                       <div class="name">
                                                             {{ props.item.title }}
-                                                        </div>
+                                                      </div>
                                             </template>
                                 </el-autocomplete>
                                 <el-tag type="warning"
@@ -105,7 +105,7 @@
          <el-tab-pane label="节点" name="3">
            <el-row>
               <el-col :md="2">
-                  <el-button type="primary">同步</el-button>
+                  <el-button type="primary" v-loading = "nodes.loading" @click = "clickSyncBtn">同步</el-button>
               </el-col>
               <el-col :md="6">
                 <selectboxlevel @selectLevel = "selectLevel"></selectboxlevel>
@@ -574,7 +574,6 @@ export default {
       console.log("value : " + value);
       console.log("id : " + id);
     },
-
     updateLevel(id, level) {
       console.log("id :" + id);
       var _this = this;
@@ -591,6 +590,43 @@ export default {
             _this.$message({
               type: "success",
               message: "修改成功!"
+            });
+            _this.init();
+          } else {
+            _this.$notify.error({
+              title: response.data.msg,
+              message: response.data.data,
+              duration: 0
+            });
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+
+    clickSyncBtn() {
+      var _this = this;
+      _this.nodes.loading = true;
+
+      axios
+        .post(_this.GLOBAL.url_civilization_edit_nodes_sync, {
+          id: _this.form.id
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            var data = response.data.data;
+
+            var message = "";
+            if (data == 0) {
+              message = "已完成同步，无更新";
+            } else {
+              message = "同步成功，共更新了 " + data + " 条数据";
+            }
+
+            _this.$message({
+              type: "success",
+              message: message
             });
             _this.init();
           } else {

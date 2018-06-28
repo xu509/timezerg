@@ -40,4 +40,7 @@ public interface NodeCivilizationMapper {
     @Select("SELECT * FROM t_timezerg_node_civilization WHERE id = #{id}")
     NodeCivilization selectById(String id);
 
+    @Select("SELECT * FROM t_timezerg_node_civilization WHERE nid = #{nid} AND cid = #{cid}")
+    NodeCivilization selectByNidAndCid(NodeCivilization nodeCivilization);
+
 }

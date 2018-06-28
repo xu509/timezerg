@@ -66,6 +66,39 @@ public class CivilizationPeriodService {
         }
     }
 
+    /* 获取所有时代 */
+    public List<Period> getAllPeriods(String cid){
+
+        List<Period> periods = civilizationPeriodMapper.selectPeriodByCid(cid);
+
+        Object[] pids = new Object[periods.size()];
+        int index = 0;
+        for (Period period : periods){
+            pids[index] = period.getId();
+            index++;
+        }
+
+        List<Period> childPeriods = periodMapper.selectListByPid(pids);
+
+        while (childPeriods.size() > 0){
+            periods.addAll(childPeriods);
+
+            Object[] cids = new Object[childPeriods.size()];
+            int i = 0;
+            for (Period period : childPeriods){
+                pids[i] = period.getId();
+                i++;
+            }
+
+            childPeriods = periodMapper.selectListByPid(cids);
+        }
+
+        HashSet h = new HashSet(periods);
+        periods.clear();
+        periods.addAll(h);
+        return periods;
+    }
+
 
 
 }

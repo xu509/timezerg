@@ -1,6 +1,7 @@
 package com.timezerg.api.service;
 
 import com.timezerg.api.mapper.*;
+import com.timezerg.api.model.Node;
 import com.timezerg.api.model.NodeNation;
 import com.timezerg.api.model.NodeReference;
 import com.timezerg.api.util.Result;
@@ -9,6 +10,8 @@ import com.timezerg.api.util.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by xnx on 2018/5/4.
@@ -56,6 +59,10 @@ public class NodeNationService {
             nodeNationMapper.deleteById(id);
             return new Result(ResultMessage.OK);
         }
+    }
+
+    public List<Node> selectNodesByNationIds(String[] nationIds){
+        return nodeNationMapper.selectNodesByNationIds(nationIds);
     }
 
 

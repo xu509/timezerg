@@ -1,12 +1,17 @@
 package com.timezerg.api.service;
 
+import com.alibaba.fastjson.JSON;
 import com.timezerg.api.mapper.*;
 import com.timezerg.api.model.CivilizationPeriod;
+import com.timezerg.api.model.Nation;
 import com.timezerg.api.model.NationPeriod;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created by xnx on 2018/5/4.
@@ -53,6 +58,43 @@ public class NationPeriodService {
         }
     }
 
+    /* 获取所有国家 */
+    public List<Nation> getAllNation(String pid){
 
+        List<Nation> nations = nationPeriodMapper.selectNationBeanByPid(pid);
+
+        if (nations.size() == 0)
+            return null;
+
+
+        Object[] nids = new Object[nations.size()];
+
+        int index = 0;
+        for (Nation nation : nations){
+
+            nids[index] = nation.getId();
+            index++;
+        }
+
+        List<Nation> childNation = nationMapper.selectListByFids(nids);
+
+        while (childNation.size() > 0){
+            nations.addAll(childNation);
+
+            Object[] cids = new Object[childNation.size()];
+            int i = 0;
+            for (Nation nation : childNation){
+                cids[i] = nation.getId();
+                i++;
+            }
+
+            childNation = nationMapper.selectListByFids(cids);
+        }
+
+        HashSet h = new HashSet(nations);
+        nations.clear();
+        nations.addAll(h);
+        return nations;
+    }
 
 }
