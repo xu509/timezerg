@@ -52,6 +52,12 @@ public class CivilizationService {
     @Autowired
     PeriodService periodService;
 
+    @Autowired
+    NationPeriodService nationPeriodService;
+
+    @Autowired
+    NodeNationService nodeNationService;
+
 
     public Object add(JSONObject params){
         Civilization civil = new Civilization();
@@ -540,9 +546,41 @@ public class CivilizationService {
         List<Period> periods = civilizationPeriodService.getAllPeriods(id);
 
         //查找时代下的所有国家
+        List<Nation> nationList = new ArrayList<>();
+        for (Period period : periods){
+            List<Nation> nations = nationPeriodService.getAllNation(period.getId());
+            if (nations != null)
+                nationList.addAll(nations);
+        }
 
+        HashSet hashSet = new HashSet(nationList);
+        nationList.clear();
+        nationList.addAll(hashSet);
 
-        return new Result(ResultMessage.OK);
+        //查找国家下的所有节点
+        String[] nationids = new String[nationList.size()];
+        int index_x = 0;
+        for (Nation nation : nationList){
+            nationids[index_x] = nation.getId();
+            index_x ++;
+        }
+
+        List<Node> nodes = nodeNationService.selectNodesByNationIds(nationids);
+
+        int n = 0;
+        //文明绑定节点
+        for (Node node : nodes){
+            NodeCivilization nodeCivilization = new NodeCivilization();
+            nodeCivilization.setId(Utils.generateId());
+            nodeCivilization.setCid(id);
+            nodeCivilization.setNid(node.getId());
+            Result r = (Result) nodeCivilizationService.add(nodeCivilization);
+            if (Result.isOk(r)){
+                n++;
+            }
+        }
+
+        return new Result(ResultMessage.OK,n);
     }
 
 

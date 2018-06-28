@@ -34,6 +34,8 @@ const url_civilization_edit_init_relate =
   domain + "/civilization/edit/init/relate";
 const url_civilization_edit_nodes_updatelevel =
   domain + "/civilization/edit/nodes/updatelevel";
+const url_civilization_edit_nodes_sync =
+  domain + "/civilization/edit/nodes/sync";
 const url_civilization_relate_period_sync =
   domain + "/civilization/relate/period/sync";
 const url_civilization_relate_period_save =
@@ -189,6 +191,7 @@ export default {
   url_civilization_edit_init_nodes,
   url_civilization_edit_init_relate,
   url_civilization_edit_nodes_updatelevel,
+  url_civilization_edit_nodes_sync,
   url_civilization_relate_period_sync,
   url_civilization_relate_period_save,
   url_civilization_relate_period_delete,

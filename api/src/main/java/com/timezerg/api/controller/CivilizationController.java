@@ -88,11 +88,16 @@ public class CivilizationController {
         return civilizationService.editInitNodes(params);
     }
 
-
     @PostMapping("/civilization/edit/nodes/updatelevel")
     public Object updateNodeLevel(@RequestBody JSONObject params){
         return civilizationService.updateNodeLevel(params);
     }
+
+    @PostMapping("/civilization/edit/nodes/sync")
+    public Object syncNode(@RequestBody JSONObject params){
+        return civilizationService.syncNode(params);
+    }
+
 
     @PostMapping("/civilization/edit/init/relate")
     public Object editInitRelate(@RequestBody JSONObject params){
@@ -130,8 +135,6 @@ public class CivilizationController {
     public Object relatePeriodDelete(@RequestBody JSONObject params){
         return civilizationService.deletePeriod(params);
     }
-
-
 
     /**
      *  api

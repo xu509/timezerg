@@ -34,7 +34,7 @@ public interface NationPeriodMapper {
 
     @Select("SELECT n.* FROM t_timezerg_period p " +
             "LEFT JOIN t_timezerg_nation_period np ON p.id = np.pid " +
-            "LEFT JOIN t_timezerg_nation n ON np.nid = n.id " +
+            "RIGHT JOIN t_timezerg_nation n ON np.nid = n.id " +
             "WHERE p.id = #{pid}")
     List<Nation> selectNationBeanByPid(String pid);
 

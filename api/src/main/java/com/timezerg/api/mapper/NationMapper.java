@@ -36,7 +36,6 @@ public interface NationMapper {
     @Select("select count(*) from t_timezerg_nation n where n.cdate is null")
     Long getUncheckListTotal(Object[] params);
 
-
     @Select("select * from t_timezerg_nation where title like CONCAT('%',#{title},'%') limit 0,10")
     List<Nation> selectLikeByTitle(String title);
 
@@ -46,6 +45,8 @@ public interface NationMapper {
     @Select("select * from t_timezerg_nation where id = #{id}")
     Nation selectById(String id);
 
+    @SelectProvider(type= NationMapperProvider.class,method = "selectListByFid")
+    List<Nation> selectListByFids(@Param("fids") Object[] fids);
 
     @Update("update t_timezerg_nation set pid = #{pid} ,fid = #{fid},title = #{title},content = #{content},cover = #{cover},cdate = #{cdate},edate = #{edate},ddate = #{ddate},AD = #{AD},eAD = #{eAD},invent = #{invent}" +
             " where id = #{id}")

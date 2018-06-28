@@ -1,5 +1,6 @@
 package com.timezerg.api.service;
 
+import com.alibaba.fastjson.JSON;
 import com.timezerg.api.mapper.*;
 import com.timezerg.api.model.CivilizationPeriod;
 import com.timezerg.api.model.Nation;
@@ -9,6 +10,7 @@ import com.timezerg.api.util.ResultMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -61,32 +63,38 @@ public class NationPeriodService {
 
         List<Nation> nations = nationPeriodMapper.selectNationBeanByPid(pid);
 
+        if (nations.size() == 0)
+            return null;
+
+
         Object[] nids = new Object[nations.size()];
+
         int index = 0;
         for (Nation nation : nations){
+
             nids[index] = nation.getId();
             index++;
         }
 
-        List<Period> childPeriods = periodMapper.selectListByPid(pids);
+        List<Nation> childNation = nationMapper.selectListByFids(nids);
 
-        while (childPeriods.size() > 0){
-            periods.addAll(childPeriods);
+        while (childNation.size() > 0){
+            nations.addAll(childNation);
 
-            Object[] cids = new Object[childPeriods.size()];
+            Object[] cids = new Object[childNation.size()];
             int i = 0;
-            for (Period period : childPeriods){
-                pids[i] = period.getId();
+            for (Nation nation : childNation){
+                cids[i] = nation.getId();
                 i++;
             }
 
-            childPeriods = periodMapper.selectListByPid(cids);
+            childNation = nationMapper.selectListByFids(cids);
         }
 
-        HashSet h = new HashSet(periods);
-        periods.clear();
-        periods.addAll(h);
-        return periods;
+        HashSet h = new HashSet(nations);
+        nations.clear();
+        nations.addAll(h);
+        return nations;
     }
 
 }
