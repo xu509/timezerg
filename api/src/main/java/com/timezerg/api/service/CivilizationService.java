@@ -3,6 +3,7 @@ package com.timezerg.api.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.corba.se.impl.oa.toa.TOA;
 import com.timezerg.api.config.AppConfig;
 import com.timezerg.api.mapper.*;
 import com.timezerg.api.model.*;
@@ -536,6 +537,7 @@ public class CivilizationService {
     /**
      *  同步节点
      */
+    @Transactional
     public Object syncNode(JSONObject params){
         String id = params.getString("id");
         Civilization civilization = civilizationMapper.selectById(id);
@@ -601,6 +603,21 @@ public class CivilizationService {
         return new Result(ResultMessage.OK,civilizationMaps);
     }
 
+
+    @Transactional
+    public Object getApiTimeLine(JSONObject params){
+        String id = params.getString("id");
+        if (civilizationMapper.selectById(id) == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        //获取 timeline
+        Long total = nodeCivilizationMapper.selectNodesTotalByCid(id,AppConfig.KEY_VALUE.Level_Very_Important,null);
+
+        List<HashMap> nodesMap = nodeCivilizationMapper.selectNodesByCid(id,AppConfig.KEY_VALUE.Level_Very_Important,null,0, total.intValue());
+
+        return new Result(ResultMessage.OK,nodesMap);
+
+    }
 
 
 

@@ -161,6 +161,7 @@ const url_search_reference = domain + "/reference/search";
 const url_search_node = domain + "/node/search";
 
 const url_api_civilization_list = domain + "/api/civilization/list";
+const url_api_civilization_timeline = domain + "/api/civilization/timeline";
 const url_api_period_list = domain + "/api/period/list";
 
 //yearbook
@@ -282,7 +283,8 @@ export default {
   url_relation_edit_init,
   url_relation_edit_save,
   url_api_civilization_list,
-  url_api_period_list
+  url_api_period_list,
+  url_api_civilization_timeline
 };
 </script>
 

@@ -144,7 +144,11 @@ public class CivilizationController {
         return civilizationService.getApiList(params);
     }
 
-
+    @CrossOrigin
+    @PostMapping("/api/civilization/timeline")
+    public Object apiTimeLine(@RequestBody JSONObject params){
+        return civilizationService.getApiTimeLine(params);
+    }
 
 
 }

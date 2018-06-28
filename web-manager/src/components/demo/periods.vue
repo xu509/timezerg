@@ -11,10 +11,7 @@
       </el-col>
     </el-row>
     <el-row>
-        <el-col :md="4">
-          &nbsp;
-        </el-col>
-        <el-col :md="15">
+        <el-col :md="6" :offset="2">
           <template v-for="item in periods">
             <el-row :key="item.id">
               <div class="civilizationbox">
@@ -23,8 +20,12 @@
             </el-row>
           </template>
         </el-col>
-        <el-col :md="4">
-          &nbsp;
+        <el-col :md="12">
+          <ul>
+            <li v-for="item in timelines" :key="item.id">
+              {{item.ddate}} - {{item.title}}
+            </li>
+          </ul>
         </el-col>
     </el-row>
   </div>
@@ -38,6 +39,7 @@ export default {
   data() {
     return {
       id: null,
+      timelines: [],
       periods: [],
       civilization: {},
       loading: false,
@@ -64,7 +66,23 @@ export default {
             _this.civilization = data.civilization;
             _this.periods = data.periods;
           }
-          // console.log(response.data.data[0].id);
+        });
+
+      _this.initTimeline();
+    },
+    initTimeline() {
+      var _this = this;
+      //获取该文明的世界线
+      axios
+        .post(_this.GLOBAL.url_api_civilization_timeline, {
+          id: _this.id
+        })
+        .then(function(response) {
+          console.log(response);
+          if (response.data.result == 0) {
+            var data = response.data.data;
+            _this.timelines = data;
+          }
         });
     }
   },
