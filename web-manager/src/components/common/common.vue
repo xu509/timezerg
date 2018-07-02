@@ -70,6 +70,11 @@ const url_nation_edit_relate_period_save =
   domain + "/nation/edit/relate/period/save";
 const url_nation_edit_relate_period_delete =
   domain + "/nation/edit/relate/period/delete";
+const url_nation_edit_init_nodes = domain + "/nation/edit/init/nodes";
+const url_nation_edit_nodes_updatelevel =
+  domain + "/nation/edit/nodes/updatelevel";
+const url_nation_edit_nodes_sync = domain + "/nation/edit/nodes/sync";
+
 const url_nation_tag_save = domain + "/nation/edit/tag/save";
 const url_nation_tag_delete = domain + "/nation/edit/tag/delete";
 const url_period_list = domain + "/period/list";
@@ -77,6 +82,7 @@ const url_period_add = domain + "/period/save";
 const url_period_edit_init = domain + "/period/edit/init";
 const url_period_edit_init_relate = domain + "/period/edit/init/relate";
 const url_period_edit_init_tag = domain + "/period/edit/init/tag";
+const url_period_edit_init_nodes = domain + "/period/edit/init/nodes";
 const url_period_edit_save = domain + "/period/edit/save";
 const url_period_tag_save = domain + "/period/edit/tag/save";
 const url_period_tag_delete = domain + "/period/edit/tag/delete";
@@ -92,6 +98,9 @@ const url_period_relate_reference_save =
   domain + "/period/edit/relate/reference/save";
 const url_period_relate_reference_delete =
   domain + "/period/edit/relate/reference/delete";
+const url_period_edit_nodes_updatelevel =
+  domain + "/period/edit/nodes/updatelevel";
+const url_period_edit_nodes_sync = domain + "/period/edit/nodes/sync";
 const url_continent_add = domain + "/continent/save";
 const url_index = domain + "/civilization/index";
 const url_civilization_index_list = domain + "/civilizationindex/list";
@@ -150,6 +159,8 @@ const url_relation_list = domain + "/relation/list";
 const url_relation_edit_init = domain + "/relation/edit/init";
 const url_relation_edit_save = domain + "/relation/edit/save";
 
+const url_nodenation_delete = domain + "/nodenation/";
+
 const url_search_nation = domain + "/nation/search";
 const url_search_giant = domain + "/giant/search";
 const url_search_civilization = domain + "/civilization/search";
@@ -165,6 +176,14 @@ const url_api_civilization_timeline = domain + "/api/civilization/timeline";
 const url_api_period_list = domain + "/api/period/list";
 
 //yearbook
+
+const showErrorMsg = function(response, t) {
+  t.$notify.error({
+    title: response.data.msg,
+    message: response.data.data,
+    duration: 0
+  });
+};
 
 export default {
   table_page_node, //
@@ -215,13 +234,19 @@ export default {
   url_nation_edit_relate_reference_delete,
   url_nation_edit_relate_period_save,
   url_nation_edit_relate_period_delete,
+  url_nation_edit_init_nodes,
+  url_nation_edit_nodes_updatelevel,
+  url_nation_edit_nodes_sync,
   url_nation_tag_save,
   url_nation_tag_delete,
   url_period_list,
   url_period_add,
   url_period_edit_init,
   url_period_edit_init_tag,
+  url_period_edit_init_nodes,
   url_period_edit_save,
+  url_period_edit_nodes_sync,
+  url_period_edit_nodes_updatelevel,
   url_period_tag_save,
   url_period_tag_delete,
   url_period_edit_init_relate,
@@ -284,7 +309,9 @@ export default {
   url_relation_edit_save,
   url_api_civilization_list,
   url_api_period_list,
-  url_api_civilization_timeline
+  url_api_civilization_timeline,
+  url_nodenation_delete,
+  showErrorMsg
 };
 </script>
 

@@ -22,6 +22,9 @@ public interface AppConfig {
         Integer Level_Important = 2;
         Integer Level_Normal = 3;
         Integer Level_Detail = 4;
+
+        Integer BC = 0;
+        Integer AD = 1;
     }
 
 

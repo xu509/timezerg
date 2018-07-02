@@ -1,8 +1,10 @@
 package com.timezerg.api.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.timezerg.api.model.Period;
 import com.timezerg.api.service.PeriodService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -106,6 +108,22 @@ public class PeriodController {
     @PostMapping("/period/edit/save")
     public Object edit(@RequestBody JSONObject params) {
         return periodService.edit(params);
+    }
+
+
+    @PostMapping("/period/edit/init/nodes")
+    public Object editInitNodes(@RequestBody JSONObject params){
+        return periodService.editInitNodes(params);
+    }
+
+    @PostMapping("/period/edit/nodes/sync")
+    public Object syncNode(@RequestBody JSONObject params){
+        return periodService.syncNode(params);
+    }
+
+    @PostMapping("/period/edit/nodes/updatelevel")
+    public Object updateNodeLevel(@RequestBody JSONObject params){
+        return periodService.updateNodeLevel(params);
     }
 
 

@@ -2,6 +2,7 @@ package com.timezerg.api.util;
 
 import com.timezerg.api.config.AppConfig;
 import com.timezerg.api.model.Node;
+import com.timezerg.api.model.Period;
 
 import java.util.Date;
 
@@ -75,6 +76,57 @@ public class Utils {
         }
         return str;
     }
+
+
+    public static boolean checkNodeDateInPeriod(Date nodeDate,Integer nodeAD, Period period){
+        Date startTime = period.getCdate();
+        Integer startAD = period.getAD();
+        Date endTime = period.getEdate();
+        Integer endAD = period.geteAD();
+
+        if (startTime == null || endTime == null)
+            return false;
+
+        if (nodeAD.equals(AppConfig.KEY_VALUE.BC) && startAD.equals(AppConfig.KEY_VALUE.AD)){
+            return false;
+        }
+
+        if (nodeAD.equals(AppConfig.KEY_VALUE.AD) && endAD.equals(AppConfig.KEY_VALUE.BC)){
+            return false;
+        }
+
+        if (nodeAD.equals(AppConfig.KEY_VALUE.BC) && endAD.equals(AppConfig.KEY_VALUE.BC)){
+            //当时代与节点都在公元前
+            if (nodeDate.after(startTime))
+                return false;
+            else if (nodeDate.before(endTime))
+                return false;
+            else
+                return true;
+        }
+
+        if (nodeAD.equals(AppConfig.KEY_VALUE.AD) && startAD.equals(AppConfig.KEY_VALUE.AD)){
+            //当时代与节点都在公元后
+            if (nodeDate.after(endTime))
+                return false;
+            else if (nodeDate.before(startTime))
+                return false;
+            else
+                return true;
+        }
+
+        if (startAD.equals(AppConfig.KEY_VALUE.BC) && endAD.equals(AppConfig.KEY_VALUE.AD)){
+            //当时代跨越公元前后
+            if (nodeAD.equals(AppConfig.KEY_VALUE.BC)){
+                return nodeDate.before(startTime);
+            }else {
+                return nodeDate.before(endTime);
+            }
+        }
+
+        return true;
+    }
+
 
 
 }

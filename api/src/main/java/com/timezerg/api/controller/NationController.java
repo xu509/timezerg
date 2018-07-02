@@ -122,4 +122,20 @@ public class NationController {
         return nationService.deleteTag(params);
     }
 
+
+    @PostMapping("/nation/edit/init/nodes")
+    public Object editInitNodes(@RequestBody JSONObject params){
+        return nationService.editInitNodes(params);
+    }
+
+    @PostMapping("/nation/edit/nodes/sync")
+    public Object syncNode(@RequestBody JSONObject params){
+        return nationService.syncNode(params);
+    }
+
+    @PostMapping("/nation/edit/nodes/updatelevel")
+    public Object updateNodeLevel(@RequestBody JSONObject params){
+        return nationService.updateNodeLevel(params);
+    }
+
 }
