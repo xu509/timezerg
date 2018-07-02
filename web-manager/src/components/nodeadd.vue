@@ -10,6 +10,14 @@
       </el-col>
     </el-row>
     <el-row>
+        <el-col :sm="24" :xs="24" :md="4" :xl="4" >
+            <el-card class="box-card" v-if = "add_id != null">
+                <p class="paragraph-content">{{add_title}}</p>
+            </el-card>
+        </el-col>
+    </el-row>
+
+    <el-row>
       <el-col :sm="24" :xs="24" :md="14" :xl="14" >
           <el-form ref="form" :model="form" label-width="120px">
                 <el-form-item label="标题">
@@ -106,9 +114,9 @@
 
 <script>
 import axios from "axios";
-import inputboxnation from "./plugin/inputboxnation.vue"
-import inputboxcivilization from "./plugin/inputboxcivilization.vue"
-import inputboxgiant from "./plugin/inputboxgiant.vue"
+import inputboxnation from "./plugin/inputboxnation.vue";
+import inputboxcivilization from "./plugin/inputboxcivilization.vue";
+import inputboxgiant from "./plugin/inputboxgiant.vue";
 
 export default {
   name: "nodeadd",
@@ -116,7 +124,7 @@ export default {
     return {
       form: {
         title: "",
-        content : "",
+        content: "",
         ddate: "",
         year: null,
         month: null,
@@ -131,7 +139,6 @@ export default {
         civilization: null,
         civilizations: [],
         giants: []
-
       },
       options: [
         {
@@ -155,11 +162,15 @@ export default {
           label: "细节"
         }
       ],
-      saving: false
+      saving: false,
+      add_id: "950550160788688896",
+      add_title: "安史之乱"
     };
   },
-  components:{
-    inputboxnation,inputboxcivilization,inputboxgiant
+  components: {
+    inputboxnation,
+    inputboxcivilization,
+    inputboxgiant
   },
   methods: {
     init() {
@@ -189,7 +200,7 @@ export default {
       axios
         .post(_this.GLOBAL.url_node_add, {
           title: _this.form.title,
-          content : _this.form.content,
+          content: _this.form.content,
           ddate: _this.form.ddate,
           year: _this.form.year,
           month: _this.form.month,
@@ -200,7 +211,7 @@ export default {
           level: _this.form.level,
           nations: _this.form.nations,
           civilizations: _this.form.civilizations,
-          giants : _this.form.giants
+          giants: _this.form.giants
         })
         .then(function(response) {
           if (response.data.result == 0) {
@@ -231,11 +242,11 @@ export default {
     closeCivilizationTag(index) {
       this.form.civilizations.splice(index, 1);
     },
-    selectGiant(item){
+    selectGiant(item) {
       this.form.giants.push(item);
     },
-    closeGiantTag(index){
-      this.form.giants.splice(index,1);
+    closeGiantTag(index) {
+      this.form.giants.splice(index, 1);
     }
   }
 };
