@@ -28,6 +28,9 @@ public interface NodeCivilizationMapper {
     @Delete("DELETE FROM t_timezerg_node_civilization WHERE nid = #{nid}")
     int deleteByNodeId(String nid);
 
+    @Delete("DELETE FROM t_timezerg_node_civilization WHERE id = #{id}")
+    int deleteById(String id);
+
     @SelectProvider(type= NodeCivilizationMapperProvider.class,method = "getNodes")
     List<HashMap> selectNodesByCid(@Param("cid") String cid ,@Param("level") Integer level,@Param("title") String title,@Param("start") Integer start, @Param("limit") Integer limit);
 

@@ -669,6 +669,9 @@ public class NationService {
     }
 
 
+    /**
+     *  获取某国家下的所有子国家
+     */
     public List<Nation> getAllNations(String nid){
         Nation nation = nationMapper.selectById(nid);
         if (nation == null)

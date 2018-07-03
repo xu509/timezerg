@@ -1,6 +1,7 @@
 package com.timezerg.api.mapper;
 
 import com.timezerg.api.mapper.provider.NodeNationMapperProvider;
+import com.timezerg.api.model.Nation;
 import com.timezerg.api.model.Node;
 import com.timezerg.api.model.NodeNation;
 import org.apache.ibatis.annotations.*;
@@ -38,6 +39,9 @@ public interface NodeNationMapper {
 
     @SelectProvider(type= NodeNationMapperProvider.class,method = "selectNodesByNationIds")
     List<Node> selectNodesByNationIds(@Param("nids") Object[] nids);
+
+    @Select("select na.* from t_timezerg_node_nation nn left join t_timezerg_nation na on nn.nationid = na.id where nn.nodeid = #{id}")
+    List<Nation> selectNationsByNodeId(String id);
 
     @Delete("delete from t_timezerg_node_nation where id = #{id}")
     int deleteById(String id);

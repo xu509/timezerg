@@ -16,7 +16,7 @@ public interface NodePeriodMapper {
     @Insert("insert into t_timezerg_node_period values (#{id},#{nid},#{pid},#{level})")
     int add(NodePeriod nodePeriod);
 
-    @Select("SELECT nc.*,c.title FROM t_timezerg_node_period nc LEFT JOIN t_timezerg_civilization c ON nc.pid = c.id WHERE nc.nid = #{nid}")
+    @Select("SELECT np.*,p.title FROM t_timezerg_node_period np LEFT JOIN t_timezerg_period p ON np.pid = p.id WHERE np.nid = #{nid}")
     List<HashMap> selectByNodeId(String nid);
 
     @Select("SELECT nc.pid,c.title FROM t_timezerg_node_period nc " +
@@ -26,6 +26,9 @@ public interface NodePeriodMapper {
 
     @Delete("DELETE FROM t_timezerg_node_period WHERE nid = #{nid}")
     int deleteByNodeId(String nid);
+
+    @Delete("DELETE FROM t_timezerg_node_period WHERE id = #{id}")
+    int deleteById(String id);
 
     @SelectProvider(type= NodePeriodMapperProvider.class,method = "getNodes")
     List<HashMap> selectNodesByPid(@Param("pid") String pid, @Param("level") Integer level, @Param("title") String title, @Param("start") Integer start, @Param("limit") Integer limit);

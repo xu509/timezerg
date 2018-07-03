@@ -1,6 +1,7 @@
 package com.timezerg.api.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.timezerg.api.config.AppConfig;
 import com.timezerg.api.mapper.*;
 import com.timezerg.api.model.Node;
 import com.timezerg.api.model.NodeNation;
@@ -66,6 +67,22 @@ public class NodeNationService {
     public List<Node> selectNodesByNationIds(String[] nationIds){
         return nodeNationMapper.selectNodesByNationIds(nationIds);
     }
+
+    /**
+     *  修改 LEVEL
+     */
+    public Object changeLevel(String id){
+        NodeNation nodeNation = nodeNationMapper.selectById(id);
+        if (nodeNation == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        if (nodeNation.getLevel() == null || (!nodeNation.getLevel().equals(AppConfig.KEY_VALUE.Level_Very_Important))){
+            return updateLevel(id,AppConfig.KEY_VALUE.Level_Very_Important);
+        }else {
+            return updateLevel(id,AppConfig.KEY_VALUE.Level_Normal);
+        }
+    }
+
 
     /**
      *  判断是否已经存在，存在则更新，不存在则添加

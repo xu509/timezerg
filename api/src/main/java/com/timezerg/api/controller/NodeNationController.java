@@ -25,6 +25,11 @@ public class NodeNationController {
         return nodeNationService.delete(id);
     }
 
-
+    @CrossOrigin
+    @PostMapping("/nodenation/update/level")
+    public Object nodenationUpdateLevel(@RequestBody JSONObject params) {
+        String id = params.getString("id");
+        return nodeNationService.changeLevel(id);
+    }
 
 }

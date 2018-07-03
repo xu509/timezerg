@@ -5,6 +5,7 @@ import com.timezerg.api.mapper.provider.NodeMapperProvider;
 import com.timezerg.api.model.Node;
 import org.apache.ibatis.annotations.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -48,6 +49,9 @@ public interface NodeMapper {
             "left join t_timezerg_civilization c on nc.cid = c.id where abs(to_days(n.cdate) - to_days(#{cdate})) < 73000 and n.ad = #{AD} " +
             "and nc.cid != (select cid from t_timezerg_node_civilization where nid = #{id})")
     List<HashMap> selectCloseNode(Node node);
+
+    @Select("SELECT *,ABS(TO_DAYS(cdate) -  TO_DAYS(#{date})) AS `min` FROM t_timezerg_node ORDER BY `min` ASC limit 0,5")
+    List<HashMap> selectCloseNodeByDate(Date date);
 
 
 }

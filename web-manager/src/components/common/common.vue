@@ -8,6 +8,7 @@ const doamin_image = "http://xu-1253743633.file.myqcloud.com";
 
 const url_node_list = domain + "/node/list";
 const url_node_add = domain + "/node/save";
+const url_node_closest_date = domain + "/node/closest/date";
 const url_node_edit_init = domain + "/node/edit/init";
 const url_node_edit_save = domain + "/node/edit/submit";
 const url_node_edit_init_tag = domain + "/node/edit/init/tag";
@@ -19,10 +20,19 @@ const url_node_edit_relate_nation_save =
   domain + "/node/edit/relate/nation/save";
 const url_node_edit_relate_nation_delete =
   domain + "/node/edit/relate/nation/delete";
+const url_node_edit_relate_civilization_save =
+  domain + "/node/edit/relate/civilization/save";
+const url_node_edit_relate_civilization_delete =
+  domain + "/node/edit/relate/civilization/delete";
+const url_node_edit_relate_period_save =
+  domain + "/node/edit/relate/period/save";
+const url_node_edit_relate_period_delete =
+  domain + "/node/edit/relate/period/delete";
 const url_node_edit_relate_reference_save =
   domain + "/node/edit/relate/reference/save";
 const url_node_edit_relate_reference_delete =
   domain + "/node/edit/relate/reference/delete";
+const url_node_edit_relate_sync = domain + "/node/edit/relate/sync";
 const url_node_edit_tag_save = domain + "/node/edit/tag/save";
 const url_node_edit_tag_delete = domain + "/node/edit/tag/delete";
 const url_civilization_list = domain + "/civilization/list";
@@ -160,6 +170,12 @@ const url_relation_edit_init = domain + "/relation/edit/init";
 const url_relation_edit_save = domain + "/relation/edit/save";
 
 const url_nodenation_delete = domain + "/nodenation/";
+const url_nodenation_level_change = domain + "/nodenation/update/level";
+const url_nodeperiod_delete = domain + "/nodeperiod/";
+const url_nodeperiod_level_change = domain + "/nodeperiod/update/level";
+const url_nodecivilization_delete = domain + "/nodecivilization/";
+const url_nodecivilization_level_change =
+  domain + "/nodecivilization/update/level";
 
 const url_search_nation = domain + "/nation/search";
 const url_search_giant = domain + "/giant/search";
@@ -193,6 +209,7 @@ export default {
   url_index,
   url_node_list,
   url_node_add,
+  url_node_closest_date,
   url_node_edit_init,
   url_node_edit_save,
   url_node_edit_init_relate,
@@ -203,6 +220,11 @@ export default {
   url_node_edit_relate_nation_delete,
   url_node_edit_relate_reference_save,
   url_node_edit_relate_reference_delete,
+  url_node_edit_relate_period_save,
+  url_node_edit_relate_period_delete,
+  url_node_edit_relate_civilization_save,
+  url_node_edit_relate_civilization_delete,
+  url_node_edit_relate_sync,
   url_node_edit_tag_save,
   url_node_edit_tag_delete,
   url_civilization_list,
@@ -311,6 +333,11 @@ export default {
   url_api_period_list,
   url_api_civilization_timeline,
   url_nodenation_delete,
+  url_nodenation_level_change,
+  url_nodeperiod_delete,
+  url_nodeperiod_level_change,
+  url_nodecivilization_delete,
+  url_nodecivilization_level_change,
   showErrorMsg
 };
 </script>

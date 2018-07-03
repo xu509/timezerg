@@ -1,5 +1,6 @@
 package com.timezerg.api.service;
 
+import com.timezerg.api.config.AppConfig;
 import com.timezerg.api.mapper.NodeMapper;
 import com.timezerg.api.mapper.NodePeriodMapper;
 import com.timezerg.api.mapper.PeriodMapper;
@@ -91,4 +92,28 @@ public class NodePeriodService {
     }
 
 
+    /**
+     *  修改 LEVEL
+     */
+    public Object changeLevel(String id){
+        NodePeriod nodePeriod = nodePeriodMapper.selectById(id);
+        if (nodePeriod == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        if (nodePeriod.getLevel() == null || (!nodePeriod.getLevel().equals(AppConfig.KEY_VALUE.Level_Very_Important))){
+            return updateLevel(id,AppConfig.KEY_VALUE.Level_Very_Important);
+        }else {
+            return updateLevel(id,AppConfig.KEY_VALUE.Level_Normal);
+        }
+    }
+
+
+    public Object delete(String id){
+        if (nodePeriodMapper.selectById(id) == null){
+            return new Result(ResultMessage.PARAM_ERROR);
+        }else {
+            nodePeriodMapper.deleteById(id);
+            return new Result(ResultMessage.OK);
+        }
+    }
 }
