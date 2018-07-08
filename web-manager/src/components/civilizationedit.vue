@@ -117,9 +117,21 @@
 
             <el-row v-loading = "nodes.loading">
               <el-table :data = "nodes.nodes">
+                  <el-table-column type="expand">
+                      <template slot-scope="props">
+                          <p>{{props.row.content}}</p>
+                          <el-row>
+                              <el-tag v-for="tag in props.row.tags" :key="tag.id">{{tag.title}}</el-tag>
+                          </el-row>
+                      </template>
+                  </el-table-column>
                   <el-table-column label = "时间" prop="ddate">
                   </el-table-column>
-                  <el-table-column prop = "title" label = "标题" ></el-table-column>
+                  <el-table-column label = "标题" >
+                      <template slot-scope="scope">
+                          <router-link :to="'/node/edit/' + scope.row.id" target="_blank">{{scope.row.title}}</router-link>
+                      </template>
+                  </el-table-column>
                   <el-table-column prop = "levelstr" label = "类型" ></el-table-column>
                   <el-table-column fixed="right" label="操作">
                       <template slot-scope="scope">

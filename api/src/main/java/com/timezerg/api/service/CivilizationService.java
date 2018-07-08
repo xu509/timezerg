@@ -59,6 +59,9 @@ public class CivilizationService {
     @Autowired
     NodeNationService nodeNationService;
 
+    @Autowired
+    NodeTagService nodeTagService;
+
 
     public Object add(JSONObject params){
         Civilization civil = new Civilization();
@@ -411,6 +414,10 @@ public class CivilizationService {
         for (HashMap nodeMap : nodeMaps){
             Integer levelInt  = (Integer) nodeMap.get("l");
             nodeMap.put("levelstr",Utils.getLevelStr(levelInt));
+
+            //设置tag
+            nodeMap.put("tags",nodeTagService.selectTagsFromNode((String) nodeMap.get("id")));
+
         }
 
         r.put("nodes",nodeMaps);

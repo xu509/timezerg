@@ -4,12 +4,15 @@ import com.timezerg.api.mapper.NodeMapper;
 import com.timezerg.api.mapper.NodeTagMapper;
 import com.timezerg.api.mapper.TagMapper;
 import com.timezerg.api.model.NodeTag;
+import com.timezerg.api.model.Tag;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * Created by xnx on 2018/5/4.
@@ -57,6 +60,11 @@ public class NodeTagService {
             nodeTagMapper.deleteById(id);
             return new Result(ResultMessage.OK);
         }
+    }
+
+    public List<Tag> selectTagsFromNode(String nid){
+        List<Tag> tags = nodeTagMapper.selectTagsByNid(nid);
+        return tags;
     }
 
 
