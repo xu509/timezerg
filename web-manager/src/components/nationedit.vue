@@ -202,9 +202,52 @@
                     </el-tag>
                 </template>
               </el-row>
-           </el-col>
+              </el-col>
             </el-card>
           </el-tab-pane>
+
+          <el-tab-pane label="节点" :name="tabs.nodes"> 
+              <el-row>
+              <el-col :md="2">
+                  <el-button type="primary" v-loading = "nodes.loading" @click = "clickSyncBtn">同步</el-button>
+              </el-col>
+              <el-col :md="6">
+                <selectboxlevel @selectLevel = "selectLevel"></selectboxlevel>  
+              </el-col>
+              <el-col :md="6">
+                <el-input v-model="searchContentNode" placeholder="搜索标题"></el-input>
+              </el-col>
+           </el-row>
+
+            <el-row v-loading = "nodes.loading">
+              <el-table :data = "nodes.nodes">
+                  <el-table-column label = "时间" prop="ddate">
+                  </el-table-column>
+                  <el-table-column prop = "title" label = "标题" ></el-table-column>
+                  <el-table-column prop = "levelstr" label = "类型" ></el-table-column>
+                  <el-table-column fixed="right" label="操作">
+                      <template slot-scope="scope">
+                        <el-button size="small" type="primary" v-if="scope.row.l != 1" @click="updateLevel(scope.row.nnid,1)">设为重要</el-button>
+                        <el-button size="small" v-if="scope.row.l == 1" @click="updateLevel(scope.row.nnid,0)">设为普通</el-button>
+                        <el-button size="small" type="danger" @click="deleteNode(scope.row.nnid)">删除</el-button>
+                      </template>
+                  </el-table-column>
+              </el-table>
+            </el-row>
+
+            <el-row>
+                  <el-pagination @size-change="handleSizeChange"
+                                @current-change="handleCurrentChange"
+                                :current-page="current_page"
+                                :page-sizes="[10, 20, 50, 100]"
+                                :page-size="page_size"
+                                layout="sizes,total,next, pager,prev,jumper "
+                                :total="nodes.total">
+                  </el-pagination>
+              </el-row>
+          </el-tab-pane>
+
+
       </el-tabs>
     </el-row>
   </div>
@@ -218,6 +261,7 @@ import inputboxinstitution from "./plugin/inputboxinstitution.vue";
 import inputboxtag from "./plugin/inputboxtag.vue";
 import inputboxreference from "./plugin/inputboxreference.vue";
 import inputboxperiod from "./plugin/inputboxperiod.vue";
+import selectboxlevel from "./plugin/selectboxlevel.vue";
 
 export default {
   name: "nationedit",
@@ -228,7 +272,8 @@ export default {
       tabs: {
         basic: "1",
         relate: "2",
-        tag: "3"
+        tag: "3",
+        nodes: "4"
       },
       form: {
         loading: false,
@@ -257,10 +302,21 @@ export default {
         institutions: [],
         periods: []
       },
+      nodes: {
+        loading: true,
+        nodes: [],
+        total: null
+      },
       switchc: {
         activev: 1,
         inactivev: 0
-      }
+      },
+
+      // 需要 watch 的
+      current_page: 1,
+      page_size: 20,
+      level: 0,
+      searchContentNode: null
     };
   },
   components: {
@@ -269,7 +325,8 @@ export default {
     inputboxinstitution,
     inputboxtag,
     inputboxreference,
-    inputboxperiod
+    inputboxperiod,
+    selectboxlevel
   },
   methods: {
     init() {
@@ -277,8 +334,10 @@ export default {
         this.initTabBasic();
       } else if (this.activeTab == "2") {
         this.initTabRelate();
-      } else {
+      } else if (this.activeTab == "3") {
         this.initTagTab();
+      } else {
+        this.initTabNodes();
       }
     },
 
@@ -735,27 +794,27 @@ export default {
           });
         });
     },
-    clickGiantTag(item){
+    clickGiantTag(item) {
       var gid = item.gid;
-       this.$router.push({
+      this.$router.push({
         path: "/giant/edit/" + gid
       });
     },
-    clickInstitutionTag(item){
+    clickInstitutionTag(item) {
       var id = item.iid;
-       this.$router.push({
+      this.$router.push({
         path: "/institution/edit/" + id
       });
     },
-    clickPeriodTag(item){
+    clickPeriodTag(item) {
       var id = item.pid;
-       this.$router.push({
+      this.$router.push({
         path: "/period/edit/" + id
       });
     },
-    clickReferenceTag(item){
+    clickReferenceTag(item) {
       var id = item.rid;
-       this.$router.push({
+      this.$router.push({
         path: "/reference/edit/" + id
       });
     },
@@ -850,11 +909,159 @@ export default {
             message: "已取消"
           });
         });
+    },
+
+    // node 相关
+    initTabNodes() {
+      var _this = this;
+      _this.nodes.loading = true;
+
+      var start = (_this.current_page - 1) * _this.page_size;
+      var size = _this.page_size;
+
+      axios
+        .post(_this.GLOBAL.url_nation_edit_init_nodes, {
+          id: _this.id,
+          level: _this.level,
+          title: _this.searchContentNode,
+          start: start,
+          size: size
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            var data = response.data.data;
+            console.log(data);
+
+            _this.form.title = data.nation.title;
+            _this.nodes.nodes = data.nodes;
+            _this.nodes.total = data.nodestotal;
+
+            _this.nodes.loading = false;
+          } else {
+            _this.GLOBAL.showErrorMsg(response, _this);
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    updateLevel(id, level) {
+      var _this = this;
+      _this.nodes.loading = true;
+
+      axios
+        .post(_this.GLOBAL.url_nation_edit_nodes_updatelevel, {
+          id: id,
+          level: level
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            var data = response.data.data;
+            _this.$message({
+              type: "success",
+              message: "修改成功!"
+            });
+            _this.init();
+          } else {
+            _this.GLOBAL.showErrorMsg(response, _this);
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    deleteNode(id) {
+      var _this = this;
+      _this.nodes.loading = true;
+
+      console.log("delete : " + id);
+
+      axios
+        .delete(_this.GLOBAL.url_nodenation_delete, {
+          data: {
+            id: id
+          }
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            var data = response.data.data;
+
+            var message = "已成功删除";
+
+            _this.$message({
+              type: "success",
+              message: message
+            });
+            _this.init();
+          } else {
+            _this.GLOBAL.showErrorMsg(response, _this);
+            _this.init();
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+    clickSyncBtn() {
+      var _this = this;
+      _this.nodes.loading = true;
+
+      axios
+        .post(_this.GLOBAL.url_nation_edit_nodes_sync, {
+          id: _this.id
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            var data = response.data.data;
+
+            var message = "";
+            if (data == 0) {
+              message = "已完成同步，无更新";
+            } else {
+              message = "同步成功，共更新了 " + data + " 条数据";
+            }
+
+            _this.$message({
+              type: "success",
+              message: message
+            });
+            _this.init();
+          } else {
+            _this.GLOBAL.showErrorMsg(response, _this);
+            _this.init();
+          }
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    },
+
+    selectLevel(value) {
+      this.level = value;
+    },
+
+    handleSizeChange(size) {
+      this.page_size = size;
+    },
+    handleCurrentChange(currentPage) {
+      this.current_page = currentPage;
     }
   },
   watch: {
     activeTab: function(at) {
       this.init();
+    },
+    current_page(cp) {
+      this.init();
+    },
+    page_size(ps) {
+      this.init();
+    },
+    level(l) {
+      (this.current_page = 1), (this.page_size = 20), this.init();
+    },
+    searchContentNode(scn) {
+      (this.current_page = 1), (this.page_size = 20), this.init();
     }
   },
   mounted: function() {

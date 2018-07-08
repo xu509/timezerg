@@ -1,4 +1,8 @@
 <pre><code>
+
+            _this.GLOBAL.showErrorMsg(response, _this);
+
+
 _this.$notify.error({
                   title: response.data.msg,
                   message: response.data.data,

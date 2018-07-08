@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by xnx on 2018/5/4.
@@ -34,10 +31,16 @@ public class NodeService {
     NodeCivilizationMapper nodeCivilizationMapper;
 
     @Autowired
+    NodeCivilizationService nodeCivilizationService;
+
+    @Autowired
     NationMapper nationMapper;
 
     @Autowired
     CivilizationMapper civilizationMapper;
+
+    @Autowired
+    CivilizationService civilizationService;
 
     @Autowired
     GiantMapper giantMapper;
@@ -80,6 +83,24 @@ public class NodeService {
 
     @Autowired
     NodeTagMapper nodeTagMapper;
+
+    @Autowired
+    NodePeriodMapper nodePeriodMapper;
+
+    @Autowired
+    NodePeriodService nodePeriodService;
+
+    @Autowired
+    PeriodService periodService;
+
+    @Autowired
+    PeriodMapper periodMapper;
+
+    @Autowired
+    NationPeriodMapper nationPeriodMapper;
+
+    @Autowired
+    CivilizationPeriodMapper civilizationPeriodMapper;
 
 
     @Transactional
@@ -163,8 +184,6 @@ public class NodeService {
         if (StringUtils.isBlank(ddate))
             ddate = ControllerUtil.getDisplayDateStr(date,params.getInteger("AD"),null,null,false);
         node.setDdate(ddate);
-
-
 
         //相关国家
         nodeMapper.add(node);
@@ -418,6 +437,11 @@ public class NodeService {
         JSONObject result = (JSONObject) JSONObject.toJSON(node);
 
         result.put("nations",nodeNationMapper.selectByNodeId(id));
+
+        // 时代、文明
+        result.put("periods",nodePeriodMapper.selectByNodeId(id));
+        result.put("civilizations",nodeCivilizationMapper.selectByNodeId(id));
+
         result.put("giants",nodeGiantMapper.selectByNodeId(id));
         result.put("references",nodeReferenceMapper.selectByNid(id));
         return new Result(ResultMessage.OK,result);
@@ -480,6 +504,66 @@ public class NodeService {
     public Object deleteRelateNation(JSONObject params){
         return nodeNationService.delete(params.getString("id"));
     }
+
+
+    @Transactional
+    public Object addRelateCivilization(JSONObject params){
+        JSONObject civilizationObj = params.getJSONObject("civilization");
+        String nid = params.getString("nid");
+        String civilizationId = civilizationObj.getString("id");
+
+        Boolean isNew = civilizationObj.getBoolean("isnew");
+        if (isNew != null && isNew){
+            String title = civilizationObj.getString("title");
+            Civilization c = new Civilization();
+            civilizationId = Utils.generateId();
+            c.setId(civilizationId);
+            c.setTitle(title);
+            civilizationService.add(c);
+        }
+
+        NodeCivilization nodeCivilization = new NodeCivilization();
+        nodeCivilization.setId(Utils.generateId());
+        nodeCivilization.setCid(civilizationId);
+        nodeCivilization.setNid(nid);
+
+        return nodeCivilizationService.add(nodeCivilization);
+    }
+
+    @Transactional
+    public Object deleteRelateCivilization(JSONObject params){
+        return nodeCivilizationService.delete(params.getString("id"));
+    }
+
+    @Transactional
+    public Object addRelatePeriod(JSONObject params){
+        JSONObject periodObj = params.getJSONObject("period");
+        String nid = params.getString("nid");
+        String periodId = periodObj.getString("pid");
+
+        Boolean isNew = periodObj.getBoolean("isnew");
+        if (isNew != null && isNew){
+            String title = periodObj.getString("title");
+            Period c = new Period();
+            periodId = Utils.generateId();
+            c.setId(periodId);
+            c.setTitle(title);
+            periodService.add(c);
+        }
+
+        NodePeriod nodePeriod = new NodePeriod();
+        nodePeriod.setId(Utils.generateId());
+        nodePeriod.setPid(periodId);
+        nodePeriod.setNid(nid);
+
+        return nodePeriodService.add(nodePeriod);
+    }
+
+    @Transactional
+    public Object deleteRelatePeriod(JSONObject params){
+        return nodePeriodService.delete(params.getString("id"));
+    }
+
 
     @Transactional
     public Object addRelateGiant(JSONObject params){
@@ -551,6 +635,68 @@ public class NodeService {
     public Object deleteTag(JSONObject params){
         return nodeTagService.delete(params.getString("id"));
     }
+
+    /**
+     *  捕捉最接近的节点
+     */
+    @Transactional
+    public Object getClosetNodes(Date date){
+        List<HashMap> nodesMap = nodeMapper.selectCloseNodeByDate(date);
+        return new Result(ResultMessage.OK,nodesMap);
+    }
+
+    /**
+     *  同步
+     */
+    @Transactional
+    public Object sync(String id){
+        if (nodeMapper.selectById(id) == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        //获取国家
+        List<Nation> nations = nodeNationMapper.selectNationsByNodeId(id);
+        List<Nation> allNations = new ArrayList<>();
+        allNations.addAll(nations);
+
+        for (Nation nation : nations){
+            allNations.addAll(nationService.getAllNations(nation.getId()));
+        }
+
+        HashSet nationSet = new HashSet(allNations);
+        allNations.clear();
+        allNations.addAll(nationSet);
+
+        //绑定国家
+        List<Period> periods = new ArrayList<>();
+        for (Nation nation : allNations){
+            NodeNation nodeNation = new NodeNation();
+            nodeNation.setId(id);
+            nodeNation.setNationid(nation.getId());
+            nodeNationService.add(nodeNation);
+            periods.addAll(nationPeriodMapper.selectPeriodByNid(nation.getId()));
+        }
+
+        //绑定时期
+        List<Civilization> civilizations = new ArrayList<>();
+        for (Period period : periods){
+            NodePeriod nodePeriod = new NodePeriod();
+            nodePeriod.setNid(id);
+            nodePeriod.setPid(period.getId());
+            nodePeriodService.add(nodePeriod);
+            civilizations.addAll(civilizationPeriodMapper.selectCivilsByPid(period.getId()));
+        }
+
+        //绑定文明
+        for (Civilization civilization : civilizations){
+            NodeCivilization nodeCivilization = new NodeCivilization();
+            nodeCivilization.setNid(id);
+            nodeCivilization.setCid(civilization.getId());
+            nodeCivilizationService.add(nodeCivilization);
+        }
+
+        return new Result(ResultMessage.OK);
+    }
+
 
 
 }

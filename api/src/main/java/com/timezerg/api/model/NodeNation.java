@@ -13,6 +13,7 @@ public class NodeNation implements Serializable {
     private String id;
     private String nodeid;
     private String nationid;
+    private Integer level;
 
     public String getId() {
         return id;
@@ -36,5 +37,13 @@ public class NodeNation implements Serializable {
 
     public void setNationid(String nationid) {
         this.nationid = nationid;
+    }
+
+    public Integer getLevel() {
+        return level;
+    }
+
+    public void setLevel(Integer level) {
+        this.level = level;
     }
 }

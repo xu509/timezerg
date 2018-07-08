@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.xpath.internal.operations.Bool;
+import com.timezerg.api.config.AppConfig;
 import com.timezerg.api.mapper.*;
 import com.timezerg.api.model.*;
+import com.timezerg.api.util.ControllerUtil;
 import com.timezerg.api.util.Result;
 import com.timezerg.api.util.ResultMessage;
 import com.timezerg.api.util.Utils;
@@ -14,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by xnx on 2018/5/4.
@@ -70,6 +69,18 @@ public class PeriodService {
 
     @Autowired
     PeriodReferenceMapper periodReferenceMapper;
+
+    @Autowired
+    NodePeriodMapper nodePeriodMapper;
+
+    @Autowired
+    NodeNationService nodeNationService;
+
+    @Autowired
+    NodePeriodService nodePeriodService;
+
+    @Autowired
+    NodeCivilizationMapper nodeCivilizationMapper;
 
     /* ----  主干方法  ----*/
     @Transactional
@@ -370,7 +381,6 @@ public class PeriodService {
             return new Result(ResultMessage.PARAM_ERROR);
 
         period.setTitle(params.getString("title"));
-        period.setDdate(params.getString("ddate"));
 
         Integer year = params.getInteger("year");
         Integer month = params.getInteger("month");
@@ -398,6 +408,15 @@ public class PeriodService {
 
         period.setAD(params.getInteger("AD"));
         period.seteAD(params.getInteger("eAD"));
+
+        String ddate = params.getString("ddate");
+        if (StringUtils.isBlank(ddate)){
+            ddate = ControllerUtil.getDisplayDateStr(period.getCdate(),period.getAD(),period.getEdate(),period.geteAD(),false);
+        }
+
+        period.setDdate(ddate);
+
+
         period.setContent(params.getString("content"));
 
 
@@ -544,6 +563,102 @@ public class PeriodService {
 
             }
         }
+    }
+
+    public Object editInitNodes(JSONObject params){
+        JSONObject r = new JSONObject();
+        String id = params.getString("id");
+        Integer level = params.getInteger("level");
+        Period period = periodMapper.selectById(id);
+
+        if (period == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        r.put("period",period);
+
+        //nodes
+        Integer start = params.getInteger("start");
+        Integer size = params.getInteger("size");
+        String title = params.getString("title");
+
+        List<HashMap> nodeMaps = nodePeriodMapper.selectNodesByPid(id,level,title,start,size);
+        for (HashMap nodeMap : nodeMaps){
+            Integer levelInt  = (Integer) nodeMap.get("l");
+            nodeMap.put("levelstr",Utils.getLevelStr(levelInt));
+        }
+
+        r.put("nodes",nodeMaps);
+        r.put("nodestotal",nodePeriodMapper.selectNodesTotalByPid(id,level,title));
+
+
+        return new Result(ResultMessage.OK,r);
+    }
+
+    /**
+     *  同步节点
+     */
+    @Transactional
+    public Object syncNode(JSONObject params){
+        String id = params.getString("id");
+        Period period = periodMapper.selectById(id);
+        if (period == null)
+            return new Result(ResultMessage.PARAM_ERROR,"ID 错误");
+
+        List<Nation> nations = nationPeriodService.getAllNation(period.getId());
+        if (nations == null || nations.size() == 0){
+            return new Result(ResultMessage.INNER_ERROR,"该时代未绑定国家");
+        }
+
+
+        HashSet hashSet = new HashSet(nations);
+        nations.clear();
+        nations.addAll(hashSet);
+
+        //查找国家下的所有节点
+        String[] nationids = new String[nations.size()];
+        int index_x = 0;
+        for (Nation nation : nations){
+            nationids[index_x] = nation.getId();
+            index_x ++;
+        }
+
+        List<Node> nodes = nodeNationService.selectNodesByNationIds(nationids);
+
+        int n = 0;
+
+        //时代绑定节点
+        for (Node node : nodes){
+            //此时需要判断 node 是否在时间区域内
+
+            if (Utils.checkNodeDateInPeriod(node.getCdate(),node.getAD(),period)){
+                NodePeriod nodePeriod = new NodePeriod();
+                nodePeriod.setId(Utils.generateId());
+                nodePeriod.setPid(id);
+                nodePeriod.setNid(node.getId());
+
+
+                NodeCivilization nodeCivilization = new NodeCivilization();
+                nodeCivilization.setNid(node.getId());
+                nodeCivilization.setLevel(AppConfig.KEY_VALUE.Level_Very_Important);
+
+                if (nodeCivilizationMapper.selectCountByNidAndLevel(nodeCivilization) > 0){
+                    nodePeriod.setLevel(AppConfig.KEY_VALUE.Level_Very_Important);
+                }
+
+                Result r = (Result) nodePeriodService.checkAndAdd(nodePeriod);
+                if (Result.isOk(r)){
+                    n++;
+                }
+            }
+        }
+
+        return new Result(ResultMessage.OK,n);
+    }
+
+    public Object updateNodeLevel(JSONObject params){
+        Integer level = params.getInteger("level");
+        String id = params.getString("id");
+        return nodePeriodService.updateLevel(id,level);
     }
 
     /* API*/

@@ -1,5 +1,6 @@
 package com.timezerg.api.service;
 
+import com.timezerg.api.config.AppConfig;
 import com.timezerg.api.mapper.*;
 import com.timezerg.api.model.Node;
 import com.timezerg.api.model.NodeCivilization;
@@ -71,4 +72,28 @@ public class NodeCivilizationService {
 
 
 
+    /**
+     *  修改 LEVEL
+     */
+    public Object changeLevel(String id){
+        NodeCivilization nodeCivilization = nodeCivilizationMapper.selectById(id);
+        if (nodeCivilization == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        if (nodeCivilization.getLevel() == null || (!nodeCivilization.getLevel().equals(AppConfig.KEY_VALUE.Level_Very_Important))){
+            return updateLevel(id,AppConfig.KEY_VALUE.Level_Very_Important);
+        }else {
+            return updateLevel(id,AppConfig.KEY_VALUE.Level_Normal);
+        }
+    }
+
+
+    public Object delete(String id){
+        if (nodeCivilizationMapper.selectById(id) == null){
+            return new Result(ResultMessage.PARAM_ERROR);
+        }else {
+            nodeCivilizationMapper.deleteById(id);
+            return new Result(ResultMessage.OK);
+        }
+    }
 }

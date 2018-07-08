@@ -7,6 +7,9 @@ import com.timezerg.api.util.ResultMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Created by xnx on 2018/5/10.
  */
@@ -84,6 +87,30 @@ public class NodeController {
     }
 
     @CrossOrigin
+    @PostMapping("/node/edit/relate/civilization/save")
+    public Object editRelateCivilizationSave(@RequestBody JSONObject params){
+        return nodeService.addRelateCivilization(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/node/edit/relate/civilization/delete")
+    public Object editRelateCivilizationDelete(@RequestBody JSONObject params){
+        return nodeService.deleteRelateCivilization(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/node/edit/relate/period/save")
+    public Object editRelatePeriodSave(@RequestBody JSONObject params){
+        return nodeService.addRelatePeriod(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/node/edit/relate/period/delete")
+    public Object editRelatePeriodDelete(@RequestBody JSONObject params){
+        return nodeService.deleteRelatePeriod(params);
+    }
+
+    @CrossOrigin
     @PostMapping("/node/edit/relate/reference/save")
     public Object editRelateReferenceSave(@RequestBody JSONObject params){
         return nodeService.addRelateReference(params);
@@ -93,6 +120,12 @@ public class NodeController {
     @PostMapping("/node/edit/relate/reference/delete")
     public Object editRelateReferenceDelete(@RequestBody JSONObject params){
         return nodeService.deleteRelateReference(params);
+    }
+
+    @CrossOrigin
+    @PostMapping("/node/edit/relate/sync")
+    public Object editRelateSync(@RequestBody JSONObject params){
+        return nodeService.sync(params.getString("id"));
     }
 
     @CrossOrigin
@@ -112,6 +145,25 @@ public class NodeController {
     public Object editTagDelete(@RequestBody JSONObject params){
         return nodeService.deleteTag(params);
     }
+
+
+    @CrossOrigin
+    @PostMapping("/node/closest/date")
+    public Object closestDateNode(@RequestBody JSONObject params){
+        Integer year = params.getInteger("year");
+        Integer month = params.getInteger("month");
+        Integer day = params.getInteger("day");
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(Calendar.YEAR,year);
+        calendar.set(Calendar.MONTH,month == null? 0:month);
+        calendar.set(Calendar.DAY_OF_MONTH,day == null? 1:day);
+        Date date = calendar.getTime();
+
+        return nodeService.getClosetNodes(date);
+    }
+
 
     @CrossOrigin
     @GetMapping("/node/test")

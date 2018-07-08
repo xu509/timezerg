@@ -1,5 +1,6 @@
 package com.timezerg.api.mapper;
 
+import com.timezerg.api.model.Civilization;
 import com.timezerg.api.model.CivilizationPeriod;
 import com.timezerg.api.model.NationPeriod;
 import com.timezerg.api.model.Period;
@@ -37,6 +38,9 @@ public interface CivilizationPeriodMapper {
             "LEFT JOIN t_timezerg_period p ON cp.pid = p.id " +
             "WHERE c.id = #{cid} ")
     List<Period> selectPeriodByCid(String cid);
+
+    @Select("SELECT c.* FROM t_timezerg_civilization_period cp LEFT JOIN t_timezerg_civilization c ON c.id = cp.cid WHERE cp.pid = #{pid}")
+    List<Civilization> selectCivilsByPid(String pid);
 
     @Update("UPDATE t_timezerg_civilization_period SET sort = #{sort} WHERE id = #{id}")
     void updateSort(CivilizationPeriod c);

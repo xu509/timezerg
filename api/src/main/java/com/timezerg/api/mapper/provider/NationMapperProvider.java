@@ -56,6 +56,8 @@ public class NationMapperProvider {
             Integer i = sql.lastIndexOf(",");
             sql.deleteCharAt(i);
             sql.append(") ");
+        } else {
+            sql.append("WHERE 1 != 1");
         }
 
         return sql.toString();

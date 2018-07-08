@@ -14,6 +14,7 @@ Vue.prototype.GLOBAL = global_;
 
 Vue.use(ElementUI);
 // Vue.use(InputboxNation);
+Vue.use(global_);
 
 if (module.hot) {
   module.hot.accept();

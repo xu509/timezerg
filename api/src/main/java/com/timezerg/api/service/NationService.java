@@ -3,6 +3,7 @@ package com.timezerg.api.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.timezerg.api.config.AppConfig;
 import com.timezerg.api.mapper.*;
 import com.timezerg.api.model.*;
 import com.timezerg.api.util.ControllerUtil;
@@ -73,6 +74,15 @@ public class NationService {
 
     @Autowired
     NationPeriodMapper nationPeriodMapper;
+
+    @Autowired
+    NodeNationMapper nodeNationMapper;
+
+    @Autowired
+    NodeNationService nodeNationService;
+
+    @Autowired
+    NodePeriodMapper nodePeriodMapper;
 
     @Transactional
     public Object add(JSONObject params) {
@@ -568,4 +578,125 @@ public class NationService {
     public Object deleteRelatePeriod(JSONObject params){
         return nationPeriodService.delete(params.getString("id"));
     }
+
+    public Object editInitNodes(JSONObject params){
+        JSONObject r = new JSONObject();
+        String id = params.getString("id");
+        Integer level = params.getInteger("level");
+        Nation nation = nationMapper.selectById(id);
+
+        if (nation == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        r.put("nation",nation);
+
+        //nodes
+        Integer start = params.getInteger("start");
+        Integer size = params.getInteger("size");
+        String title = params.getString("title");
+
+        List<HashMap> nodeMaps = nodeNationMapper.selectNodesByNid(id,level,title,start,size);
+        for (HashMap nodeMap : nodeMaps){
+            Integer levelInt  = (Integer) nodeMap.get("l");
+            nodeMap.put("levelstr",Utils.getLevelStr(levelInt));
+        }
+
+        r.put("nodes",nodeMaps);
+        r.put("nodestotal",nodeNationMapper.selectNodesTotalByNid(id,level,title));
+
+        return new Result(ResultMessage.OK,r);
+    }
+
+    /**
+     *  同步节点
+     */
+    @Transactional
+    public Object syncNode(JSONObject params){
+        String id = params.getString("id");
+        Nation nation = nationMapper.selectById(id);
+        if (nation == null)
+            return new Result(ResultMessage.PARAM_ERROR,"ID 错误");
+
+        List<Nation> nations = getAllNations(id);
+
+        String[] nationids = new String[nations.size()];
+        for (int x = 0 ; x < nations.size() ; x++){
+            nationids[x] = nations.get(x).getId();
+        }
+
+
+        List<Node> nodes = nodeNationService.selectNodesByNationIds(nationids);
+
+        int n = 0;
+
+        //时代绑定节点
+        for (Node node : nodes){
+
+            NodeNation nodeNation = new NodeNation();
+            nodeNation.setId(Utils.generateId());
+            nodeNation.setNationid(id);
+            nodeNation.setNodeid(node.getId());
+
+
+            NodePeriod nodePeriod = new NodePeriod();
+            nodePeriod.setNid(node.getId());
+            nodePeriod.setLevel(AppConfig.KEY_VALUE.Level_Very_Important);
+
+            if (nodePeriodMapper.selectCountByNidAndLevel(nodePeriod) > 0){
+                nodeNation.setLevel(AppConfig.KEY_VALUE.Level_Very_Important);
+            }
+
+            Result r = (Result) nodeNationService.checkAndAdd(nodeNation);
+            if (Result.isOk(r)){
+                n++;
+            }
+        }
+
+        return new Result(ResultMessage.OK,n);
+    }
+
+
+    public Object updateNodeLevel(JSONObject params){
+        Integer level = params.getInteger("level");
+        String id = params.getString("id");
+        return nodeNationService.updateLevel(id,level);
+    }
+
+    @Transactional
+    public Object deleteNode(JSONObject params){
+        String id = params.getString("id");
+        return nodeNationService.delete(id);
+    }
+
+
+    /**
+     *  获取某国家下的所有子国家
+     */
+    public List<Nation> getAllNations(String nid){
+        Nation nation = nationMapper.selectById(nid);
+        if (nation == null)
+            return null;
+
+        List<Nation> nations = new ArrayList<>();
+        nations.add(nation);
+
+        Object[] nids = new Object[]{nation.getId()};
+        List<Nation> childNations =  nationMapper.selectListByFids(nids);
+        while (childNations.size() > 0){
+            nations.addAll(childNations);
+
+            Object[] pids = new Object[childNations.size()];
+            for (int x = 0 ; x < childNations.size() ; x++){
+                pids[x] = childNations.get(x).getId();
+            }
+
+            childNations = nationMapper.selectListByFids(pids);
+        }
+
+        HashSet nationsSet = new HashSet(nations);
+        nations.clear();
+        nations.addAll(nationsSet);
+        return nations;
+    }
+
 }

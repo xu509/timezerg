@@ -71,6 +71,47 @@
           <el-tab-pane label="相关" :name="tabs.relate" v-loading = "relate.loading">
               <el-card class="box-card" v-loading = "relate.loading">
                 <el-row>
+                    <el-button type="primary" v-loading = "relate.loading" @click = "clickSyncBtn">同步</el-button>
+                </el-row>
+                <el-row>
+                    <inputboxcivilization @selectCivilization = "selectCivilization"></inputboxcivilization>
+                </el-row>
+                <el-row>
+                  <template v-if="relate.civilizations == null || relate.civilizations.length == 0">
+                      <p class="paragraph-content">无数据</p>
+                  </template>
+                  <template v-if="relate.civilizations != null && relate.civilizations.length > 0">
+                      <el-tag :type="item.level == 1 ? 'danger':'info'" v-for="item in relate.civilizations" class="tag-margin"
+                        :key="item.id"
+                        closable
+                        :disable-transitions="false"
+                        @close="closeCivilizationTag(item)"><i :class="(item.level == 1 ? 'el-icon-star-on':'el-icon-star-off') + ' i-star'" @click="clickStarTag(item,'civilization')"></i>
+                        {{item.title}}
+                      </el-tag>
+                  </template>
+                </el-row>
+                <el-row></el-row>
+
+                <el-row>
+                    <inputboxperiod @selectPeriod = "selectPeriod"></inputboxperiod>
+                </el-row>
+                <el-row>
+                  <template v-if="relate.periods == null || relate.periods.length == 0">
+                      <p class="paragraph-content">无数据</p>
+                  </template>
+                  <template v-if="relate.periods != null && relate.periods.length > 0">
+                      <el-tag :type="item.level == 1 ? 'danger':'info'" v-for="item in relate.periods" class="tag-margin"
+                        :key="item.id"
+                        closable
+                        :disable-transitions="false"
+                        @close="closePeriodTag(item)"><i :class="(item.level == 1 ? 'el-icon-star-on':'el-icon-star-off') + ' i-star'" @click="clickStarTag(item,'period')"></i>
+                        {{item.title}}
+                      </el-tag>
+                  </template>
+                </el-row>
+                <el-row></el-row>
+
+                <el-row>
                     <inputboxnation @selectNation = "selectNation"></inputboxnation>
                 </el-row>
                 <el-row>
@@ -78,11 +119,11 @@
                       <p class="paragraph-content">无数据</p>
                   </template>
                   <template v-if="relate.nations != null && relate.nations.length > 0">
-                      <el-tag type="warning" v-for="item in relate.nations" class="tag-margin"
+                      <el-tag :type="item.level == 1 ? 'danger':'info'" v-for="item in relate.nations" class="tag-margin"
                         :key="item.id"
                         closable
                         :disable-transitions="false"
-                        @close="closeNationTag(item)">
+                        @close="closeNationTag(item)"><i :class="(item.level == 1 ? 'el-icon-star-on':'el-icon-star-off') + ' i-star'" @click="clickStarTag(item,'nation')"></i>
                         {{item.title}}
                       </el-tag>
                   </template>
@@ -157,6 +198,7 @@
 import axios from "axios";
 import inputboxnation from "./plugin/inputboxnation.vue";
 import inputboxcivilization from "./plugin/inputboxcivilization.vue";
+import inputboxperiod from "./plugin/inputboxperiod.vue";
 import inputboxgiant from "./plugin/inputboxgiant.vue";
 import inputboxreference from "./plugin/inputboxreference.vue";
 import inputboxtag from "./plugin/inputboxtag.vue";
@@ -189,6 +231,7 @@ export default {
       relate: {
         loading: false,
         nations: [],
+        periods: [],
         civilizations: [],
         giants: [],
         references: [],
@@ -229,6 +272,7 @@ export default {
   components: {
     inputboxnation,
     inputboxcivilization,
+    inputboxperiod,
     inputboxgiant,
     inputboxreference,
     inputboxtag
@@ -311,6 +355,7 @@ export default {
         })
         .catch(function(error) {});
     },
+
     selectNation(item) {
       var _this = this;
       //提交
@@ -390,6 +435,167 @@ export default {
           });
         });
     },
+
+    selectCivilization(item) {
+      var _this = this;
+      //提交
+      var content = "确认添加文明： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_node_edit_relate_civilization_save, {
+              nid: _this.id,
+              civilization: item
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "添加成功!"
+                });
+              } else {
+                _this.$notify.error({
+                  title: response.data.msg,
+                  message: response.data.data,
+                  duration: 0
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    closeCivilizationTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认删除文明： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_node_edit_relate_civilization_delete, {
+              id: item.id
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+
+    selectPeriod(item) {
+      var _this = this;
+      //提交
+      var content = "确认添加时代： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_node_edit_relate_period_save, {
+              nid: _this.id,
+              period: item
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "添加成功!"
+                });
+              } else {
+                _this.$notify.error({
+                  title: response.data.msg,
+                  message: response.data.data,
+                  duration: 0
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+    closePeriodTag(item) {
+      var _this = this;
+      //提交
+      var content = "确认删除时代： " + item.title + "？";
+
+      this.$confirm(content, "确认", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "info"
+      })
+        .then(() => {
+          //提交上去
+          axios
+            .post(_this.GLOBAL.url_node_edit_relate_period_delete, {
+              id: item.id
+            })
+            .then(function(response) {
+              if (response.data.result == 0) {
+                _this.init();
+                _this.$message({
+                  type: "success",
+                  message: "删除成功!"
+                });
+              }
+            })
+            .catch(function(error) {
+              console.log(error);
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消"
+          });
+        });
+    },
+
     selectGiant(item) {
       var _this = this;
 
@@ -556,12 +762,6 @@ export default {
           });
         });
     },
-    selectCivilization(item) {
-      this.form.civilizations.push(item);
-    },
-    closeCivilizationTag(index) {
-      this.form.civilizations.splice(index, 1);
-    },
     initTabRelate() {
       var _this = this;
       _this.relate.loading = true;
@@ -575,9 +775,63 @@ export default {
             var data = response.data.data;
             _this.form.title = data.title;
             _this.relate.nations = data.nations;
+            _this.relate.periods = data.periods;
+            _this.relate.civilizations = data.civilizations;
             _this.relate.giants = data.giants;
             _this.relate.references = data.references;
 
+            _this.relate.loading = false;
+          }
+        });
+    },
+
+    clickStarTag(item, type) {
+      var _this = this;
+      _this.relate.loading = true;
+      var url = null;
+      if (type == "nation") {
+        url = _this.GLOBAL.url_nodenation_level_change;
+      } else if (type == "period") {
+        url = _this.GLOBAL.url_nodeperiod_level_change;
+      } else if ((type = "civilization")) {
+        url = _this.GLOBAL.url_nodecivilization_level_change;
+      }
+
+      if (url == null) return;
+
+      axios
+        .post(url, {
+          id: item.id
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            _this.relate.loading = false;
+            _this.init();
+          } else {
+            _this.GLOBAL.showErrorMsg(response, _this);
+            _this.relate.loading = false;
+          }
+        });
+    },
+    clickSyncBtn() {
+      // 同步段落
+      var _this = this;
+      _this.relate.loading = true;
+
+      axios
+        .post(_this.GLOBAL.url_node_edit_relate_sync, {
+          id: _this.id
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            _this.$message({
+              type: "success",
+              message: "同步成功!"
+            });
+            _this.relate.loading = false;
+            _this.init();
+          } else {
+            _this.GLOBAL.showErrorMsg(response, _this);
             _this.relate.loading = false;
           }
         });
@@ -697,4 +951,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.i-star {
+  cursor: pointer;
+}
 </style>

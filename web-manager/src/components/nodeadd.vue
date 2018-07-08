@@ -3,14 +3,24 @@
     <el-row>
       <el-col :span="24">
         <el-breadcrumb separator-class="el-icon-arrow-right">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+          <el-breadcrumb-item :to = "{path: '/' }">首页</el-breadcrumb-item>
           <el-breadcrumb-item :to = "{path : '/node'}">节点</el-breadcrumb-item>
           <el-breadcrumb-item>增加</el-breadcrumb-item>
         </el-breadcrumb>
       </el-col>
     </el-row>
     <el-row>
-      <el-col :sm="24" :xs="24" :md="14" :xl="14" >
+        <el-col :sm="24" :xs="24" :md="4" :xl="4" >
+           <router-link :to="'/node/edit/' + add_id" target = "_blank">
+              <el-card class="box-card" v-if = "add_id != null">
+                  <p class="paragraph-content">{{add_title}}</p>
+              </el-card>
+           </router-link>
+        </el-col>
+    </el-row>
+
+    <el-row>
+      <el-col :sm="24" :xs="24" :md="12" :xl="12" >
           <el-form ref="form" :model="form" label-width="120px">
                 <el-form-item label="标题">
                   <el-input v-model="form.title"></el-input>
@@ -18,13 +28,13 @@
                 <el-form-item label="时间">
                   <el-row :gutter="20">
                     <el-col :md = "4" :xl="4" :sm="12" :xs="12">
-                      <el-input v-model="form.year" placeholder="年"/>
+                      <el-input v-model="form.year" placeholder="年" @change="updateClosestDate"/>
                     </el-col>
                     <el-col :md = "3" :xl="3" :sm="12" :xs="12">
-                      <el-input v-model="form.month" placeholder="月"/>
+                      <el-input v-model="form.month" placeholder="月" @change="updateClosestDate"/>
                     </el-col>
                     <el-col :md = "3" :xl="3" :sm="12" :xs="12">
-                      <el-input v-model="form.day" placeholder="日"/>
+                      <el-input v-model="form.day" placeholder="日" @change="updateClosestDate"/>
                     </el-col>
                     <el-col :md = "4" :xl="4" :sm="12" :xs="12">
                       <el-input v-model="form.hour" placeholder="时"/>
@@ -100,15 +110,28 @@
                 </el-form-item>
           </el-form>
       </el-col>
+      <el-col :md="6" :xl="6" :push="1" >
+        <el-card class="box-card" v-if = "closest_nodes.length > 0" v-loading = "loading_closest_nodes">
+           <ul class="paragraph-title-small">相近的节点
+              <li v-for="item in closest_nodes" :key="item.id" class="paragraph-content-small">{{item.ddate}} - {{item.title}}</li>
+          </ul>
+        </el-card>
+        <el-card class="box-card" v-if = "similar_nodes.length > 0" v-loading = "loading_similar_nodes">
+           <ul class="paragraph-title-small">相似的节点
+              <li v-for="item in similar_nodes" :key="item.id" class="paragraph-content-small">{{item.ddate}} - {{item.title}}</li>
+          </ul>
+        </el-card>
+
+      </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import inputboxnation from "./plugin/inputboxnation.vue"
-import inputboxcivilization from "./plugin/inputboxcivilization.vue"
-import inputboxgiant from "./plugin/inputboxgiant.vue"
+import inputboxnation from "./plugin/inputboxnation.vue";
+import inputboxcivilization from "./plugin/inputboxcivilization.vue";
+import inputboxgiant from "./plugin/inputboxgiant.vue";
 
 export default {
   name: "nodeadd",
@@ -116,7 +139,7 @@ export default {
     return {
       form: {
         title: "",
-        content : "",
+        content: "",
         ddate: "",
         year: null,
         month: null,
@@ -131,7 +154,6 @@ export default {
         civilization: null,
         civilizations: [],
         giants: []
-
       },
       options: [
         {
@@ -155,11 +177,19 @@ export default {
           label: "细节"
         }
       ],
-      saving: false
+      saving: false,
+      add_id: null,
+      add_title: null,
+      closest_nodes: [],
+      loading_closest_nodes: false,
+      similar_nodes: [],
+      loading_similar_nodes: false
     };
   },
-  components:{
-    inputboxnation,inputboxcivilization,inputboxgiant
+  components: {
+    inputboxnation,
+    inputboxcivilization,
+    inputboxgiant
   },
   methods: {
     init() {
@@ -189,7 +219,7 @@ export default {
       axios
         .post(_this.GLOBAL.url_node_add, {
           title: _this.form.title,
-          content : _this.form.content,
+          content: _this.form.content,
           ddate: _this.form.ddate,
           year: _this.form.year,
           month: _this.form.month,
@@ -200,7 +230,7 @@ export default {
           level: _this.form.level,
           nations: _this.form.nations,
           civilizations: _this.form.civilizations,
-          giants : _this.form.giants
+          giants: _this.form.giants
         })
         .then(function(response) {
           if (response.data.result == 0) {
@@ -208,10 +238,12 @@ export default {
               message: _this.form.title + " 添加成功！",
               type: "success"
             });
-
+            _this.add_id = response.data.data.id;
+            _this.add_title = response.data.data.title;
             _this.init();
           } else {
-            _this.$message.error(response.data.msg);
+            _this.GLOBAL.showErrorMsg(response, _this);
+            _this.init();
           }
           _this.saving = false;
         })
@@ -231,11 +263,93 @@ export default {
     closeCivilizationTag(index) {
       this.form.civilizations.splice(index, 1);
     },
-    selectGiant(item){
+    selectGiant(item) {
       this.form.giants.push(item);
     },
-    closeGiantTag(index){
-      this.form.giants.splice(index,1);
+    closeGiantTag(index) {
+      this.form.giants.splice(index, 1);
+    },
+    updateClosestDate() {
+      var _this = this;
+      _this.loading_closest_nodes = true;
+      if (!(_this.form.year > 0)) {
+        _this.loading_closest_nodes = [];
+        return;
+      }
+
+      axios
+        .post(_this.GLOBAL.url_node_closest_date, {
+          year: _this.form.year,
+          month: _this.form.month,
+          day: _this.form.day
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            var data = response.data.data;
+            console.log(data);
+
+            _this.closest_nodes = data;
+            _this.loading_closest_nodes = false;
+          } else {
+            _this.loading_closest_nodes = false;
+            this.$message.error(response.data.data);
+          }
+        })
+        .catch(function(error) {});
+    },
+    updateSimilarNode() {
+      console.log("updateSimilarNode");
+      var _this = this;
+      _this.loading_similar_nodes = true;
+      if (_this.form.title.length <= 0) {
+        _this.similar_nodes = [];
+        _this.loading_similar_nodes = false;
+        return;
+      }
+
+      axios
+        .post(_this.GLOBAL.url_search_node, {
+          sw: _this.form.title
+        })
+        .then(function(response) {
+          if (response.data.result == 0) {
+            var data = response.data.data;
+            _this.similar_nodes = data.data;
+            _this.loading_similar_nodes = false;
+          } else {
+            _this.loading_similar_nodes = false;
+            this.$message.error(response.data.data);
+          }
+        })
+        .catch(function(error) {});
+    }
+  },
+  computed: {
+    year() {
+      return this.form.year;
+    },
+    month() {
+      return this.form.month;
+    },
+    day() {
+      return this.form.day;
+    },
+    title() {
+      return this.form.title;
+    }
+  },
+  watch: {
+    year() {
+      this.updateClosestDate();
+    },
+    month() {
+      this.updateClosestDate();
+    },
+    day() {
+      this.updateClosestDate();
+    },
+    title() {
+      this.updateSimilarNode();
     }
   }
 };

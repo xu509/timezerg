@@ -623,9 +623,6 @@ public class CivilizationService {
         List<HashMap> nodesMap = nodeCivilizationMapper.selectNodesByCid(id,AppConfig.KEY_VALUE.Level_Very_Important,null,0, total.intValue());
 
         return new Result(ResultMessage.OK,nodesMap);
-
     }
-
-
 
 }

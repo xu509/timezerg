@@ -1,5 +1,7 @@
 package com.timezerg.api.service;
 
+import com.alibaba.fastjson.JSONObject;
+import com.timezerg.api.config.AppConfig;
 import com.timezerg.api.mapper.*;
 import com.timezerg.api.model.Node;
 import com.timezerg.api.model.NodeNation;
@@ -10,6 +12,7 @@ import com.timezerg.api.util.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -64,6 +67,66 @@ public class NodeNationService {
     public List<Node> selectNodesByNationIds(String[] nationIds){
         return nodeNationMapper.selectNodesByNationIds(nationIds);
     }
+
+    /**
+     *  修改 LEVEL
+     */
+    public Object changeLevel(String id){
+        NodeNation nodeNation = nodeNationMapper.selectById(id);
+        if (nodeNation == null)
+            return new Result(ResultMessage.PARAM_ERROR);
+
+        if (nodeNation.getLevel() == null || (!nodeNation.getLevel().equals(AppConfig.KEY_VALUE.Level_Very_Important))){
+            return updateLevel(id,AppConfig.KEY_VALUE.Level_Very_Important);
+        }else {
+            return updateLevel(id,AppConfig.KEY_VALUE.Level_Normal);
+        }
+    }
+
+
+    /**
+     *  判断是否已经存在，存在则更新，不存在则添加
+     */
+    @Transactional
+    public Object checkAndAdd(NodeNation nodeNation){
+        if (nodeNation == null)
+            return new Result(ResultMessage.PARAM_ERROR , "nodeNation error");
+
+
+        NodeNation oldNodeNation = nodeNationMapper.selectByNodeIdAndNationId(nodeNation);
+
+        if (oldNodeNation == null){
+            return add(nodeNation);
+        }else {
+            if (oldNodeNation.getLevel() == null && nodeNation.getLevel() != null){
+                return updateLevel(oldNodeNation.getId(),nodeNation.getLevel());
+            }
+            else {
+                return new Result(ResultMessage.DUPLICATION_ERROR);
+            }
+        }
+    }
+
+    @Transactional
+    public Object updateLevel(String id,Integer level){
+        NodeNation nodeNation = new NodeNation();
+        nodeNation.setId(id);
+        nodeNation.setLevel(level);
+
+        if (nodeNationMapper.selectById(id) == null){
+            return new Result(ResultMessage.PARAM_ERROR,"id is wrong");
+        }
+
+        if (level == null || level < 0 || level > 5){
+            return new Result(ResultMessage.PARAM_ERROR,"LEVEL IS WRONG");
+        }
+
+        nodeNationMapper.updateLevel(nodeNation);
+        return new Result(ResultMessage.OK);
+    }
+
+
+
 
 
 
